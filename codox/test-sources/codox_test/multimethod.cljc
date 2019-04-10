@@ -1,3 +1,6 @@
+;;
+;; Note: this file is used in tests that rely on line numbers
+;;
 (ns codox-test.multimethod)
 
 (defmulti start (fn [k opts] k))

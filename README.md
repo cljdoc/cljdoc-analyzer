@@ -1,9 +1,12 @@
 ### Notes about this fork
 
-- Focused on extracting structured data (EDN) from jars.
+[![CircleCI](https://circleci.com/gh/cljdoc/codox/tree/cljs-proper.svg?style=svg)](https://circleci.com/gh/cljdoc/codox/tree/cljs-proper)
+
+- Focused on extracting structured data (EDN) from jars for cljdoc which makes use of work under codox subdir only.
 - Any writing-related (HTML etc.) dependencies have been removed.
 - Any remaining unused files are kept only to keep diff to mainline manageable.
 - Various tweaks have been done to align the results of Clojure and ClojureScript analysis.
+- During dev, tests can be run via `clojure -A:test --watch`
 
 
 ---

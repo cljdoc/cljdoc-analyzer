@@ -1,4 +1,9 @@
-{:paths ["src" "resources" "test-sources"]
+{:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.9.0"}
         org.clojure/tools.namespace {:mvn/version "0.2.11"}
-        org.clojure/clojurescript {:mvn/version "1.10.339"}}}
+        org.clojure/clojurescript {:mvn/version "1.10.520"}}
+ :aliases {:test
+            {:extra-paths ["test" "test-sources"]
+             :extra-deps {lambdaisland/kaocha {:mvn/version "0.0-413"}
+                          lambdaisland/kaocha-junit-xml {:mvn/version "0.0-70"}}
+             :main-opts ["-m" "kaocha.runner"]}}}

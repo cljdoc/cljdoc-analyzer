@@ -1,9 +1,11 @@
 pom.xml
 pom.xml.asc
 *jar
+.cpcache/
 lib/
 classes/
 target/
+out/
 checkouts/
 .lein-*
 .nrepl-port

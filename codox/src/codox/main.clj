@@ -4,9 +4,11 @@
   (:require [clojure.string :as str]
             [clojure.pprint]
             [clojure.java.shell :as shell]
+            [clojure.java.io :as io]
             [codox.reader.clojure :as clj]
             [codox.reader.clojurescript :as cljs]
-            [codox.reader.plaintext :as text]))
+            [codox.reader.plaintext :as text]
+            [codox.utils :as util]))
 
 (defn- writer [{:keys [writer]}]
   (let [writer-sym (or writer 'codox.writer.html/write-docs)
@@ -44,9 +46,11 @@
         (update-in [:members] add-var-defaults defaults))))
 
 (defn- add-ns-defaults [namespaces defaults]
-  (for [namespace namespaces]
-    (-> (merge defaults namespace)
-        (update-in [:publics] add-var-defaults defaults))))
+  (if (seq defaults)
+    (for [namespace namespaces]
+      (-> (merge defaults namespace)
+          (update-in [:publics] add-var-defaults defaults)))
+    namespaces))
 
 (defn- ns-matches? [{ns-name :name} pattern]
   (cond
@@ -100,13 +104,15 @@
   ([]
      (generate-docs {}))
   ([options]
-     (let [options    (merge defaults options)
-           write-fn   (writer options)
-           namespaces (read-namespaces options)
-           documents  (read-documents options)]
-       (write-fn (assoc options
-                        :namespaces namespaces
-                        :documents  documents)))))
+   (let [options    (-> (merge defaults options)
+                        (update :root-path util/canonical-path)
+                        (update :souce-paths #(map util/canonical-path %)))
+         write-fn   (writer options)
+         namespaces (read-namespaces options)
+         documents  (read-documents options)]
+     (write-fn (assoc options
+                      :namespaces namespaces
+                      :documents  documents)))))
 
 (defn -main
   "The main entry point for reading API information from files in a directory.

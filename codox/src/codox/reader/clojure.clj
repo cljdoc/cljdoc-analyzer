@@ -5,7 +5,8 @@
   (:use [codox.utils :only (assoc-some update-some correct-indent)])
   (:require [clojure.java.io :as io]
             [clojure.tools.namespace.find :as ns]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [codox.utils :as util]))
 
 (defn try-require [namespace]
   (try
@@ -53,6 +54,14 @@
   (if-let [p (:protocol (meta var))]
     (some #{p} vars)))
 
+(defn- include-record-factory-as-defrecord [var-meta]
+  (let [n (str (:name var-meta))]
+    (if (re-find #"map->\p{Upper}" n)
+      (-> var-meta
+          (assoc :name (symbol (subs n 5)))
+          (dissoc :doc :arglists))
+      var-meta)))
+
 (defn- protocol-methods [protocol vars]
   (filter #(= protocol (:protocol (meta %))) vars))
 
@@ -68,26 +77,30 @@
     (if (empty? delayed-errors)
       (:t ret))))
 
-(defn- read-var [vars var]
-  (-> (meta var)
-      (select-keys [:name :file :line :arglists :doc :dynamic
-                    :added :deprecated :doc/format])
-      (update-some :doc correct-indent)
-      (assoc-some  :type (var-type var)
-                   :type-sig (if (core-typed?) (core-typed-type var))
-                   :members (seq (map (partial read-var vars)
-                                      (protocol-methods var vars))))))
+(defn- read-var [source-path vars var]
+  (let [normalize (partial util/normalize-to-source-path source-path)]
+    (-> (meta var)
+        (include-record-factory-as-defrecord)
+        (select-keys [:name :file :line :arglists :doc :dynamic
+                      :added :deprecated :doc/format])
+        (update-some :doc correct-indent)
+        (update-some :file normalize)
+        (assoc-some  :type (var-type var)
+                     :type-sig (if (core-typed?) (core-typed-type var))
+                     :members (seq (map (partial read-var source-path vars)
+                                        (protocol-methods var vars))))
+        util/remove-empties)))
 
-(defn- read-publics [namespace]
+(defn- read-publics [source-path namespace]
   (let [vars (sorted-public-vars namespace)]
     (->> vars
          (remove proxy?)
          (remove no-doc?)
          (remove (partial protocol-method? vars))
-         (map (partial read-var vars))
+         (map (partial read-var source-path vars))
          (sort-by (comp str/lower-case :name)))))
 
-(defn- read-ns [namespace exception-handler]
+(defn- read-ns [namespace source-path exception-handler]
   (try-require 'clojure.core.typed.check)
   (when (core-typed?)
     (typecheck-namespace namespace))
@@ -95,8 +108,9 @@
     (require namespace)
     (-> (find-ns namespace)
         (meta)
+        (dissoc :file :line :column :end-column :end-line)
         (assoc :name namespace)
-        (assoc :publics (read-publics namespace))
+        (assoc :publics (read-publics source-path namespace))
         (update-some :doc correct-indent)
         (list))
     (catch Exception e
@@ -148,8 +162,9 @@
   ([paths {:keys [exception-handler]
            :or {exception-handler default-exception-handler}}]
    (mapcat (fn [path]
-             (->> (io/file path)
-                  (find-namespaces)
-                  (mapcat #(read-ns % exception-handler))
-                  (remove :no-doc)))
+             (let [path (util/canonical-path path)]
+               (->> (io/file path)
+                    (find-namespaces)
+                    (mapcat #(read-ns % path exception-handler))
+                    (remove :no-doc))))
            paths)))
