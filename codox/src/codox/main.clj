@@ -106,7 +106,7 @@
   ([options]
    (let [options    (-> (merge defaults options)
                         (update :root-path util/canonical-path)
-                        (update :souce-paths #(map util/canonical-path %)))
+                        (update :source-paths #(map util/canonical-path %)))
          write-fn   (writer options)
          namespaces (read-namespaces options)
          documents  (read-documents options)]
