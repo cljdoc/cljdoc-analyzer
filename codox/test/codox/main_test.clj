@@ -2,14 +2,14 @@
   (:require [clojure.test :as t]
             [codox.main :as main]))
 
-(defn- analyze-sources[language]
+(defn- analyze-sources [language]
   (->> (main/generate-docs {:source-paths ["test-sources"]
                             :root-path "test-sources"
                             :language language
                             :writer 'clojure.core/identity})
        :namespaces))
 
-(defn- check-paths[ns-data]
+(defn- check-paths [ns-data]
   (update ns-data :publics
           #(map (fn [v]
                   ;; cljdoc does not currently use the :path, but it might change its mind so we check it
@@ -17,13 +17,13 @@
                   (dissoc v :path))
                 %)))
 
-(defn- publics[r ns]
+(defn- publics [r ns]
   (some->> r
            (filter #(= (:name %) ns))
            first
            check-paths))
 
-(defn- common-analysis-testing[analysis]
+(defn- common-analysis-testing [analysis]
 
   (t/testing "altered-metadata"
     (t/is (= {:name 'codox-test.altered
