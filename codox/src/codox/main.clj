@@ -3,7 +3,6 @@
   (:use [codox.utils :only (add-source-paths)])
   (:require [clojure.string :as str]
             [clojure.pprint]
-            [clojure.java.shell :as shell]
             [clojure.java.io :as io]
             [codox.reader.clojure :as clj]
             [codox.reader.clojurescript :as cljs]
@@ -71,12 +70,6 @@
         (add-source-paths root-path source-paths)
         (add-ns-defaults metadata))))
 
-(defn- git-commit [dir]
-  (let [{:keys [out exit] :as result} (shell/sh "git" "rev-parse" "HEAD" :dir dir)]
-    (when-not (zero? exit)
-      (throw (ex-info "Error getting git commit" result)))
-    (str/trim out)))
-
 (def defaults
   (let [root-path (System/getProperty "user.dir")]
     {:language     :clojure
@@ -86,8 +79,7 @@
      :namespaces   :all
      :exclude-vars #"^(map)?->\p{Upper}"
      :metadata     {}
-     :themes       [:default]
-     :git-commit   (delay (git-commit root-path))}))
+     :themes       [:default]}))
 
 (defn generate-docs
   "Generate documentation from source files."
