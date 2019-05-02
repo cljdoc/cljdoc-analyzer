@@ -91,9 +91,7 @@
                         (update :source-paths #(map util/canonical-path %)))
          write-fn   (writer options)
          namespaces (read-namespaces options)]
-     (write-fn (assoc options
-                      :namespaces namespaces
-                      :documents  documents)))))
+     (write-fn (assoc options :namespaces namespaces)))))
 
 (defn -main
   "The main entry point for reading API information from files in a directory.
