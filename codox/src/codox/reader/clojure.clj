@@ -116,14 +116,6 @@
     (catch Exception e
       (exception-handler e namespace))))
 
-(defn- default-exception-handler [e namespace]
-  (println
-   (format "Could not generate clojure documentation for %s - root cause: %s %s"
-           namespace
-           (.getName (class e))
-           (.getMessage e)))
-  (.printStackTrace e))
-
 (defn- jar-file? [file]
   (and (.isFile file)
        (-> file .getName (.endsWith ".jar"))))
@@ -160,7 +152,7 @@
   ([] (read-namespaces ["src"] {}))
   ([paths] (read-namespaces paths {}))
   ([paths {:keys [exception-handler]
-           :or {exception-handler default-exception-handler}}]
+           :or {exception-handler (partial util/default-exception-handler "Clojure")}}]
    (mapcat (fn [path]
              (let [path (util/canonical-path path)]
                (->> (io/file path)

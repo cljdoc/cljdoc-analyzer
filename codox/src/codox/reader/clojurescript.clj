@@ -111,14 +111,6 @@
     (catch Exception e
       (exception-handler e file))))
 
-(defn- default-exception-handler [e file]
-  (println
-   (format "Could not generate clojurescript documentation for %s - root cause: %s %s"
-           file
-           (.getName (class e))
-           (.getMessage e)))
-  (.printStackTrace e))
-
 (defn read-namespaces
   "Read ClojureScript namespaces from a set of source directories
   (defaults to [\"src\"]), and return a list of maps suitable for
@@ -144,7 +136,7 @@
   ([] (read-namespaces ["src"] {}))
   ([paths] (read-namespaces paths {}))
   ([paths {:keys [exception-handler]
-           :or {exception-handler default-exception-handler}}]
+           :or {exception-handler (partial util/default-exception-handler "ClojureScript")}}]
    (mapcat (fn [path]
              (let [path (io/file (util/canonical-path path))
                    file-reader #(read-file path % exception-handler)]

@@ -164,3 +164,12 @@
                  (public-vars namespaces))]
     (or (first (filter #(= (str starting-ns) (namespace %)) matches))
         (first matches))))
+
+(defn default-exception-handler [lang e file]
+  (println
+   (format "Could not generate %s documentation for %s - root cause: %s %s"
+           lang
+           file
+           (.getName (class e))
+           (.getMessage e)))
+  (.printStackTrace e))
