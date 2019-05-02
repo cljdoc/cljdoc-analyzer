@@ -78,8 +78,7 @@
      :source-paths ["src"]
      :namespaces   :all
      :exclude-vars #"^(map)?->\p{Upper}"
-     :metadata     {}
-     :themes       [:default]}))
+     :metadata     {}}))
 
 (defn generate-docs
   "Generate documentation from source files."
@@ -89,9 +88,8 @@
    (let [options    (-> (merge defaults options)
                         (update :root-path util/canonical-path)
                         (update :source-paths #(map util/canonical-path %)))
-         write-fn   (writer options)
          namespaces (read-namespaces options)]
-     (write-fn (assoc options :namespaces namespaces)))))
+     (assoc options :namespaces namespaces))))
 
 (defn -main
   "The main entry point for reading API information from files in a directory.
