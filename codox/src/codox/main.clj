@@ -7,7 +7,6 @@
             [clojure.java.io :as io]
             [codox.reader.clojure :as clj]
             [codox.reader.clojurescript :as cljs]
-            [codox.reader.plaintext :as text]
             [codox.utils :as util]))
 
 (defn- writer [{:keys [writer]}]
@@ -72,13 +71,6 @@
         (add-source-paths root-path source-paths)
         (add-ns-defaults metadata))))
 
-(defn- read-documents [{:keys [doc-paths doc-files] :or {doc-files :all}}]
-  (cond
-    (not= doc-files :all) (map text/read-file doc-files)
-    (seq doc-paths)       (->> doc-paths
-                               (apply text/read-documents)
-                               (sort-by :name))))
-
 (defn- git-commit [dir]
   (let [{:keys [out exit] :as result} (shell/sh "git" "rev-parse" "HEAD" :dir dir)]
     (when-not (zero? exit)
@@ -91,8 +83,6 @@
      :root-path    root-path
      :output-path  "target/doc"
      :source-paths ["src"]
-     :doc-paths    ["doc"]
-     :doc-files    :all
      :namespaces   :all
      :exclude-vars #"^(map)?->\p{Upper}"
      :metadata     {}
@@ -108,8 +98,7 @@
                         (update :root-path util/canonical-path)
                         (update :source-paths #(map util/canonical-path %)))
          write-fn   (writer options)
-         namespaces (read-namespaces options)
-         documents  (read-documents options)]
+         namespaces (read-namespaces options)]
      (write-fn (assoc options
                       :namespaces namespaces
                       :documents  documents)))))
