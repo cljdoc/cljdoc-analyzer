@@ -20,7 +20,21 @@ This library is picks up from the cljdoc codox unmerged PR. It extracts the anal
 
 == Design thoughts
 
+
+
+=== Questions & TODOS
 * [ ] TODO: Move portions of this to a separate design history doc and other portions to main doc when/if things gel.
+* [x] Q: is this work interesting at all to codox master?  Initial answer is: not at this time.
+* [ ] Q: is protocol :members -> :type always :var?
+* [ ] Q: do we want to keep the codox namespace? Could potentially make merges with codox master a bit easier? I'm thinking we should move to cljdoc-analyzer.
+* [ ] Q:
+* [ ] Q: is data returned by analysis service a natural fit for cljdoc or does it massage it further before rendering?
+* [ ] TO CONSIDER: a general purpose tool would not necessarily skip no-doc elements.
+* [ ] Q: what variants `:namespaces` option does cljdoc use? I'm gonna guess the explicit list but will look at code.
+* [ ] Q: turf `:exclude-vars` option?
+* [ ] Q: turf `:metadata` option?
+* [ ] Q: turf `:writer` option?
+* [ ] Q: does no-doc not work for cljs ns as codox docs state?
 
 === Potential others users
 https://github.com/borkdude/clj-kondo[clj-kondo] is a static source analyzer. It has special coding to to understand the potemkin import-vars api, but it does not know about other metadata manipulations. The output of this tool might be useful for clj-kondo to fill in any gaps.
@@ -105,7 +119,7 @@ codox cljdoc skips namespaces and public elements tagged with `^:no-doc` metadat
 *** `:members`  only applicable when `:type` is `:protocol`, list of maps of:
 **** `:arglists`  list of vectors of arglists
 **** `:name` name of protocol method
-**** `:type` TODO: can this be only `:var`?
+**** `:type` can this be only `:var`?
 
 special metadata tags when present are included:
 
@@ -125,10 +139,7 @@ cljdoc then takes this output and massages it to a map of:
 
 For cljdoc's purposes, we could move to returning values under `:codox`
 
-Think about:
 
-* [ ] TO EXPLORE: is this a natural format for cljdoc or does it massage it further before rendering?
-* [ ] TO CONSIDER: a general purpose tool would not necessarily skip no-doc elements.
 
 ==== Usage
 Because code is evaluated while getting metadata, cljdoc takes care to isolate this work by launching a separate process.
@@ -151,8 +162,6 @@ profile, such as `:uberjar`.
 
 
 === namespace option
-
-* [ ] TODO: what variants does cljdoc use?
 
 The `:namespaces` option can be used to restrict the documentation to
 a specific set of namespaces:
@@ -186,8 +195,6 @@ To override the namespaces list and include all namespaces, use `:all`
 ----
 
 === exclude-vars option
-* [ ] TODO: hardcoded for cljdoc, do we want to continue to support?
-
 
 The `:exclude-vars` option can be used to exclude vars that match a
 regular expression. Set to `nil` to disable. By default vars generated
@@ -200,7 +207,6 @@ by record constructor functions are excluded (such as `->Foo` and
 ----
 
 === metadata option
-* [ ] TODO: not used by cljdoc
 
 Codox constructs documentation from metadata on vars and namespaces.
 You can specify a set of default metadata using the `:metadata` map:
@@ -211,7 +217,6 @@ You can specify a set of default metadata using the `:metadata` map:
 ----
 
 === writer option
-* [ ] TODO: hardcoded for cljdoc
 
 To use a different output writer, specify the fully qualified symbol of the
 writer function in the `:writer` key:
@@ -244,8 +249,6 @@ to the var's metadata. For example:
 You can also skip namespaces by adding `:no-doc true` to the
 namespace's metadata. *This currently only works for Clojure code, not
 ClojureScript.*
-
-* [ ] TODO: really? let's check if this is still true.
 
 For example:
 
