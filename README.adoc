@@ -13,7 +13,7 @@ cljdoc-analyzer's first use is for cljdoc but others might find use for this lib
 Some Clojure/ClojureScript projects alter their metadata at load time through tools such as https://github.com/ztellman/potemkin[potemkin import-vars].
 
 https://github.com/weavejester/codox[Codox] was coded to understand altered metadata for the Clojure projects it documents.
-Historically, cljdoc took advantage of these smarts via a branch on a fork of codox to get the metadata it to document Clojure/ClojureScript project apis. This branch also has an unmerged PR to that understands cljs import-vars type trickery.
+Historically, cljdoc took advantage of these smarts via a branch on a fork of codox to get the metadata it needed to document Clojure/ClojureScript project apis. This branch also has an unmerged PR to that understands cljs import-vars type trickery.
 
 This library is picks up from the cljdoc codox unmerged PR. It extracts the analysis portion of codox and leaves the rest behind.
 
@@ -28,53 +28,61 @@ https://github.com/borkdude/clj-kondo[clj-kondo] is a static source analyzer. It
 https://github.com/weavejester/codox[Codox] could potentially make use of this library.
 
 === Meeting the needs of cljdoc and others
-cljdoc massages codox output to a the format it needs.  The format seems reasonable for general consumption.
+cljdoc massages codox output to a the format it needs.  Let's decided if this format is reasonable for general consumption.
 
 ==== current cldoc codox inputs:
 
 cljdoc uses all options internally, none are exposed to project authors.
 
 |====
-|option key | codox usage | cljdoc usage | moving forward
+|option key | codox usage | cljdoc usage | mimimally | potentially
 
 | :language
 | return metadata for `:clojure` or `:clojurescript`
 | intelligently determines languages from source and calls codox once for each
+| turf the option and intelligently scan source
 | this still has merit if someone is only interested in one language, but we'll also add a new `:all` option for intelligent detection
 
 | :root-path
 | the github project root, used to calculate relative :source-paths
 | sets to current dir (ie. had no use for this)
+| if we are only supporting exploded jars, we could keep this and turf `:source-paths`
 | if we want to remain general purpose, this concept still has use
 
 | :source-paths
 | the list of paths to search for source. When working from source and not a jar, this makes sense
 | a single path: the root of exploded jar
+| if we are only supporting exploded jars, we could keep `:root-path`  and turf this
 | continue to support
 
 | :namespaces
 | a list of namespaces to include
 | used internally by cljdoc
+| looks like we'll need this
 | continue to support
 
 | :exception-handler
 | behavior to execute on exception
 | ditto
+| seems prudent to keep
 | continue to support
 
 | :metadata
 | a way to provide default metadata where it is missing
 | unused
+| turf it
 | <undecided>
 
 | :writer
 | a clever way to support different outputs, codox defaults to writing out html
 | cljdoc uses 'clojure.core/identity to write out edn
+| turf it, and hard code to return edn only
 | <undecided> continue to support, but default to spitting out edn (and nothing included to spit out anything else)
 
 | :exclude-vars
 | clj and cljs sometimes return data we are not interested in and this offers a way to exclude it, by default excludes record constructor functions returned by clj
 | cljdoc uses default
+| turf it and hard code to exclude what we don't want from clj and cljs
 | <undecided> we'll continue to exclude unwanted chaff, but do we need this to be configurable?
 |====
 
@@ -110,23 +118,22 @@ cljdoc then takes this output and massages it to a map of:
 * `:group-id` project group-id
 * `:artifact-id` project artifact-id
 * `:version` project version
-* `:codox` codox analysis for languages which can consist of none, one or both of:
+* `:codox` codox analysis for languages which can consist of a map with none, one or both of:
 ** `:clj` the above codox analysis for clojure with `:path` removed
 ** `:cljs` the above codox analysis for for clojurescript with `:path` removed
 * `:pom-str` slurp of pom.xml
 
+For cljdoc's purposes, we could move to returning values under `:codox`
 
 Think about:
 
-* [ ] TO CONSIDER: a general purpose tool would not necessarily skip no-doc elements.
-* [ ] TO EXPLORE: cljdoc codox and master codox retrieve project attributes differently.
 * [ ] TO EXPLORE: is this a natural format for cljdoc or does it massage it further before rendering?
+* [ ] TO CONSIDER: a general purpose tool would not necessarily skip no-doc elements.
 
 ==== Usage
 Because code is evaluated while getting metadata, cljdoc takes care to isolate this work by launching a separate process.
 
 We'll continue to support the codox map of options, but let's be command line friendly as well. I think this could mean a main that accepts an options map from an edn file or from edn string.
-
 
 == Testing
 
