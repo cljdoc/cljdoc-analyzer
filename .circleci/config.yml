@@ -5,10 +5,6 @@
 version: 2
 jobs:
   build:
-    branches:
-      only:
-        - /cljs-proper.*/
-
     docker:
       - image: circleci/clojure:tools-deps-1.10.0.442
 
@@ -19,31 +15,28 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "codox/deps.edn" }}
+            - v1-dependencies-{{ checksum "deps.edn" }}
             - v1-dependencies- # fallback if cache not found
 
       - run:
           name: Dump tool versions
           command: clojure -e '(println (System/getProperty "java.runtime.name") (System/getProperty "java.runtime.version") "\nClojure" (clojure-version))'
-          working_directory: ~/repo/codox
 
       - run:
           name: Dump classpath
           command: clojure -Spath
-          working_directory: ~/repo/codox
 
       - run:
           name: Run tests
           command: clojure -Atest --reporter documentation --plugin kaocha.plugin/junit-xml --junit-xml-file target/test-results/unit/results.xml
-          working_directory: ~/repo/codox
 
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "codox/deps.edn" }}
+          key: v1-dependencies-{{ checksum "deps.edn" }}
 
       - store_test_results:
-          path: codox/target/test-results
+          path: target/test-results
 
       - store_artifacts:
-          path: codox/target/test-results
+          path: target/test-results
