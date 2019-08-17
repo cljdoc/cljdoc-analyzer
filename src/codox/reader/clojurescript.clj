@@ -1,13 +1,11 @@
 (ns codox.reader.clojurescript
   "Read raw documentation information from ClojureScript source directory."
-  (:use [codox.utils :only [assoc-some update-some correct-indent]])
   (:require [clojure.java.io :as io]
-            [cljs.analyzer :as an]
             [cljs.analyzer.api :as ana]
             [cljs.closure]
             [cljs.env]
             [clojure.string :as str]
-            [codox.utils :as util]))
+            [codox.utils :as utils]))
 
 (defn- cljs-filename? [filename]
   (or (.endsWith filename ".cljs")
@@ -54,27 +52,27 @@
 
 (defn- read-var [source-path file vars var]
   (let [vt (var-type var)
-        normalize (partial util/normalize-to-source-path source-path)]
+        normalize (partial utils/normalize-to-source-path source-path)]
     (-> var
         (select-keys [:name :file :line :arglists :doc :dynamic :added :deprecated :doc/format])
-        (update-some :name (comp symbol name))
-        (update-some :arglists remove-quote)
-        (update-some :doc correct-indent)
-        (update-some :file normalize)
-        (assoc-some  :type    vt
+        (utils/update-some :name (comp symbol name))
+        (utils/update-some :arglists remove-quote)
+        (utils/update-some :doc utils/correct-indent)
+        (utils/update-some :file normalize)
+        (utils/assoc-some  :type    vt
                      :members (->> (protocol-methods var vars)
                                    (map (partial read-var source-path file vars))
-                                   (map util/remove-empties)
+                                   (map utils/remove-empties)
                                    (map #(dissoc % :file :line))
                                    (sort-by :name)))
-        util/remove-empties)))
+        utils/remove-empties)))
 
 (defn- unreferenced-protocol-fn?
   "Tools like potemkin import-vars can create a new function in one namespace point to an existing function within a protocol.
   In these cases, we want to include the new function."
   [source-path actual-file vars]
-  (let [meta-file (util/normalize-to-source-path source-path (:file vars))
-        actual-file (util/normalize-to-source-path source-path (str actual-file))]
+  (let [meta-file (utils/normalize-to-source-path source-path (:file vars))
+        actual-file (utils/normalize-to-source-path source-path (str actual-file))]
     (and (:protocol vars) (= meta-file actual-file))))
 
 (defn- read-publics [state namespace source-path file]
@@ -104,9 +102,9 @@
       {ns-name
        (-> (ana/find-ns state ns-name)
            (select-keys [:name :doc])
-           (update-some :doc correct-indent)
+           (utils/update-some :doc utils/correct-indent)
            (merge (-> ns-name meta (select-keys [:no-doc])))
-           (util/remove-empties)
+           (utils/remove-empties)
            (assoc :publics (read-publics state ns-name source-path file)))})
     (catch Exception e
       (exception-handler e file))))
@@ -136,9 +134,9 @@
   ([] (read-namespaces ["src"] {}))
   ([paths] (read-namespaces paths {}))
   ([paths {:keys [exception-handler]
-           :or {exception-handler (partial util/default-exception-handler "ClojureScript")}}]
+           :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
    (mapcat (fn [path]
-             (let [path (io/file (util/canonical-path path))
+             (let [path (io/file (utils/canonical-path path))
                    file-reader #(read-file path % exception-handler)]
                (->> (find-files path)
                     (map file-reader)

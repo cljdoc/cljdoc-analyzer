@@ -2,11 +2,10 @@
   "Read raw documentation information from Clojure source directory."
   (:import java.util.jar.JarFile
            java.io.FileNotFoundException)
-  (:use [codox.utils :only (assoc-some update-some correct-indent)])
-  (:require [clojure.java.io :as io]
+  (:require [codox.utils :as utils]
+            [clojure.java.io :as io]
             [clojure.tools.namespace.find :as ns]
-            [clojure.string :as str]
-            [codox.utils :as util]))
+            [clojure.string :as str]))
 
 (defn try-require [namespace]
   (try
@@ -78,18 +77,18 @@
       (:t ret))))
 
 (defn- read-var [source-path vars var]
-  (let [normalize (partial util/normalize-to-source-path source-path)]
+  (let [normalize (partial utils/normalize-to-source-path source-path)]
     (-> (meta var)
         (include-record-factory-as-defrecord)
         (select-keys [:name :file :line :arglists :doc :dynamic
                       :added :deprecated :doc/format])
-        (update-some :doc correct-indent)
-        (update-some :file normalize)
-        (assoc-some  :type (var-type var)
+        (utils/update-some :doc utils/correct-indent)
+        (utils/update-some :file normalize)
+        (utils/assoc-some  :type (var-type var)
                      :type-sig (if (core-typed?) (core-typed-type var))
                      :members (seq (map (partial read-var source-path vars)
                                         (protocol-methods var vars))))
-        util/remove-empties)))
+        utils/remove-empties)))
 
 (defn- read-publics [source-path namespace]
   (let [vars (sorted-public-vars namespace)]
@@ -111,7 +110,7 @@
         (dissoc :file :line :column :end-column :end-line)
         (assoc :name namespace)
         (assoc :publics (read-publics source-path namespace))
-        (update-some :doc correct-indent)
+        (utils/update-some :doc utils/correct-indent)
         (list))
     (catch Exception e
       (exception-handler e namespace))))
@@ -152,9 +151,9 @@
   ([] (read-namespaces ["src"] {}))
   ([paths] (read-namespaces paths {}))
   ([paths {:keys [exception-handler]
-           :or {exception-handler (partial util/default-exception-handler "Clojure")}}]
+           :or {exception-handler (partial utils/default-exception-handler "Clojure")}}]
    (mapcat (fn [path]
-             (let [path (util/canonical-path path)]
+             (let [path (utils/canonical-path path)]
                (->> (io/file path)
                     (find-namespaces)
                     (mapcat #(read-ns % path exception-handler))
