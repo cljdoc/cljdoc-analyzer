@@ -30,19 +30,19 @@ behind.
 
 In no specific order:
 
-* [ ] TODO: Move portions of this to a separate design history doc (or adr!) and other portions to main doc when/if
+* [ ] TODO: Move portions of doc to a separate design history doc (or adr!) and other portions to main doc when/if
   things gel.
-* [ ] Q: specific support for analysis from source code repository (as opposed to analysis from jar) (I'm currently
-  thinking no for initial releases)
-* [ ] Q: is protocol :members -> :type always :var?
+* [ ] Q: maintain specific support for analysis from source code repository? (as opposed to analysis from jar) (I'm currently
+  thinking focus on jar support for initial releases)
 * [ ] Q: do we want to keep the codox namespace? Could potentially make merges with codox master a bit easier? I'm
-  thinking we should move to cljdoc-analyzer to encourage us to move ahead unfettered by the past.
-* [ ] Q: is data returned by analysis service a natural fit for cljdoc or does it massage it further before rendering?
+  thinking we should move to cljdoc-analyzer to encourage us to move ahead unfettered by the past. But this would also mean some
+  adjustments to cljdoc. At the very least we'll still refer to generated edn as a codox data structure.
+* [ ] TO EXPLORE: cljdoc specs describe codox data structure as namespaced to cljdoc.codox... is this used?
 * [ ] TO CONSIDER: a general purpose tool would not necessarily skip no-doc elements.
 * [ ] Q: turf `:exclude-vars` option?
 * [ ] Q: turf `:metadata` option?
 * [ ] Q: turf `:writer` option?
-* [ ] Q: is special metadata also parsed from ns? :dynamic does not make sense, but added and deprecated might.
+* [ ] Q: just curious, is protocol :members -> :type always :var?
 
 === Potential users
 In addition to cljdoc, who else might find value in cljdoc-analyzer?
@@ -198,6 +198,11 @@ cljdoc then takes this output and massages it to a map of:
 ** `:cljs` the above codox analysis for for clojurescript with `:path` removed
 * `:pom-str` slurp of pom.xml
 
+This is serialized for later ingestion to a sqlite database by cljdoc. I do see some small tweaks by cljdoc here. Before
+serialization it makes regexes in argslists serializable. After deserialization it sanitizes macros (which does
+not really sanitize, it asserts no duplicate publics). An important observation is that while some map values get their
+own columns in the db, edn is saved as a blob in the db, so preserving the edn structure will be important at the
+individual var (aka public above) and namespace level.
 
 === Musings on new behavior
 
