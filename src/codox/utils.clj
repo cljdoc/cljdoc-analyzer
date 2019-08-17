@@ -126,45 +126,6 @@
                             (assoc % :path (and p (io/file p))))
                          (:publics ns)))))
 
-(defn summary
-  "Return the summary of a docstring.
-   The summary is the first portion of the string, from the first
-   character to the first page break (\f) character OR the first TWO
-   newlines."
-  [s]
-  (if s
-    (->> (str/trim s)
-         (re-find #"(?s).*?(?=\f)|.*?(?=\n\n)|.*"))))
-
-(defn public-vars
-  "Return a list of all public var names in a collection of namespaces from one
-  of the reader functions."
-  [namespaces]
-  (for [ns  namespaces
-        var (:publics ns)
-        v   (concat [var] (:members var))]
-    (symbol (str (:name ns)) (str (:name v)))))
-
-(def ^:private re-chars (set "\\.*+|?()[]{}$^"))
-
-(defn re-escape
-  "Escape a string so it can be safely placed in a regex."
-  [s]
-  (str/escape s #(if (re-chars %) (str \\ %))))
-
-(defn search-vars
-  "Find the best-matching var given a partial var string, a list of namespaces,
-  and an optional starting namespace."
-  [namespaces partial-var & [starting-ns]]
-  (let [regex   (if (.contains partial-var "/")
-                  (re-pattern (str (re-escape partial-var) "$"))
-                  (re-pattern (str "/" (re-escape partial-var) "$")))
-        matches (filter
-                 #(re-find regex (str %))
-                 (public-vars namespaces))]
-    (or (first (filter #(= (str starting-ns) (namespace %)) matches))
-        (first matches))))
-
 (defn default-exception-handler [lang e file]
   (println
    (format "Could not generate %s documentation for %s - root cause: %s %s"

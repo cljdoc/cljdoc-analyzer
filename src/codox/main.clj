@@ -6,18 +6,6 @@
             [codox.reader.clojurescript :as cljs]
             [codox.utils :as utils]))
 
-(defn- writer [{:keys [writer]}]
-  (let [writer-sym (or writer 'codox.writer.html/write-docs)
-        writer-ns (symbol (namespace writer-sym))]
-    (try
-      (require writer-ns)
-      (catch Exception e
-        (throw
-         (Exception. (str "Could not load codox writer " writer-ns) e))))
-    (if-let [writer (resolve writer-sym)]
-      writer
-      (throw
-         (Exception. (str "Could not resolve codox writer " writer-sym))))))
 
 (def ^:private namespace-readers
   {:clojure       clj/read-namespaces
