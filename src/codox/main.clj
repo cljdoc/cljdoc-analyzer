@@ -1,12 +1,10 @@
 (ns codox.main
   "Main namespace for generating documentation"
-  (:use [codox.utils :only (add-source-paths)])
-  (:require [clojure.string :as str]
-            [clojure.pprint]
-            [clojure.java.io :as io]
+  (:require [clojure.pprint]
+            [clojure.walk]
             [codox.reader.clojure :as clj]
             [codox.reader.clojurescript :as cljs]
-            [codox.utils :as util]))
+            [codox.utils :as utils]))
 
 (defn- writer [{:keys [writer]}]
   (let [writer-sym (or writer 'codox.writer.html/write-docs)
@@ -67,7 +65,7 @@
     (-> (reader source-paths (select-keys opts [:exception-handler]))
         (filter-namespaces namespaces)
         (remove-excluded-vars exclude-vars)
-        (add-source-paths root-path source-paths)
+        (utils/add-source-paths root-path source-paths)
         (add-ns-defaults metadata))))
 
 (def defaults
@@ -86,8 +84,8 @@
      (generate-docs {}))
   ([options]
    (let [options    (-> (merge defaults options)
-                        (update :root-path util/canonical-path)
-                        (update :source-paths #(map util/canonical-path %)))
+                        (update :root-path utils/canonical-path)
+                        (update :source-paths #(map utils/canonical-path %)))
          namespaces (read-namespaces options)]
      (assoc options :namespaces namespaces))))
 
