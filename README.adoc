@@ -6,8 +6,8 @@ WARNING: PRE-ALPHA work here.
 
 == Rationale
 
-A library to return metadata for source code in Clojure/ClojureScript projects with the understanding that metadata is
-sometimes altered at load time.
+A library to return metadata for Clojure/ClojureScript source code projects with the understanding that metadata is
+sometimes altered in those projects at load time.
 
 cljdoc-analyzer's first use is for cljdoc but others might find value in this library as well.
 
@@ -18,8 +18,8 @@ https://github.com/ztellman/potemkin[potemkin import-vars].
 
 https://github.com/weavejester/codox[Codox] was coded to understand altered metadata for the Clojure projects it
 documents. Historically, cljdoc took advantage of these smarts via a branch on a fork of codox to get the metadata it
-needed to document Clojure/ClojureScript project apis. This branch also has an unmerged PR to that understands cljs
-import-vars type metadata manipulation.
+needed to document Clojure/ClojureScript project APIs. This branch also has an unmerged PR to that understands
+ClojureScript import-vars type metadata manipulation.
 
 This library picks up from the cljdoc codox unmerged PR. It extracts the analysis portion of codox and leaves the rest
 behind.
@@ -32,28 +32,24 @@ In no specific order:
 
 * [ ] TODO: Move portions of doc to a separate design history doc (or adr!) and other portions to main doc when/if
   things gel.
-* [ ] Q: maintain specific support for analysis from source code repository? (as opposed to analysis from jar) (I'm currently
-  thinking focus on jar support for initial releases)
-* [ ] Q: do we want to keep the codox namespace? Could potentially make merges with codox master a bit easier? I'm
-  thinking we should move to cljdoc-analyzer to encourage us to move ahead unfettered by the past. But this would also mean some
+* [ ] Q: do we want to keep the codox namespace? Could potentially make merges with codox master a bit easier? Moving to
+  a cljdoc-analyzer namespace might encourage us to move ahead unfettered by the past. But this could also mean some
   adjustments to cljdoc. At the very least we'll still refer to generated edn as a codox data structure.
-* [ ] TO EXPLORE: cljdoc specs describe codox data structure as namespaced to cljdoc.codox... is this used?
-* [ ] TO CONSIDER: a general purpose tool would not necessarily skip no-doc elements.
-* [ ] Q: turf `:exclude-vars` option?
-* [ ] Q: turf `:metadata` option?
-* [ ] Q: turf `:writer` option?
+* [ ] TO CONSIDER: a general purpose tool would not necessarily always skip no-doc elements.
 * [ ] Q: just curious, is protocol :members -> :type always :var?
+* [ ] Q: is parallel support in impl.clj.tmpl ever used?
 
 === Potential users
 In addition to cljdoc, who else might find value in cljdoc-analyzer?
 
 * https://github.com/borkdude/clj-kondo[clj-kondo] is a static source analyzer. It has special coding to to understand
-  the potemkin import-vars api, but it does not know about other metadata manipulations. The output of this tool might
-  be useful for clj-kondo to fill in any gaps.
+  the potemkin import-vars api, but it does not know about other load time metadata manipulations. The output of this
+  tool might be useful for clj-kondo to fill in any gaps.
 * https://github.com/weavejester/codox[Codox] could potentially make use of this library, but at this time, the original
-  author does not see a benefit (which is totally fine). So we'll not invest in maintaining codox compatibility.
-* add hoc use. I (lread) am interested in using cljdoc-analyzer to compare api signatures between rewrite-clj,
-  rewrite-cljs and rewrite-cljc to detect any unintended breakage and to document changes. (api comparison is also of
+  author does not see a benefit (which is totally fine). So we'll not need to invest in maintaining codox feature
+  compatibility.
+* ad hoc use. I (lread) am interested in using cljdoc-analyzer to compare api signatures between rewrite-clj,
+  rewrite-cljs and rewrite-cljc to detect any unintended breakage and to document changes. (aside: api comparison is also of
   interest for a future feature of cljdoc).
 
 === Analysis of current behavior
@@ -63,17 +59,18 @@ operates on the repository sources of a project and generates html.
 
 Cljdoc does not follow the common codox use case. Cljdoc uses codox to retrieve api metadata only. It works on published
 artifacts (jars) instead of repository sources (note that cljdoc does make use of the source repository for documentation
-contained in articles, but codox does not come into play for this work).
+contained in articles and resolving api source files, but codox does not come into play for this work).
 
 Working at the published jar level instead of repository sources level means cljdoc:
 
 * does not care whether a project uses leiningen, boot or deps tools, it simply refers to the source code contained
   in the jar, and the pom.xml.
+* takes on responsibility of resolving dependencies from pom.xml rather than relying on lein, boot or tools.deps.alpha.
 * can assume the classpath for the source code in the jar is always at the exploded jar root.
 
-That all said, when it comes down to it, the fundamental inputs for retrieval of metadata for both worlds are the same:
+The fundamental inputs for retrieval of metadata for both worlds are the same:
 
-* classpath of sources and dependencies
+* classpath of sources and dependencies (although for normal codox use the dependencies are resolved by lein or boot)
 * codox options
 
 Because cljdoc works on unknown projects, it goes through some special steps to avoid potential problems with analysis.
@@ -95,17 +92,18 @@ In a nutshell cljdoc analysis runner:
 3. copies over cljdoc wrapper source (which calls codox)
 4. resolves classpath from pom (and includes extra deps as needed)
 5. overrides languages and namespaces for problematic libraries
-6. launches the cljdoc wrapper (which calls codox) for each found language with resolved classpath
-7. merges codox language results into map for cljdoc consumption
+6. launches the cljdoc wrapper (which calls codox) for each found language with a resolved classpath
+7. wraps codox language results into map for cljdoc consumption
 8. saves results to an edn file to share back with cljdoc
 
-A goal of these steps is to limit dependencies of the wrapper to Clojure core. The less dependencies our actual analysis
-phase has, the less chance we have for project library collisions and confusions.
+A goal of these steps is to limit dependencies of the wrapper to the minimum required to fetch the actual metadata. The
+less dependencies our actual analysis phase has, the less chance we have for project library collisions and confusions.
 
-==== current cldoc codox inputs
+==== current cljdoc codox inputs
 
 cljdoc uses all options internally; none are exposed to project authors. The following table lists current option usages
-and muses about what we might minimally and potentially support moving forward.
+and muses about what we might minimally and potentially support moving forward. I've put a star beside the options I am
+leaning toward.
 
 |====
 |option key | codox usage | cljdoc usage | mimimally | potentially
@@ -113,52 +111,55 @@ and muses about what we might minimally and potentially support moving forward.
 | `:language`
 | return metadata for `:clojure` or `:clojurescript`
 | intelligently determines languages from source and calls codox once for each, with custom overrides for problematic projects
-| continue to support
-| -
+| continue to support, rename to `:clj` and `:cljs`
+| ⭐ allow to request an array of languages to parse, or `:auto-detect`
 
 | `:root-path`
 | the github project root, used to calculate relative :source-paths
 | sets to current dir (ie. had no use for this)
-| if we are only supporting exploded jars, we could keep this and turf `:source-paths`
+| ⭐ if we are only supporting exploded jars, we could keep this and turf `:source-paths`
 | if we want to remain general purpose, this concept still has use
 
 | `:source-paths`
 | the list of paths to search for source. When working from source and not a jar, this makes sense
 | a single path, the root of exploded jar
-| if we are only supporting exploded jars, we could keep `:root-path`  and turf this
+| ⭐ if we are only supporting exploded jars, we could keep `:root-path`  and turf this
 | continue to support
 
 | `:namespaces`
-| a list of namespaces to include
-| used by cljdoc to limit to specific namespaces for problematic projects, otherwise parse all.
-| continue to support
-| -
+| a list of namespaces to include, includes support for regex.
+| used by cljdoc to limit to specific namespaces for problematic projects, otherwise parse all. Does not use regex.
+| ⭐ continue to support without regex
+| continue to support with regex
 
 | `:exception-handler`
 | behavior to execute on exception
 | ditto
 | turf and hardcode to current behavior
-| continue to support for general usage
+| ⭐ continue to support for general usage
 
 | `:metadata`
 | a way to provide default metadata where it is missing
 | unused
-| turf it
+| ⭐ turf it
 | continue to support for general usage
 
 | `:writer`
 | a clever way to support different outputs, codox defaults to writing out html
 | cljdoc uses 'clojure.core/identity to write out edn
-| turf it, and hard code to return map only
+| ⭐ turf it, and hard code to return map only
 | continue to support, but default to spitting out edn (and nothing included to spit out anything else)
 
 | `:exclude-vars`
 | clj and cljs sometimes return data we are not interested in and this offers a way to exclude it, by default excludes
   record constructor functions returned by clj
 | cljdoc hardcodes to default
-| turf it and hard code to current default
+| ⭐ turf it and hard code to current default
 | continue to support, I wonder if any codox uses this...
 |====
+
+Turfing does not necessarily mean deleting all associated source, it can mean simply removing as an option, when that
+makes more sense.
 
 ==== current outputs
 
@@ -182,7 +183,7 @@ namespaces each with a list of public vars. Codox skips namespaces and public el
 **** `:name` name of protocol method
 **** `:type` can this be only `:var`?
 
-special metadata tags when present are included:
+special metadata tags when present are included in publics:
 
 * `:added` version an element was added
 * `:deprecated` version an element was deprecated
@@ -199,21 +200,38 @@ cljdoc then takes this output and massages it to a map of:
 * `:pom-str` slurp of pom.xml
 
 This is serialized for later ingestion to a sqlite database by cljdoc. I do see some small tweaks by cljdoc here. Before
-serialization it makes regexes in argslists serializable. After deserialization it sanitizes macros (which does
-not really sanitize, it asserts no duplicate publics). An important observation is that while some map values get their
-own columns in the db, edn is saved as a blob in the db, so preserving the edn structure will be important at the
-individual var (aka public above) and namespace level.
+serialization, it makes regexes in argslists serializable. After deserialization it sanitizes macros (which does not
+really sanitize, it asserts no duplicate publics). An important observation is that while some map values get their own
+columns in the db, the map is saved as a https://github.com/ptaoussanis/nippy[nippy] blob in the database, so preserving the
+map structure will be important at the individual var (aka public above) and namespace level.
+
+I was curious how source links for api docs were resolved to correct scm urls.  This happens at render time. The list of
+all scm files is also saved to the database as part of the separate git analysis. This list is compared against the `:file`
+above for a best match. This work is similar to what codox does when populating `:path`
 
 === Musings on new behavior
 
-Unrefined thinking...
+In short, I think cljdoc-analyzer steal responsibilities from the current cljdoc analysis runner and, at least initially,
+focus on the cljdoc use case of operating on jars (rather than source repos).
 
-In its current fork of codox, I don't think cljdoc-analyzer is a candidate for a general purpose tool. There is too much
-pre and post processing work. (I might be wrong here, review).
+==== choice #1 - cljdoc scope
+. Do nothing. Abort. Keep using codox as is.
+. Streamline cljdoc-analyzer. Remove all unnecessary code form cljdoc-analyzer. Similar to 1 but with an easier to
+reason about and maintain cljdoc-analyzer (mostly already complete).
+. cljdoc-analyzer operates on jar. It takes on many of the responsibilities of current cljdoc analysis runner.
+.. input is jar and options.
+.. output is metadata.
+.. handle all cljdoc allowances (extra deps, extra repos, etc) through config.
 
-Ideally I think we'd give cljdoc analyzer a pointer to jar file it would return map of clj and cljs metadata. This
-sounds like the current job of cljdoc's analysis runner.
+Proposal: I like option #3. It makes cljdoc-analyzer potentially also interesting as an ad hoc tool.
 
+==== choice #2 - codox scope
+
+The next choice to make is whether or not cljdoc-analyzer should support source repo dirs and current codox options.
+This usage likely plays out by adding cljdoc-analyzer as a dev dependency to your project.
+
+Proposal: I see value in this, but would like to focus on cljdoc use case first. We can entertain this at a later date
+if there is interest.
 
 == Testing
 
@@ -231,75 +249,9 @@ directives in your project; instead, place them in a specialized
 profile, such as `:uberjar`.
 
 
-=== namespace option
-
-The `:namespaces` option can be used to restrict the documentation to
-a specific set of namespaces:
-
-[source,clojure]
-----
-{:namespaces [library.core library.io]}
-----
-
-Regular expressions can also be used for more general matching:
-
-[source,clojure]
-----
-{:namespaces [#"^library\."]}
-----
-
-For excluding only internal namespaces, it's sometimes useful to use
-negative lookahead:
-
-[source,clojure]
-----
-{:namespaces [#"^library\.(?!internal)"]}
-----
-
-To override the namespaces list and include all namespaces, use `:all`
-(the default):
-
-[source,clojure]
-----
-{:namespaces :all}
-----
-
-=== exclude-vars option
-
-The `:exclude-vars` option can be used to exclude vars that match a
-regular expression. Set to `nil` to disable. By default vars generated
-by record constructor functions are excluded (such as `->Foo` and
-`map->Foo`):
-
-[source,clojure]
-----
-{:exclude-vars #"^(map)?->\p{Upper}"}
-----
-
-=== metadata option
-
-Codox constructs documentation from metadata on vars and namespaces.
-You can specify a set of default metadata using the `:metadata` map:
-
-[source,clojure]
-----
-{:metadata {:doc "FIXME: write docs"}}
-----
-
-=== writer option
-
-To use a different output writer, specify the fully qualified symbol of the
-writer function in the `:writer` key:
-
-[source,clojure]
-----
-{:writer codox.writer.html/write-docs}
-----
-
 == Metadata Options
 
-To force Codox to skip a public var, add `:no-doc true`
-to the var's metadata. For example:
+To force Codox to skip a public var, add `:no-doc true` to the var's metadata. For example:
 
 [source,clojure]
 ----
@@ -316,8 +268,7 @@ to the var's metadata. For example:
   (* x x))
 ----
 
-You can also skip namespaces by adding `:no-doc true` to the
-namespace's metadata.
+You can also skip namespaces by adding `:no-doc true` to the namespace's metadata.
 
 For example:
 
@@ -326,8 +277,7 @@ For example:
 (ns ^:no-doc hidden-ns)
 ----
 
-To denote the library version the var was added in, use the `:added`
-metadata key:
+To denote the library version the var was added in, use the `:added` metadata key:
 
 [source,clojure]
 ----
@@ -338,8 +288,7 @@ metadata key:
   (* x x))
 ----
 
-Similar, deprecated vars can be denoted with the `:deprecated`
-metadata key:
+Similar, deprecated vars can be denoted with the `:deprecated` metadata key:
 
 [source,clojure]
 ----
@@ -351,7 +300,7 @@ metadata key:
 ----
 
 
-## Licenses
+== Licenses
 
 Based on https://github.com/weavejester/codox[Codox]:
 
