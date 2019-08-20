@@ -51,12 +51,10 @@
   [{:keys [language root-path namespaces] :as opts}]
   (let [exclude-vars #"^(map)?->\p{Upper}"
         metadata {}
-        source-paths [root-path]
         reader (namespace-readers language)]
-    (-> (reader source-paths (select-keys opts [:exception-handler]))
+    (-> (reader [root-path] (select-keys opts [:exception-handler]))
         (filter-namespaces namespaces)
         (remove-excluded-vars exclude-vars)
-        (utils/add-source-paths root-path source-paths)
         (add-ns-defaults metadata))))
 
 (def defaults
@@ -71,8 +69,7 @@
      (generate-docs {}))
   ([options]
    (let [options    (-> (merge defaults options)
-                        (update :root-path utils/canonical-path)
-                        (update :source-paths #(map utils/canonical-path %)))
+                        (update :root-path utils/canonical-path))
          namespaces (read-namespaces options)]
      (assoc options :namespaces namespaces))))
 

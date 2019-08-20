@@ -7,19 +7,10 @@
                             :language language})
        :namespaces))
 
-(defn- check-paths [ns-data]
-  (update ns-data :publics
-          #(map (fn [v]
-                  ;; cljdoc does not currently use the :path, but it might change its mind so we check it
-                  (t/is (= (str (:path v)) (:file v)) "for our tests config, :file and :path should be the equivalent")
-                  (dissoc v :path))
-                %)))
-
 (defn- publics [r ns]
   (some->> r
            (filter #(= (:name %) ns))
-           first
-           check-paths))
+           first))
 
 (defn- common-analysis-testing [analysis]
 
