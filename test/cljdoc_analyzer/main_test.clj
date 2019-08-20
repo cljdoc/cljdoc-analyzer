@@ -3,10 +3,8 @@
             [cljdoc-analyzer.main :as main]))
 
 (defn- analyze-sources [language]
-  (->> (main/generate-docs {:source-paths ["test-sources"]
-                            :root-path "test-sources"
-                            :language language
-                            :writer 'clojure.core/identity})
+  (->> (main/generate-docs {:root-path "test-sources"
+                            :language language})
        :namespaces))
 
 (defn- check-paths [ns-data]

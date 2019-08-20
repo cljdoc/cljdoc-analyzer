@@ -48,8 +48,11 @@
     namespaces))
 
 (defn- read-namespaces
-  [{:keys [language root-path source-paths namespaces metadata exclude-vars] :as opts}]
-  (let [reader (namespace-readers language)]
+  [{:keys [language root-path namespaces] :as opts}]
+  (let [exclude-vars #"^(map)?->\p{Upper}"
+        metadata {}
+        source-paths [root-path]
+        reader (namespace-readers language)]
     (-> (reader source-paths (select-keys opts [:exception-handler]))
         (filter-namespaces namespaces)
         (remove-excluded-vars exclude-vars)
@@ -60,11 +63,7 @@
   (let [root-path (System/getProperty "user.dir")]
     {:language     :clojure
      :root-path    root-path
-     :output-path  "target/doc"
-     :source-paths ["src"]
-     :namespaces   :all
-     :exclude-vars #"^(map)?->\p{Upper}"
-     :metadata     {}}))
+     :namespaces   :all}))
 
 (defn generate-docs
   "Generate documentation from source files."
@@ -94,8 +93,7 @@
   (println "Analyzing lang:" lang)
   (println "Analyzing path:" path)
   (assert (#{"clojure" "clojurescript"} lang))
-  (->> (generate-docs {:writer 'clojure.core/identity
-                       :source-paths [path]
+  (->> (generate-docs {:root-path path
                        :language (keyword lang)})
        :namespaces
        ;; Walk/realize entire structure, otherwise "Excluding ->Xyz"
