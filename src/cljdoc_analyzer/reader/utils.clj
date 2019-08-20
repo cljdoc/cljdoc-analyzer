@@ -1,4 +1,4 @@
-(ns cljdoc-analyzer.utils
+(ns cljdoc-analyzer.reader.utils
   "Miscellaneous utility functions."
   (:require [clojure.java.io :as io]
             [clojure.string :as str]))

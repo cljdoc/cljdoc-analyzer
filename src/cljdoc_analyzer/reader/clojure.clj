@@ -2,10 +2,10 @@
   "Read raw documentation information from Clojure source directory."
   (:import java.util.jar.JarFile
            java.io.FileNotFoundException)
-  (:require [cljdoc-analyzer.utils :as utils]
-            [clojure.java.io :as io]
+  (:require [clojure.java.io :as io]
             [clojure.tools.namespace.find :as ns]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [cljdoc-analyzer.reader.utils :as utils] ))
 
 (defn try-require [namespace]
   (try

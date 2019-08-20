@@ -1,6 +1,6 @@
-(ns cljdoc-analyzer.main-test
+(ns cljdoc-analyzer.reader.main-test
   (:require [clojure.test :as t]
-            [cljdoc-analyzer.main :as main]))
+            [cljdoc-analyzer.reader.main :as main]))
 
 (defn- analyze-sources [language]
   (->> (main/generate-docs {:root-path "test-sources"

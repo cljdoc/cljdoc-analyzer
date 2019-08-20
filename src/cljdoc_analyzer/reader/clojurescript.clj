@@ -5,7 +5,7 @@
             [cljs.closure]
             [cljs.env]
             [clojure.string :as str]
-            [cljdoc-analyzer.utils :as utils]))
+            [cljdoc-analyzer.reader.utils :as utils]))
 
 (defn- cljs-filename? [filename]
   (or (.endsWith filename ".cljs")

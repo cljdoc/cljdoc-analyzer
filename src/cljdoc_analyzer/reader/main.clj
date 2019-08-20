@@ -1,11 +1,10 @@
-(ns cljdoc-analyzer.main
+(ns cljdoc-analyzer.reader.main
   "Main namespace for generating documentation"
   (:require [clojure.pprint]
             [clojure.walk]
             [cljdoc-analyzer.reader.clojure :as clj]
             [cljdoc-analyzer.reader.clojurescript :as cljs]
-            [cljdoc-analyzer.utils :as utils]))
-
+            [cljdoc-analyzer.reader.utils :as utils]))
 
 (def ^:private namespace-readers
   {:clojure       clj/read-namespaces
@@ -74,18 +73,7 @@
      (assoc options :namespaces namespaces))))
 
 (defn -main
-  "The main entry point for reading API information from files in a directory.
-
-  To analyze a project (debugging etc.) follow these steps:
-
-  1. unzip the project's jar into a directory
-  2. add the project's coordinates to the local `deps.edn` file
-  3. add the jar contents directory to `:paths` in `deps.edn`
-
-  You can then call this main function as follows:
-
-      clj -m cljdoc-analyzer.main clojurescript jar-contents-dir/
-      clj -m cljdoc-analyzer.main clojure jar-contents-dir/"
+  "TODO: update me"
   [lang path]
   (println "Analyzing lang:" lang)
   (println "Analyzing path:" path)
