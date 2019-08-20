@@ -1,11 +1,11 @@
-(ns codox.reader.clojurescript
+(ns cljdoc-analyzer.reader.clojurescript
   "Read raw documentation information from ClojureScript source directory."
   (:require [clojure.java.io :as io]
             [cljs.analyzer.api :as ana]
             [cljs.closure]
             [cljs.env]
             [clojure.string :as str]
-            [codox.utils :as utils]))
+            [cljdoc-analyzer.utils :as utils]))
 
 (defn- cljs-filename? [filename]
   (or (.endsWith filename ".cljs")

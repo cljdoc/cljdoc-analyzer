@@ -1,8 +1,8 @@
-(ns codox.reader.clojure
+(ns cljdoc-analyzer.reader.clojure
   "Read raw documentation information from Clojure source directory."
   (:import java.util.jar.JarFile
            java.io.FileNotFoundException)
-  (:require [codox.utils :as utils]
+  (:require [cljdoc-analyzer.utils :as utils]
             [clojure.java.io :as io]
             [clojure.tools.namespace.find :as ns]
             [clojure.string :as str]))

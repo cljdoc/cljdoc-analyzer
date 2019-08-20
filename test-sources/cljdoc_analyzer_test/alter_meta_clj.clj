@@ -1,4 +1,4 @@
-(ns codox-test.alter-meta-clj
+(ns cljdoc-analyzer-test.alter-meta-clj
   (:require [clojure.java.io :as io]))
 
 (defmacro alter-the-meta-data![ns name meta-changes]

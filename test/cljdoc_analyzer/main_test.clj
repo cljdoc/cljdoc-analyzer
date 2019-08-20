@@ -1,6 +1,6 @@
-(ns codox.main-test
+(ns cljdoc-analyzer.main-test
   (:require [clojure.test :as t]
-            [codox.main :as main]))
+            [cljdoc-analyzer.main :as main]))
 
 (defn- analyze-sources [language]
   (->> (main/generate-docs {:source-paths ["test-sources"]
@@ -26,73 +26,73 @@
 (defn- common-analysis-testing [analysis]
 
   (t/testing "altered-metadata"
-    (t/is (= {:name 'codox-test.altered
+    (t/is (= {:name 'cljdoc-analyzer-test.altered
               :publics [{:name 'altered-def-with-absolute-file
                          :type :var
-                         :file "codox_test/record.cljc"
+                         :file "cljdoc_analyzer_test/record.cljc"
                          :line 7}
                         {:name 'altered-fn-with-source-relative-file
                          :arglists '([])
                          :type :var
-                         :file "codox_test/multimethod.cljc"
+                         :file "cljdoc_analyzer_test/multimethod.cljc"
                          :line 14}
                         {:name 'altered-macro-with-root-relative-file
                          :arglists '([])
                          :type :macro
                          :doc "added doc\n"
-                         :file "codox_test/multimethod.cljc"
+                         :file "cljdoc_analyzer_test/multimethod.cljc"
                          :line 3}
                         {:arglists '([x]),
                          :doc "Operation 1 docs\n",
-                         :file "codox_test/protocols.cljc",
+                         :file "cljdoc_analyzer_test/protocols.cljc",
                          :line 6,
                          :name 'fn-pointing-to-protocol-fn,
                          :type :var}]}
-             (publics analysis 'codox-test.altered))))
+             (publics analysis 'cljdoc-analyzer-test.altered))))
 
   (t/testing "macros"
-    (t/is (= {:name 'codox-test.macro
+    (t/is (= {:name 'cljdoc-analyzer-test.macro
               :publics [{:name 'macdoc
                          :arglists '([a b c d])
                          :type :macro
                          :doc "Macro docs\n"
-                         :file "codox_test/macro.cljc"
+                         :file "cljdoc_analyzer_test/macro.cljc"
                          :line 23}
                         {:name 'simple
                          :arglists '([a b])
                          :type :macro
-                         :file "codox_test/macro.cljc"
+                         :file "cljdoc_analyzer_test/macro.cljc"
                          :line 11}
                         {:name 'varargs
                          :arglists '([a & xs])
                          :type :macro
-                         :file "codox_test/macro.cljc"
+                         :file "cljdoc_analyzer_test/macro.cljc"
                          :line 17}]}
-             (publics analysis 'codox-test.macro))))
+             (publics analysis 'cljdoc-analyzer-test.macro))))
 
   (t/testing "multiarity"
-    (t/is (= {:name 'codox-test.multiarity
+    (t/is (= {:name 'cljdoc-analyzer-test.multiarity
               :publics [{:name 'multiarity
                          :arglists '([] [a] [a b] [a b c d])
                          :type :var
                          :doc "Multiarity comment\n"
-                         :file "codox_test/multiarity.cljc"
+                         :file "cljdoc_analyzer_test/multiarity.cljc"
                          :line 7}]}
-             (publics analysis 'codox-test.multiarity))))
+             (publics analysis 'cljdoc-analyzer-test.multiarity))))
 
   (t/testing "multimethods"
-    (t/is (= {:name 'codox-test.multimethod
+    (t/is (= {:name 'cljdoc-analyzer-test.multimethod
               :publics [{:name 'start
                          :type :multimethod
-                         :file "codox_test/multimethod.cljc"
+                         :file "cljdoc_analyzer_test/multimethod.cljc"
                          :line 6}]}
-             (publics analysis 'codox-test.multimethod))))
+             (publics analysis 'cljdoc-analyzer-test.multimethod))))
 
   (t/testing "no-doc-ns"
-    (t/is (= [] (filter #(= (:name %) 'codox-test.no-doc-ns) analysis))))
+    (t/is (= [] (filter #(= (:name %) 'cljdoc-analyzer-test.no-doc-ns) analysis))))
 
   (t/testing "protocols"
-    (t/is (= {:name 'codox-test.protocols
+    (t/is (= {:name 'cljdoc-analyzer-test.protocols
               :publics [{:name 'ProtoTest
                          :type :protocol
                          :doc "Protocol comment.\n"
@@ -108,44 +108,44 @@
                                      :name operation-one,
                                      :type :var}
                                     {:arglists ([y]), :name zoolander, :type :var})
-                         :file "codox_test/protocols.cljc"
+                         :file "cljdoc_analyzer_test/protocols.cljc"
                          :line 6}]}
-             (publics analysis 'codox-test.protocols))))
+             (publics analysis 'cljdoc-analyzer-test.protocols))))
 
 
   (t/testing "records"
-    (t/is (= {:name 'codox-test.record
+    (t/is (= {:name 'cljdoc-analyzer-test.record
               :publics [{:name 'DefRecordTest
                          :type :var
-                         :file "codox_test/record.cljc"
+                         :file "cljdoc_analyzer_test/record.cljc"
                          :line 6}
                         {:name 'record-test
                          :type :var
-                         :file "codox_test/record.cljc"
+                         :file "cljdoc_analyzer_test/record.cljc"
                          :line 8}]}
-             (publics analysis 'codox-test.record))))
+             (publics analysis 'cljdoc-analyzer-test.record))))
 
   (t/testing "special-tags"
-    (t/is (= {:name 'codox-test.special-tags
+    (t/is (= {:name 'cljdoc-analyzer-test.special-tags
               :publics [{:name 'added-fn
                          :arglists '([a b])
                          :type :var
                          :added "10.2.2"
-                         :file "codox_test/special_tags.cljc"
+                         :file "cljdoc_analyzer_test/special_tags.cljc"
                          :line 26}
                         {:name 'deprecated-fn
                          :arglists '([x])
                          :type :var
                          :deprecated "0.4.0"
-                         :file "codox_test/special_tags.cljc"
+                         :file "cljdoc_analyzer_test/special_tags.cljc"
                          :line 10}
                         {:name 'dynamic-def
                          :type :var
                          :doc "dynamic def docs\n"
                          :dynamic true
-                         :file "codox_test/special_tags.cljc"
+                         :file "cljdoc_analyzer_test/special_tags.cljc"
                          :line 21}]}
-             (publics analysis 'codox-test.special-tags)))))
+             (publics analysis 'cljdoc-analyzer-test.special-tags)))))
 
 (t/deftest analyze-clojure-code-test
   (let [a (analyze-sources :clojure)]

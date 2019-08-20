@@ -1,4 +1,4 @@
-(ns codox-test.alter-meta-cljs
+(ns cljdoc-analyzer-test.alter-meta-cljs
   (:require [cljs.analyzer :as ana]
             [cljs.analyzer.api :as ana-api]
             [cljs.env :as env]

@@ -1,7 +1,7 @@
 ;;
 ;; Note: this file is used in tests that rely on line numbers
 ;;
-(ns codox-test.record)
+(ns cljdoc-analyzer-test.record)
 
 (defrecord DefRecordTest [components])
 

@@ -1,10 +1,10 @@
-(ns codox.main
+(ns cljdoc-analyzer.main
   "Main namespace for generating documentation"
   (:require [clojure.pprint]
             [clojure.walk]
-            [codox.reader.clojure :as clj]
-            [codox.reader.clojurescript :as cljs]
-            [codox.utils :as utils]))
+            [cljdoc-analyzer.reader.clojure :as clj]
+            [cljdoc-analyzer.reader.clojurescript :as cljs]
+            [cljdoc-analyzer.utils :as utils]))
 
 
 (def ^:private namespace-readers
@@ -88,8 +88,8 @@
 
   You can then call this main function as follows:
 
-      clj -m codox.main clojurescript jar-contents-dir/
-      clj -m codox.main clojure jar-contents-dir/"
+      clj -m cljdoc-analyzer.main clojurescript jar-contents-dir/
+      clj -m cljdoc-analyzer.main clojure jar-contents-dir/"
   [lang path]
   (println "Analyzing lang:" lang)
   (println "Analyzing path:" path)

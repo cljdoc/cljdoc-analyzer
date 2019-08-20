@@ -1,7 +1,7 @@
 ;;
 ;; Note: this file is used in tests that rely on line numbers
 ;;
-(ns codox-test.macro)
+(ns cljdoc-analyzer-test.macro)
 
 
 
