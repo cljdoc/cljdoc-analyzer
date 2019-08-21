@@ -1,7 +1,8 @@
 (ns cljdoc-analyzer.reader.utils
   "Miscellaneous utility functions."
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]))
+            [clojure.string :as str]
+            [clojure.walk :as walk]))
 
 (defn- empty-seq?[x]
   (and (seqable? x) (not (seq x))))
@@ -96,6 +97,21 @@
         (normalize-path file source-path)
         file))))
 
+(defn infer-platforms-from-src-dir
+  "Given a directory `src-dir` inspect all files and infer which
+  platforms the source files likely target."
+  [^java.io.File src-dir]
+  (assert (< 1 (count (file-seq src-dir))) "jar contents dir does not contain any files")
+  (let [file-types (->> (file-seq src-dir)
+                        (keep (fn [f]
+                                (cond
+                                  (.endsWith (.getPath f) ".clj")  :clj
+                                  (.endsWith (.getPath f) ".cljs") :cljs
+                                  (.endsWith (.getPath f) ".cljc") :cljc))))]
+    (case (set file-types)
+      #{:clj}  [:clj]
+      #{:cljs} [:cljs]
+      [:clj :cljs])))
 
 (defn default-exception-handler [lang e file]
   (println
@@ -105,3 +121,14 @@
            (.getName (class e))
            (.getMessage e)))
   (.printStackTrace e))
+
+
+(defn serialize-cljdoc-edn [analyze-result]
+  ;; the analyzed structure can contain regex #"..." (e.g. in :arglists)
+  ;; and they can't be read in again using edn/read-string
+  ;; so there are changed to #regex"..." and read in with a custom reader
+  (->> analyze-result
+       (walk/postwalk #(if (instance? java.util.regex.Pattern %)
+                         (tagged-literal 'regex (str %))
+                         %))
+       (pr-str)))

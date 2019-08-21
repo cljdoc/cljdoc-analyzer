@@ -1,0 +1,67 @@
+* Figure out basic flow
+  Currently clojure -m for runner then java -cp for codox wrapper.
+  I am thinking clojure -m for both, but does that make sense?
+  The advantage for me, is that I could define base deps for analysis in a deps.edn file, which is more amenable to general tooling
+  like olical/depot etc.
+
+  When we get the classpath from the pom, I suppose it includes paths as well.
+  I'm thinking of -Sdeps and -Spath
+
+  So we have prep in one process
+  Which launches a separate process for analysis.
+
+  It seems to me that decoupling prep from analysis will make testing easier, but we'll see.
+
+  I'll start with using same code as cljdoc, get that working, then explore.
+
+
+* Figure out compensations and overrides.
+
+  And how they might fit in with a deps.edn world.
+
+  cljdoc deps.clj
+  - upgrades specific older libs to more recent ones
+    can I use :override-deps in deps.edn to handle this? Does :override-deps handle transitive deps?
+  - ensures specific libs are included
+    can handle these in deps.edn via :deps
+  - fixes up deps for specific projects
+    cannot handle through deps.edn. Will specifying via -Sdeps be equivalent?
+  - includes default maven repos (see repos question below)
+    can handle via :mvn/repos in deps.edn
+  - removes org.clojure/tools.reader when specifically included to avoid problems with cljs analysis
+    hmmm... I suppose an explicit override would work?  But again, do override-deps work for
+    transitive deps?
+
+  I'm attracted to specifying everything I can in deps.edn, but I need to answer my own questions
+  before embarking on this route.
+
+* Why is repos currently external to runner?
+   I'm not sure.
+   These are the base maven repos to use and is currently:
+
+   :maven-repositories [{:id "clojars" :url "https://repo.clojars.org/"}
+                        {:id "central" :url "http://central.maven.org/maven2/"}]
+
+   But deps.clj has default repos:
+
+   (def ^:private default-repos
+     {"central" {:url "https://repo1.maven.org/maven2/"},
+      "clojars" {:url "https://repo.clojars.org/"}
+      ;; Included to account for https://dev.clojure.org/jira/browse/TDEPS-46
+      ;; specifically anything depending on org.immutant/messaging will fail
+      ;; this includes compojure-api
+      "jboss" {:url "https://repository.jboss.org/nexus/content/groups/public/"}
+      ;; included for https://github.com/FundingCircle/jackdaw
+      "confluent" {:url "https://packages.confluent.io/maven/"}})
+
+   Which repeats "clojars" and overrides "central".
+
+   So it looks to  me, like I can ignore repos. I think it can safely be removed from cljdoc config.
+* Why are jar and pom passsed into runner?
+   Is pom not always included in jar for clojure projects?  Maybe not. I shall assume not for now.
+* Why are project (group-id/artifact-id) and version passed into runner?
+   Can't I glean these from jar and/or pom?  Maybe not? I shall asumme not for now.
+
+* Reintroduce hardcoded config
+   The hardcoded config specifies overrides for specific projects with regards to both api analysis and doc parsing.
+   I'll need to separate the two. I am only interested in api analysis.

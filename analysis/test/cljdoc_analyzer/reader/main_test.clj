@@ -3,9 +3,8 @@
             [cljdoc-analyzer.reader.main :as main]))
 
 (defn- analyze-sources [language]
-  (->> (main/generate-docs {:root-path "test-sources"
-                            :language language})
-       :namespaces))
+  (main/get-metadata {:root-path "test-sources"
+                      :language language}))
 
 (defn- publics [r ns]
   (some->> r
@@ -137,9 +136,9 @@
              (publics analysis 'cljdoc-analyzer-test.special-tags)))))
 
 (t/deftest analyze-clojure-code-test
-  (let [a (analyze-sources :clojure)]
+  (let [a (analyze-sources :clj)]
     (common-analysis-testing a)))
 
 (t/deftest analyze-clojurecript-code-test
-  (let [a (analyze-sources :clojurescript)]
+  (let [a (analyze-sources :cljs)]
     (common-analysis-testing a)))
