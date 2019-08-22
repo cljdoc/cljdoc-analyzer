@@ -15,7 +15,6 @@ function analyze() {
  :pompath "${repo_prefix}.pom"}
 EOM
 )
-    echo ${OPTS}
     clojure --report stderr -m cljdoc.analysis.runner-ng "${OPTS}"
 }
 

@@ -99,60 +99,71 @@
      :resolved-deps resolved-deps
      :classpath classpath*}))
 
+(defn- print-separator [s]
+  (let [prefix (str "-[" s "]")]
+    (println (str prefix (apply str (repeat (- 80 (count prefix)) "-"))))))
+
 (defn- print-process-result [proc]
-  (printf "exit-code %s ---------------------------------------------------------------\n" (:exit proc))
-  (println "stdout --------------------------------------------------------------------")
-  (println (:out proc))
-  (println "---------------------------------------------------------------------------")
+  (print-separator (str "exit-code " (:exit proc)))
+  (print-separator "stdout")
+  (println (string/trim (:out proc)))
+  (print-separator "end of stdout")
   (when (seq (:err proc))
-    (println "stderr --------------------------------------------------------------------")
-    (println (:err proc))
-    (println "---------------------------------------------------------------------------")))
+    (print-separator "stderr")
+    (println (string/trim (:err proc)))
+    (print-separator "end of stderr")))
+
+(defn launch-analysis [{:keys [project jar-path namespaces jar-contents-path src-dir languages]}]
+  (let [metadata-output-file (util/system-temp-file project ".edn")
+        extra-deps {:paths [ jar-contents-path ]
+                    :deps {'analyzer {:local/root (.getAbsolutePath (io/file "analysis"))}
+                           'analyzee {:local/root jar-path}}}]
+    (println "launching analysis for:" project "languages:" languages)
+    ;; TODO: experiment
+    ;; current version uses java -cp with classpath gleaned from pom analysis.
+    ;; perhaps I should stick with that approach as it gives us full control over
+    ;; deps.
+
+    ;; TODO: I'm not even using deps analysis from pom at all yet.
+
+    (let [analysis-args {:namespaces namespaces
+                         :jar-contents-path (str src-dir)
+                         :languages languages
+                         :output-filename  (.getAbsolutePath metadata-output-file)}
+          process (sh/sh "clojure"
+                         "-Srepro"
+                         "-Sdeps" (pr-str extra-deps)
+                         "--report" "stderr"
+                         "-m" "cljdoc-analyzer.reader.main"
+                         (pr-str analysis-args)
+                         :dir (.getParentFile metadata-output-file))
+          _ (print-process-result process)]
+      (if (zero? (:exit process))
+        (let [result (util/read-cljdoc-edn metadata-output-file)]
+          (assert result "No data was saved in output file")
+          result)
+        (throw (ex-info (str "Analysis failed with code " (:exit process)) {:code (:exit process)}))))))
 
 (defn- analyze-impl
   "Analyze a prepared project."
-  [{:keys [project version jar-path src-dir pom classpath output-file]}]
-  {:pre [(symbol? project) (seq version) (seq pom) (seq classpath)]}
-  (let [;; TODO: reintroduce platform overrides for specific projects
-        platforms    :auto-detect
-        ;; TODO: reintroduce namespaces overrides for specfic projects
-        namespaces   :all
-        build-cdx      (fn build-cdx [jar-contents-path platf]
-                         (let [metadata-output-file (util/system-temp-file project ".edn")
-                               extra-deps {:paths [ jar-contents-path ]
-                                           :deps {'analyzer {:local/root (.getAbsolutePath (io/file "analysis"))}
-                                                  'analyzee {:local/root jar-path}}}]
-                           (println "Analyzing" project platf)
-                           (let [analysis-args {:namespaces namespaces
-                                                :jar-contents-path (str src-dir)
-                                                :languages platf
-                                                :output-filename  (.getAbsolutePath metadata-output-file)}
-                                 process (sh/sh "clojure"
-                                                "-Srepro"
-                                                "-Sdeps" (pr-str extra-deps)
-                                                "--report" "stderr"
-                                                "-m" "cljdoc-analyzer.reader.main"
-                                                (pr-str analysis-args)
-                                                :dir (.getParentFile metadata-output-file))
-                                 _ (print-process-result process)]
-                             (if (zero? (:exit process))
-                               (let [result (util/read-cljdoc-edn metadata-output-file)]
-                                 (assert result "No data was saved in output file")
-                                 result)
-                               (throw (ex-info (str "Analysis failed with code " (:exit process)) {:code (:exit process)}))))))]
-
-    (let [metadata (build-cdx (.getPath src-dir)  platforms)
-          ana-result     {:group-id (util/group-id project)
-                          :artifact-id (util/artifact-id project)
-                          :version version
-                          :metadata metadata
-                          :pom-str (slurp pom)}]
-      (cljdoc.spec/assert :cljdoc/cljdoc-edn ana-result)
-      (if (every? some? (vals metadata))
-        (doto output-file
-          (io/make-parents)
-          (spit (util/serialize-cljdoc-edn ana-result)))
-        (throw (Exception. "Analysis failed"))))))
+  [{:keys [project version src-dir pom output-file] :as opts}]
+  #_{:pre [(symbol? project) (seq version) (seq pom)]}
+  (let [ana-result {:group-id (util/group-id project)
+                    :artifact-id (util/artifact-id project)
+                    :version version
+                    :metadata (launch-analysis (assoc opts
+                                                      :src-dir (.getPath src-dir)
+                                                      ;; TODO: reintroduce platform overrides for specific projects
+                                                      :languages :auto-detect
+                                                      ;; TODO: reintroduce namespaces overrides for specfic projects
+                                                      :namespaces :all))
+                    :pom-str (slurp pom)}]
+    (cljdoc.spec/assert :cljdoc/cljdoc-edn ana-result)
+    (if (every? some? (vals ana-result))
+      (doto output-file
+        (io/make-parents)
+        (spit (util/serialize-cljdoc-edn ana-result)))
+      (throw (Exception. "Analysis failed")))))
 
 (defn analyze!
   "Analyze the provided project"
@@ -165,11 +176,11 @@
       (let [{:keys [jar-contents classpath resolved-deps jar-path]}
             (prepare-jar-for-analysis! jarpath pompath repos analysis-dir)]
 
-        (println "Used dependencies for analysis:")
+        (print-separator "dependencies for analysis")
         (deps/print-tree resolved-deps)
-        (println "---------------------------------------------------------------------------")
+        (print-separator "end of dependencies for analysis")
 
-        (println "Going to write analysis result to:" (.getAbsolutePath output-file))
+        (println "results file:" (.getAbsolutePath output-file))
         (analyze-impl {:project project
                        :version version
                        :jar-path jar-path
@@ -184,26 +195,10 @@
       (catch Throwable t
         (let [msg (.getMessage t)]
           (println msg)
+          (flush)
           (throw t)
           {:analysis-status :fail
            :fail-reason msg}))
       (finally
+        ;; TODO: re-enable
         #_(util/delete-directory! analysis-dir)))))
-
-(defn -main
-  [project version jarpath pompath]
-  (let [{:keys [analysis-status]} (analyze! {:project project
-                                             :version version
-                                             :jarpath jarpath
-                                             :pompath pompath})]
-    (shutdown-agents)
-    (System/exit (if (= :success analysis-status) 0 1))))
-
-(comment
-  (deps 'bidi "2.1.3")
-
-  (analyze-impl 'bidi "2.1.3" "/Users/martin/.m2/repository/bidi/bidi/2.1.3/bidi-2.1.3.jar" "/Users/martin/.m2/repository/bidi/bidi/2.1.3/bidi-2.1.3.pom")
-
-  (sh/sh "clj" "-Sdeps" (pr-str {:deps deps}) "-m" "cljdoc.analysis.impl" "1" "2" "3")
-
-  {:deps deps})

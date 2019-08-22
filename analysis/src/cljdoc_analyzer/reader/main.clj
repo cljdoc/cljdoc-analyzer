@@ -3,6 +3,7 @@
   (:require [clojure.walk]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
+            [clojure.pprint :as pprint]
             [cljdoc-analyzer.reader.clojure :as clj]
             [cljdoc-analyzer.reader.clojurescript :as cljs]
             [cljdoc-analyzer.reader.utils :as utils]
@@ -92,13 +93,13 @@
   ;; TODO: if regexes are not by default serializable... so if any options contain regexes...
   [edn-arg]
   (try
-    (let [{:keys [namespaces jar-contents-path languages output-filename]} (edn/read-string edn-arg)
+    (let [{:keys [namespaces jar-contents-path languages output-filename] :as args} (edn/read-string edn-arg)
           actual-languages (determine-languages languages jar-contents-path)]
       ;; TODO: fixup languages validation
       #_(assert (#{"clj" "cljs"} language))
       (assert (.exists (io/as-file jar-contents-path)))
-      (printf "Args:\n  - namespaces: %s\n  - jar-contents-path: %s\n  - language: %s\n  - output-filename: %s\n"
-              (pr-str namespaces) (pr-str jar-contents-path) (pr-str languages) (pr-str output-filename))
+      (printf "Args:\n")
+      (pprint/pprint args)
       (printf "Clojure version %s\n" (clojure-version))
       (printf "ClojureScript version %s\n" (cljs-util/clojurescript-version))
 
