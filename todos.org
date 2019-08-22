@@ -14,6 +14,11 @@
 
   I'll start with using same code as cljdoc, get that working, then explore.
 
+* What to do with shared code?
+  I have copied in code from cljdoc shared-utils, which is not ideal.
+  Verify if it is really shared.
+  If so... create a new lib?
+  Or bring cljdoc-analyzer in under existing analysis runner module. I'd prefer a separate project to encourage reuse tho.
 
 * Figure out compensations and overrides.
 
