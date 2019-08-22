@@ -113,29 +113,19 @@
     (println (string/trim (:err proc)))
     (print-separator "end of stderr")))
 
-(defn launch-analysis [{:keys [project jar-path namespaces jar-contents-path src-dir languages]}]
-  (let [metadata-output-file (util/system-temp-file project ".edn")
-        extra-deps {:paths [ jar-contents-path ]
-                    :deps {'analyzer {:local/root (.getAbsolutePath (io/file "analysis"))}
-                           'analyzee {:local/root jar-path}}}]
+(defn launch-analysis [{:keys [project namespaces src-dir languages classpath]}]
+  (let [metadata-output-file (util/system-temp-file project ".edn")]
     (println "launching analysis for:" project "languages:" languages)
-    ;; TODO: experiment
-    ;; current version uses java -cp with classpath gleaned from pom analysis.
-    ;; perhaps I should stick with that approach as it gives us full control over
-    ;; deps.
-
-    ;; TODO: I'm not even using deps analysis from pom at all yet.
-
     (let [analysis-args {:namespaces namespaces
                          :jar-contents-path (str src-dir)
                          :languages languages
                          :output-filename  (.getAbsolutePath metadata-output-file)}
-          process (sh/sh "clojure"
-                         "-Srepro"
-                         "-Sdeps" (pr-str extra-deps)
-                         "--report" "stderr"
-                         "-m" "cljdoc-analyzer.reader.main"
+          process (sh/sh "java"
+                         "-cp" classpath
+                         "clojure.main" "-m" "cljdoc-analyzer.reader.main"
                          (pr-str analysis-args)
+                         ;; supplying :dir is necessary to avoid local deps.edn being included
+                         ;; once -Srepro is finalized it might be useful for this purpose
                          :dir (.getParentFile metadata-output-file))
           _ (print-process-result process)]
       (if (zero? (:exit process))

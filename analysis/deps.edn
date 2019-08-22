@@ -1,27 +1,8 @@
 {:paths ["src"]
- ;; TODO: this deps.end is transcribed, where possible from cljdoc analyzer deps.clj
- :mvn/repos {"central" {:url "https://repo1.maven.org/maven2/"},
-             "clojars" {:url "https://repo.clojars.org/"}
-             ;; Included to account for https://dev.clojure.org/jira/browse/TDEPS-46
-             ;; specifically anything depending on org.immutant/messaging will fail
-             ;; this includes compojure-api
-             "jboss" {:url "https://repository.jboss.org/nexus/content/groups/public/"}
-             ;; included for https://github.com/FundingCircle/jackdaw
-             "confluent" {:url "https://packages.confluent.io/maven/"}}
  :deps {org.clojure/clojure {:mvn/version "1.10.1"}
         org.clojure/tools.namespace {:mvn/version "0.2.11"}
         org.clojure/clojurescript {:mvn/version "1.10.520"}}
- :override-deps {
-        ;; TODO: this was in deps.clj - am I translating intent correctly?
-        ;; many ring libraries implicitly depend on this and getting all
-        ;; downstream libraries to properly declare it as a "provided"
-        ;; dependency would be a major effort. since it's all java it also
-        ;; shouldn't affect Clojure-related dependency resolution
-        javax.servlet/javax.servlet-api {:mvn/version "4.0.1"}}
- :aliases {
-
-
-           :test
+ :aliases {:test
             {:extra-paths ["test" "test-sources"]
              :extra-deps {lambdaisland/kaocha {:mvn/version "0.0-413"}
                           lambdaisland/kaocha-junit-xml {:mvn/version "0.0-70"}}

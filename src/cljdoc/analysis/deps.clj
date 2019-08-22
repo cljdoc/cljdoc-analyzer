@@ -35,12 +35,8 @@
           'javax.servlet/javax.servlet-api {:mvn/version "4.0.1"}}
          deps-map))
 
-(def cljdoc-codox
-  {'codox/codox {:exclusions '[enlive hiccup org.pegdown/pegdown]
-                 ;; :mvn/version "0.10.4"
-                 :git/url "https://github.com/cljdoc/codox"
-                 :sha "e0cd26910704c416611fc81f43f890a26861c221"
-                 :deps/root "codox/"}})
+(def cljdoc-analyzer-reader
+  {'cljdoc-analyzer/reader {:local/root "analysis"}})
 
 (def hardcoded-deps
   ;; fixups for specific projects.
@@ -97,14 +93,14 @@
   Jsoup document `pom`."
   [pom]
   {:pre [(pom/jsoup? pom)]}
-  (let [{:keys [group-id artifact-id version]} (pom/artifact-info pom)
+  (let [{:keys [group-id artifact-id]} (pom/artifact-info pom)
         project (symbol group-id artifact-id)]
     (-> (extra-deps pom)
         (merge (clj-cljs-deps pom))
         (merge (get hardcoded-deps project))
         (ensure-required-deps)
         (ensure-recent-ish)
-        (merge cljdoc-codox))))
+        (merge cljdoc-analyzer-reader))))
 
 (def ^:private default-repos
   {"central" {:url "https://repo1.maven.org/maven2/"},
