@@ -34,4 +34,9 @@
    I'll need to separate the two. I am only interested in api analysis.
 * Include args used in result?
    Might be nice to know what :namespaces and :languages were requested (Actually did I accidentally turf this?)
-*
+* printlns are a bit odd for general consumption
+   switch to logging?
+   provide a quiet option?
+* edn only as commandline perhaps a bit awkward
+   totally appropriate for cljdoc usage.
+   but for general usage might be a bit awkward
