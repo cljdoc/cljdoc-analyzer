@@ -3,6 +3,8 @@
   (:require [clojure.spec.alpha :as s]))
 
 ;; Basic list of struff that can be found in grimoire ----------------
+;; TODO: while testing leave this on
+(s/check-asserts true)
 
 (s/def ::name string?)
 (s/def ::doc (s/nilable string?))
@@ -208,5 +210,3 @@
              :type :var}]})
 
   (s/valid? ::namespace x))
-
-
