@@ -32,3 +32,6 @@
 * Reintroduce hardcoded config
    The hardcoded config specifies overrides for specific projects with regards to both api analysis and doc parsing.
    I'll need to separate the two. I am only interested in api analysis.
+* Include args used in result?
+   Might be nice to know what :namespaces and :languages were requested (Actually did I accidentally turf this?)
+*
