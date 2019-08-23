@@ -101,7 +101,14 @@
     (println (string/trim (:err proc)))
     (print-separator "end of stderr")))
 
-(defn launch-analysis [{:keys [project namespaces src-dir languages classpath]}]
+(defn- print-dependencies [resolved-deps]
+  (print-separator "dependencies for analysis")
+  (deps/print-tree resolved-deps)
+  (print-separator "end of dependencies for analysis"))
+
+(defn- launch-analysis
+  "Analysis to get metadata is launched in a separate process to minimize dependencies to those of project being analyzed."
+  [{:keys [project namespaces src-dir languages classpath]}]
   (let [metadata-output-file (util/system-temp-file project ".edn")]
     (println "launching analysis for:" project "languages:" languages)
     (let [analysis-args {:namespaces namespaces
@@ -122,53 +129,53 @@
           result)
         (throw (ex-info (str "Analysis failed with code " (:exit process)) {:code (:exit process)}))))))
 
-(defn- analyze-impl
-  "Analyze a prepared project and write results to :output-file."
-  [{:keys [project version src-dir pom output-file] :as opts}]
-  #_{:pre [(symbol? project) (seq version) (seq pom)]}
-  (let [ana-result {:group-id (util/group-id project)
-                    :artifact-id (util/artifact-id project)
-                    :version version
-                    :metadata (launch-analysis (assoc opts
-                                                      :src-dir (.getPath src-dir)
-                                                      ;; TODO: reintroduce platform overrides for specific projects
-                                                      :languages :auto-detect
-                                                      ;; TODO: reintroduce namespaces overrides for specfic projects
-                                                      :namespaces :all))
-                    :pom-str (slurp pom)}]
-    (cljdoc.spec/assert :cljdoc/cljdoc-edn ana-result)
-    (if (every? some? (vals ana-result))
-      (doto output-file
-        (io/make-parents)
-        (spit (util/serialize-cljdoc-edn ana-result)))
-      (throw (Exception. "Analysis failed")))))
+(defn- validate-result [ana-result]
+  (cljdoc.spec/assert :cljdoc/cljdoc-edn ana-result)
+  (if (every? some? (vals ana-result))
+    ana-result
+    (throw (Exception. "Analysis failed"))))
+
+(defn- save-result [ana-result output-file]
+  (doto output-file
+    (io/make-parents)
+    (spit (util/serialize-cljdoc-edn ana-result))))
+
+(defn get-metadata
+  "Return metadata for project"
+  [{:keys [project version jarpath pompath] :as opts}]
+  {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
+  (let [work-dir (util/system-temp-dir (str "cljdoc-" project "-" version))]
+    (try
+      (let [project (symbol project)
+            local-jar-path (resolve-jar! jarpath work-dir)
+            jar-contents-dir (unpack-jar! local-jar-path work-dir)
+            {:keys [classpath resolved-deps]} (deps/resolved-and-cp local-jar-path pompath {})]
+        (print-dependencies resolved-deps)
+        (-> {:group-id (util/group-id project)
+             :artifact-id (util/artifact-id project)
+             :version version
+             :codox (launch-analysis (assoc opts
+                                            :src-dir (.getPath jar-contents-dir)
+                                            ;; TODO: reintroduce platform overrides for specific projects
+                                            :languages :auto-detect
+                                            ;; TODO: reintroduce namespaces overrides for specfic projects
+                                            :namespaces :all
+                                            :classpath classpath))
+             :pom-str (slurp pompath)}
+            (validate-result)))
+      (finally
+        (util/delete-directory! work-dir)))))
 
 (defn analyze!
-  "Analyze the provided project"
+  "Return metadata analysis `:analysis-status` and result in `:analysis-result` file"
   ;; TODO: I see cljdoc repos config as unneeded, repo config is contained in deps.clj
-  [{:keys [project version jarpath pompath _repos]}]
+  [{:keys [project version jarpath pompath _repos] :as args}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (try
-    (let [project      (symbol project)
-          analysis-dir (util/system-temp-dir (str "cljdoc-" project "-" version))
-          output-file  (io/file util/analysis-output-prefix (util/cljdoc-edn project version))
-          local-jar-path (resolve-jar! jarpath analysis-dir)
-          jar-contents-dir (unpack-jar! local-jar-path analysis-dir)
-          {:keys [classpath resolved-deps]} (deps/resolved-and-cp local-jar-path pompath {})]
-
-      (print-separator "dependencies for analysis")
-      (deps/print-tree resolved-deps)
-      (print-separator "end of dependencies for analysis")
-
+    (let [output-file  (io/file util/analysis-output-prefix (util/cljdoc-edn project version))]
+      (-> (get-metadata args)
+          (save-result output-file))
       (println "results file:" (.getAbsolutePath output-file))
-      (analyze-impl {:project project
-                     :version version
-                     :jar-path local-jar-path
-                     :src-dir jar-contents-dir
-                     :pom pompath
-                     :classpath classpath
-                     :output-file output-file})
-
       (println "Analysis succeeded!")
       {:analysis-status :success
        :analysis-result output-file})
@@ -176,8 +183,6 @@
       (let [msg (.getMessage t)]
         (println msg)
         (flush)
+        ;; TODO: consider returning exception as data
         {:analysis-status :fail
-         :fail-reason msg}))
-    (finally
-      ;; TODO: re-enable
-      #_(util/delete-directory! analysis-dir))))
+         :fail-reason msg}))))
