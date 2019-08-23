@@ -109,9 +109,9 @@
                                   (.endsWith (.getPath f) ".cljs") :cljs
                                   (.endsWith (.getPath f) ".cljc") :cljc))))]
     (case (set file-types)
-      #{:clj}  [:clj]
-      #{:cljs} [:cljs]
-      [:clj :cljs])))
+      #{:clj}  ["clj"]
+      #{:cljs} ["cljs"]
+      ["clj" "cljs"])))
 
 (defn default-exception-handler [lang e file]
   (println

@@ -10,8 +10,8 @@
             [cljs.util :as cljs-util] ))
 
 (def ^:private namespace-readers
-  {:clj  clj/read-namespaces
-   :cljs cljs/read-namespaces})
+  {"clj"  clj/read-namespaces
+   "cljs" cljs/read-namespaces})
 
 (defn- var-symbol [namespace var]
   (symbol (name (:name namespace)) (name (:name var))))

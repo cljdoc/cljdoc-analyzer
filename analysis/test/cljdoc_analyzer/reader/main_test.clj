@@ -136,9 +136,9 @@
              (publics analysis 'cljdoc-analyzer-test.special-tags)))))
 
 (t/deftest analyze-clojure-code-test
-  (let [a (analyze-sources :clj)]
+  (let [a (analyze-sources "clj")]
     (common-analysis-testing a)))
 
 (t/deftest analyze-clojurecript-code-test
-  (let [a (analyze-sources :cljs)]
+  (let [a (analyze-sources "cljs")]
     (common-analysis-testing a)))
