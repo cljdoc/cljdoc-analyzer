@@ -1,7 +1,7 @@
 (ns cljdoc.spec
   (:refer-clojure :exclude [assert])
   (:require [clojure.spec.alpha :as s]))
-
+;; TODO: How much of this is relevant?
 ;; Basic list of struff that can be found in grimoire ----------------
 ;; TODO: while testing leave this on
 (s/check-asserts true)
@@ -177,36 +177,3 @@
   (if (s/get-spec spec)
     (s/assert spec v)
     (throw (Exception. (format "No spec found for %s" spec)))))
-
-(comment
-  (require '[clojure.spec.gen.alpha :as gen])
-
-  (gen/sample (s/gen ::def))
-  (gen/sample (s/gen ::def-full))
-
-  (clojure.pprint/pprint
-   (s/conform :cljdoc.spec/cache-bundle
-              (first (gen/sample (s/gen ::cache-bundle)))))
-
-  (s/conform :cljdoc.spec/grimoire-entity
-             (first (gen/sample (s/gen ::grimoire-entity))))
-
-  (clojure.pprint/pprint
-   (first (gen/sample (s/gen ::versions-cache))))
-
-  (gen/sample (s/gen ::namespace))
-  (gen/sample (s/gen :cache/artifact))
-
-
-  (def x
-    {:name "bidi.bidi"
-     :defs [{:line 404,
-             :column 1,
-             :file "bidi/bidi.cljc",
-             :name "Matches",
-             :ns "bidi.bidi",
-             :doc nil,
-             :src "(defprotocol Matches\n  (matches [_] \"A protocol used in the expansion of possible matches that the pattern can match. This is used to gather all possible routes using route-seq below.\"))",
-             :type :var}]})
-
-  (s/valid? ::namespace x))
