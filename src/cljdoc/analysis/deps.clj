@@ -130,11 +130,3 @@
 
 (defn print-tree [resolved-deps]
   (tdeps/print-tree resolved-deps))
-
-
-(comment
-  (deps "/Users/martin/.m2/repository/manifold/manifold/0.1.6/manifold-0.1.6.pom" 'manifold/manifold "0.1.6")
-
-  (deps "https://repo.clojars.org/lambdaisland/kaocha/0.0-113/kaocha-0.0-113.pom" 'lambdaisland/kaocha "0.0-113")
-
-  (with-deps-edn {:deps {}} (io/file ".")))

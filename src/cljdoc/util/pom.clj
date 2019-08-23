@@ -72,22 +72,3 @@
                     (text doc "project > parent > version"))
    :description (text doc "project > description")
    :url         (text doc "project > url")})
-
-(comment
-  (def doc
-    (Jsoup/parse (slurp "http://repo.clojars.org/metosin/reitit-core/0.2.13/reitit-core-0.2.13.pom")))
-
-  (managed-deps-tree doc)
-  (dependencies-with-versions doc)
-
-  (def doc
-    (parse (slurp "https://search.maven.org/remotecontent?filepath=org/clojure/clojure/1.9.0/clojure-1.9.0.pom")))
-
-  (println (.toString doc))
-
-  (licenses doc)
-  (scm-info doc)
-  (dependencies doc)
-  (artifact-info doc)
-  (repositories doc))
-
