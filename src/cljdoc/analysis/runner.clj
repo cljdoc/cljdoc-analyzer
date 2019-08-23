@@ -20,7 +20,13 @@
            (java.net URI)
            (java.nio.file Files)))
 
-(defn unzip!
+(defn- download-jar! [jar-uri target-dir]
+  (let [jar-f (io/file target-dir "downloaded.jar")]
+    (printf "Downloading remote jar...\n")
+    (util/copy jar-uri jar-f)
+    (.getPath jar-f)))
+
+(defn- unzip!
   [source target-dir]
   (with-open [zip (ZipFile. (io/file source))]
     (let [entries (enumeration-seq (.entries zip))]
@@ -28,12 +34,6 @@
               :when (not (.isDirectory ^java.util.zip.ZipEntry entry))
               :let [f (io/file target-dir (str entry))]]
         (util/copy (.getInputStream zip entry) f)))))
-
-(defn- download-jar! [jar-uri target-dir]
-  (let [jar-f (io/file target-dir "downloaded.jar")]
-    (printf "Downloading remote jar...\n")
-    (util/copy jar-uri jar-f)
-    (.getPath jar-f)))
 
 (defn- clean-jar-contents!
   "Some projects include their `out` directories in their jars,
@@ -71,33 +71,21 @@
       (println "Deleting" path)
       (.delete file))))
 
-(defn- prepare-jar-for-analysis!
-  "Prepares a project specified by jar (local or remote) and pom for analysis.
+(defn- resolve-jar!
+  "Returns local path to `jar`, if download necessary, downloads to `target-dir`"
+  [jar target-dir]
+  (let [jar-uri (URI. jar)]
+    (if (boolean (.getHost jar-uri))
+      (download-jar! jar-uri target-dir)
+      jar)))
 
-  * jar is unpacked and cleaned
-  * dependencies are resolved and downloaded to cache
-  * analysis files are copied under target location
-  * combined CP of jar+deps+analysis is calculated"
-  [jar pom extra-mvn-repos target-dir]
-  (let [impl-src-dir (io/file target-dir "impl-src/")
-        jar-contents (io/file target-dir "contents/")
-        jar-uri    (URI. jar)
-        jar-path   (if (boolean (.getHost jar-uri))
-                     (download-jar! jar-uri target-dir)
-                     jar)
-        {:keys [classpath resolved-deps]} (deps/resolved-and-cp jar-path pom extra-mvn-repos)
-        classpath* (str (.getAbsolutePath impl-src-dir) ":" classpath)]
-    (unzip! jar-path jar-contents)
-    (clean-jar-contents! jar-contents)
-    #_(util/copy (io/resource "impl.clj.tpl")
-               (io/file impl-src-dir "cljdoc" "analysis" "impl.clj"))
-    (util/copy (io/resource "cljdoc/util.clj")
-               (io/file impl-src-dir "cljdoc" "util.clj"))
-    {:jar-path jar-path
-     :jar-contents jar-contents
-     :analysis-files-path impl-src-dir
-     :resolved-deps resolved-deps
-     :classpath classpath*}))
+(defn- unpack-jar!
+  "Returns dir where jar contents has been unpacked under `target-dir`"
+  [local-jar-path target-dir]
+  (let [jar-contents-dir (io/file target-dir "contents/")]
+    (unzip! local-jar-path jar-contents-dir)
+    (clean-jar-contents! jar-contents-dir)
+    jar-contents-dir))
 
 (defn- print-separator [s]
   (let [prefix (str "-[" s "]")]
@@ -135,7 +123,7 @@
         (throw (ex-info (str "Analysis failed with code " (:exit process)) {:code (:exit process)}))))))
 
 (defn- analyze-impl
-  "Analyze a prepared project."
+  "Analyze a prepared project and write results to :output-file."
   [{:keys [project version src-dir pom output-file] :as opts}]
   #_{:pre [(symbol? project) (seq version) (seq pom)]}
   (let [ana-result {:group-id (util/group-id project)
@@ -157,38 +145,39 @@
 
 (defn analyze!
   "Analyze the provided project"
-  [{:keys [project version jarpath pompath repos]}]
+  ;; TODO: I see cljdoc repos config as unneeded, repo config is contained in deps.clj
+  [{:keys [project version jarpath pompath _repos]}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
-  (let [project      (symbol project)
-        analysis-dir (util/system-temp-dir (str "cljdoc-" project "-" version))
-        output-file  (io/file util/analysis-output-prefix (util/cljdoc-edn project version))]
-    (try
-      (let [{:keys [jar-contents classpath resolved-deps jar-path]}
-            (prepare-jar-for-analysis! jarpath pompath repos analysis-dir)]
+  (try
+    (let [project      (symbol project)
+          analysis-dir (util/system-temp-dir (str "cljdoc-" project "-" version))
+          output-file  (io/file util/analysis-output-prefix (util/cljdoc-edn project version))
+          local-jar-path (resolve-jar! jarpath analysis-dir)
+          jar-contents-dir (unpack-jar! local-jar-path analysis-dir)
+          {:keys [classpath resolved-deps]} (deps/resolved-and-cp local-jar-path pompath {})]
 
-        (print-separator "dependencies for analysis")
-        (deps/print-tree resolved-deps)
-        (print-separator "end of dependencies for analysis")
+      (print-separator "dependencies for analysis")
+      (deps/print-tree resolved-deps)
+      (print-separator "end of dependencies for analysis")
 
-        (println "results file:" (.getAbsolutePath output-file))
-        (analyze-impl {:project project
-                       :version version
-                       :jar-path jar-path
-                       :src-dir jar-contents
-                       :pom pompath
-                       :classpath classpath
-                       :output-file output-file})
+      (println "results file:" (.getAbsolutePath output-file))
+      (analyze-impl {:project project
+                     :version version
+                     :jar-path local-jar-path
+                     :src-dir jar-contents-dir
+                     :pom pompath
+                     :classpath classpath
+                     :output-file output-file})
 
-        (println "Analysis succeeded!")
-        {:analysis-status :success
-         :analysis-result output-file})
-      (catch Throwable t
-        (let [msg (.getMessage t)]
-          (println msg)
-          (flush)
-          (throw t)
-          {:analysis-status :fail
-           :fail-reason msg}))
-      (finally
-        ;; TODO: re-enable
-        #_(util/delete-directory! analysis-dir)))))
+      (println "Analysis succeeded!")
+      {:analysis-status :success
+       :analysis-result output-file})
+    (catch Throwable t
+      (let [msg (.getMessage t)]
+        (println msg)
+        (flush)
+        {:analysis-status :fail
+         :fail-reason msg}))
+    (finally
+      ;; TODO: re-enable
+      #_(util/delete-directory! analysis-dir))))
