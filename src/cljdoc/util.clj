@@ -25,18 +25,6 @@
 (defn artifact-id [project]
   (name (symbol project)))
 
-(defn normalize-project [project]
-  (str (group-id project) "/" (artifact-id project)))
-
-(defn version-entity [project version]
-  {:group-id (group-id project)
-   :artifact-id (artifact-id project)
-   :version version})
-
-(defn codox-edn [project version]
-  ;; TODO maybe delete, currently not used (like other codox stuff)
-  (str "codox-edn/" project "/" version "/codox.edn"))
-
 (def analysis-output-prefix
   "The -main of `cljdoc.analysis.runner` will write files to this directory.
 
@@ -66,59 +54,11 @@
   {:pre [(some? file)]}
   (edn/read-string {:readers {'regex re-pattern}} (slurp file)))
 
-(defn git-dir [project version]
-  (str "git-repos/" (group-id project) "/" (artifact-id project) "/" version "/"))
 
 (defn clojars-id [{:keys [group-id artifact-id] :as artifact-entity}]
   (if (= group-id artifact-id)
     artifact-id
     (str group-id "/" artifact-id)))
-
-(defn assert-first [[x & rest :as xs]]
-  (if (empty? rest)
-    x
-    (throw (ex-info "Expected collection with one item, got multiple"
-                    {:coll xs}))))
-
-(def scm-fallback
-  {"yada/yada" "https://github.com/juxt/yada/"})
-
-(defn scm-url [pom-map]
-  (some->
-   (cond (some-> pom-map :scm :url (.contains "github"))
-         (:url (:scm pom-map))
-         (some-> pom-map :url (.contains "github"))
-         (:url pom-map))
-   (clojure.string/replace #"^http://" "https://"))) ;; TODO HACK
-
-(defn normalize-git-url
-  "Ensure that the passed string is a git URL and that it's using HTTPS"
-  [s]
-  (cond-> s
-    (.startsWith s "http") (string/replace #"^http://" "https://")
-    (.startsWith s "git@github.com:") (string/replace #"^git@github.com:" "https://github.com/")
-    (.endsWith s ".git") (string/replace #".git$" "")))
-
-(defn gh-url? [s]
-  (some-> s (.contains "github.com")))
-
-(defn version-tag? [pom-version tag]
-  (or (= pom-version tag)
-      (= (str "v" pom-version) tag)))
-
-
-
-
-(comment
-  (infer-platforms-from-src-dir (io/file "/Users/lee/other-proj/rewrite-cljs-playground")))
-
-(defn pom-path [project]
-  (format "META-INF/maven/%s/%s/pom.xml"
-          (group-id project)
-          (artifact-id project)))
-
-(defn find-pom-in-dir [dir project]
-  (io/file dir (pom-path project)))
 
 (defn copy [source file]
   (io/make-parents file)
@@ -145,21 +85,6 @@
             suffix
             (into-array java.nio.file.attribute.FileAttribute []))))
 
-;; (defn assert-match [project version artifact-enitity]
-;;   (assert (and (:group-id artifact-entity)
-;;                (:artifact-id artifact-entity)
-;;                (:version artifact-entity))
-;;           (format "Malformed artifact entity %s" artifact-entity))
-;;   (when-not (and (= (group-id project) (:group-id artifact-entity))
-;;                  (= (artifact-id project) (:artifact-id artifact-entity)))
-;;     (throw (Exception. (format "Mismatch between project and pom-info: %s<>%s"
-;;                                (normalize-project project)
-;;                                (normalize-project (-> cljdoc-edn :pom :project))))))
-;;   (when-not (= version (-> cljdoc-edn :pom :version))
-;;     (throw (Exception. (format "Mismatch between version and pom-info: %s<>%s"
-;;                                version
-;;                                (-> cljdoc-edn :pom :version))))))
-
 (defn github-url [type]
   (let [base "https://github.com/cljdoc/cljdoc"]
     (case type
@@ -176,64 +101,3 @@
       :userguide/basic-setup  (str (github-url :userguide/authors) "#basic-setup")
       :userguide/articles     (str (github-url :userguide/authors) "#articles")
       :userguide/offline-docs (str (github-url :userguide/users) "#offline-docs"))))
-
-(defn relativize-path
-  "Remove the segments at the beginning of a path `s2` that are identical
-  to the beginning segments of `s1`. This is useful when wanting to render
-  relative links instead of absolute ones.
-
-  Example:
-
-  ```
-  (relativize-path \"doc/common-abc.html\" \"doc/common-xyz.html\")
-  ;; => \"common-xyz.html\"
-  ```"
-  [s1 s2]
-  (let [->path #(Paths/get % (make-array String 0))
-        p1 (->path s1)
-        p2 (->path s2)
-        relative (.relativize p1 p2)]
-    ;; Not entirely sure why `relativize` returns a path with
-    ;; this extra nesting but we just use `subpath` to get rid of it
-    ;; This extra nesting isn't present if one path is contained in the other
-    (if (or (.startsWith p1 p2)
-            (.startsWith p2 p1))
-      (str relative)
-      (str (.subpath relative 1 (.getNameCount relative))))))
-
-(defn uri-path
-  "Return path part of a URL, this is probably part of pedestal in
-  some way but I couldn't find it fast enough. TODO replace."
-  [uri]
-  (-> uri
-      (string/replace #"^https*://" "")
-      (string/replace #"^[^/]*" "")))
-
-(defn replant-ns
-  "Given a fully-qualified `base` and a potentially relative `target` namespace,
-  return the fully qualified version of `target`. Assumes that all `target` namespaces
-  with identical first segments to `base` are already absolute."
-  [base target]
-  (if (= (first (string/split base #"\."))
-         (first (string/split target #"\.")))
-    target
-    (string/join "."
-                 (-> (string/split base #"\.")
-                     drop-last
-                     vec
-                     (conj target)))))
-
-(defn mean [coll]
-  (if (seq coll) (/ (reduce + coll) (count coll)) 0))
-
-(defn variance
-  "Returns the variance for a collection of values."
-  ;; we should probably just use some libarry for this...
-  [coll]
-  (when (seq coll)
-    (let [sqr  (fn sqr [x] (* x x))
-          avg  (mean coll)]
-      (mean (map #(sqr (- % avg)) coll)))))
-
-(defn index-by [f m]
-  (into {} (map (juxt f identity) m)))
