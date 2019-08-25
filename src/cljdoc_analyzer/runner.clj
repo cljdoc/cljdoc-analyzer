@@ -169,8 +169,7 @@
 
 (defn analyze!
   "Return metadata analysis `:analysis-status` and result in `:analysis-result` file"
-  ;; TODO: I see cljdoc repos config as unneeded, repo config is contained in deps.clj
-  [{:keys [project version jarpath pompath _repos] :as args}]
+  [{:keys [project version jarpath pompath] :as args}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (try
     (let [output-file  (io/file util/analysis-output-prefix (util/cljdoc-edn project version))]
