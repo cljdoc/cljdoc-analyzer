@@ -1,8 +1,8 @@
-(ns cljdoc.analysis.deps
-  (:require [version-clj.core :as v]
-            [cljdoc.util :as util]
-            [cljdoc.util.pom :as pom]
-            [clojure.tools.deps.alpha :as tdeps]))
+(ns cljdoc-analyzer.deps
+  (:require [clojure.tools.deps.alpha :as tdeps]
+            [version-clj.core :as v]
+            [cljdoc-analyzer.pom :as pom]
+            [cljdoc-analyzer.util :as util]))
 
 (defn- ensure-recent-ish [deps-map]
   (let [min-versions {'org.clojure/clojure "1.9.0"

@@ -1,8 +1,6 @@
-(ns cljdoc.spec
+(ns cljdoc-analyzer.spec
   (:refer-clojure :exclude [assert])
   (:require [clojure.spec.alpha :as s]))
-;; TODO: How much of this is relevant?
-;; Basic list of struff that can be found in grimoire ----------------
 ;; TODO: while testing leave this on
 (s/check-asserts true)
 

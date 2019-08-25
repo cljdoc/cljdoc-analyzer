@@ -1,4 +1,4 @@
-(ns cljdoc.analysis.runner
+(ns cljdoc-analyzer.runner
   "Prepares the environment to run analysis in.
 
   The `-main` entry point will construct a directory
@@ -13,9 +13,9 @@
   (:require [clojure.java.io :as io]
             [clojure.java.shell :as sh]
             [clojure.string :as string]
-            [cljdoc.util :as util]
-            [cljdoc.analysis.deps :as deps]
-            [cljdoc.spec])
+            [cljdoc-analyzer.util :as util]
+            [cljdoc-analyzer.deps :as deps]
+            [cljdoc-analyzer.spec :as spec])
   (:import (java.util.zip ZipFile GZIPInputStream)
            (java.net URI)
            (java.nio.file Files)))
@@ -130,7 +130,7 @@
         (throw (ex-info (str "Analysis failed with code " (:exit process)) {:code (:exit process)}))))))
 
 (defn- validate-result [ana-result]
-  (cljdoc.spec/assert :cljdoc/cljdoc-edn ana-result)
+  (spec/assert :cljdoc/cljdoc-edn ana-result)
   (if (every? some? (vals ana-result))
     ana-result
     (throw (Exception. "Analysis failed"))))

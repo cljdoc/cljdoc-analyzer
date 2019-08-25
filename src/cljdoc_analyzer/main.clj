@@ -1,12 +1,8 @@
-(ns cljdoc.analysis.runner-ng
-  "Like the other runner namespace but instead of taking multiple positional arguments the
-  -main of this namespace expects a single argument that will be parsed as EDN.
-
-  In addition this runner also allows more customizations such as custom repositories
-  and eventually namespace exclusions and more."
+(ns cljdoc-analyzer.main
+  "Launch cljdoc-analyzer with arguments from edn string"
   (:require [clojure.pprint :as pp]
             [clojure.edn :as edn]
-            [cljdoc.analysis.runner :as runner]))
+            [cljdoc-analyzer.runner :as runner]))
 
 (defn -main
   "Analyze the provided project"

@@ -1,4 +1,4 @@
-(ns cljdoc.util
+(ns cljdoc-analyzer.util
   "Utility functions :)
 
   These are available in the analysis environment and thus should work
@@ -26,7 +26,7 @@
   (name (symbol project)))
 
 (def analysis-output-prefix
-  "The -main of `cljdoc.analysis.runner` will write files to this directory.
+  "The -main of `cljdoc-analyzer.runner` will write files to this directory.
 
   Be careful when changing it since that path is also hardcoded in the
   [cljdoc-builder](https://github.com/martinklepsch/cljdoc-builder)
