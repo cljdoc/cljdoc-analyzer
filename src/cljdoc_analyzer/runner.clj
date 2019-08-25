@@ -106,7 +106,7 @@
   (deps/print-tree resolved-deps)
   (print-separator "end of dependencies for analysis"))
 
-(defn- launch-analysis
+(defn- launch-metagetta
   "Analysis to get metadata is launched in a separate process to minimize dependencies to those of project being analyzed."
   [{:keys [project namespaces src-dir languages classpath]}]
   (let [metadata-output-file (util/system-temp-file project ".edn")]
@@ -154,7 +154,7 @@
         (-> {:group-id (util/group-id project)
              :artifact-id (util/artifact-id project)
              :version version
-             :codox (launch-analysis (assoc opts
+             :codox (launch-metagetta (assoc opts
                                             :src-dir (.getPath jar-contents-dir)
                                             ;; TODO: reintroduce platform overrides for specific projects
                                             :languages :auto-detect
