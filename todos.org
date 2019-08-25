@@ -11,6 +11,7 @@
   3. move cljdoc-analyzer back under cljdoc analysis runner.
      1. PROS: easier for cljdoc authors
      2. CONS: cljdoc-analyzer will likely not be used outside of cljdoc
+   The amount of code is small, I am leaning toward #1 but will bounce of Martin to see if he has a strong opinion.
 * [resolved] Why is repos currently external to runner?
    I'm not sure.
    These are the base maven repos to use and is currently:
@@ -40,8 +41,10 @@
 * Reintroduce hardcoded config
    The hardcoded config specifies overrides for specific projects with regards to both api analysis and doc parsing.
    I'll need to separate the two. I am only interested in api analysis.
+* Reintroduce :exception-handler in runner
 * Include args used in result?
    Might be nice to know what :namespaces and :languages were requested (Actually did I accidentally turf this?)
+   Also GMT of run sounds useful.
 * printlns are a bit odd for general consumption
    switch to logging?
    provide a quiet option?
