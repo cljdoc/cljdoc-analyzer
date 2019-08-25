@@ -32,12 +32,33 @@ In no specific order:
 
 * [ ] TODO: Move portions of doc to a separate design history doc (or adr!) and other portions to main doc when/if
   things gel.
-* [ ] Q: do we want to keep the codox namespace? Could potentially make merges with codox master a bit easier? Moving to
-  a cljdoc-analyzer namespace might encourage us to move ahead unfettered by the past. But this could also mean some
-  adjustments to cljdoc. At the very least we'll still refer to generated edn as a codox data structure.
-* [ ] TO CONSIDER: a general purpose tool would not necessarily always skip no-doc elements.
-* [ ] Q: just curious, is protocol :members -> :type always :var?
-* [ ] Q: is parallel support in impl.clj.tmpl ever used?
+* [ ] Q: is parallel support in impl.clj.tmpl ever used? (from `impl.clj.tpl`)
+
+See also: link:todos.org[todos] for todos tracked during implementation.
+
+=== Decisions
+
+We will:
+
+* focus on the cljdoc use case of analyzing from the jar as opposed to the codox use case of analyzing from the
+  source repository root. This means we do not need both of codox`s `:root-path` and `:source-paths` options. We'll use
+  `:root-path` and drop `:source-paths`.
+* move to cljdoc-analyzer namespace. This will allow us to move ahead unfettered by the past. It might mean some
+  adjustments to cljdoc. We'll also have to verify if any database BLOB metadata uses codox.
+* not skip `^:no-doc` elements, but will return whether or not elements have been marked with `no-doc` metadata.
+* change codox `:language` option to `:languages` and accept one of:
+** vector of languages to analyze which can be one or both of: `"clj"` `"cljs"`
+** `:auto-detect`
+* process languages in a single pass
+* in the spirit of dropping features that have no known current use, drop:
+** wildcard support for `:namespaces`
+** `:writer` option - folks can do what they want with the returned data
+** `:exclude-vars` option - we can bring this back if ever there proves to be a need
+
+We might:
+
+* support failing slow. Codox currently stops processing on first problem. We'll look at trying to find multiple
+  errors in a single run.
 
 === Potential users
 In addition to cljdoc, who else might find value in cljdoc-analyzer?
@@ -136,7 +157,7 @@ leaning toward.
 | behavior to execute on exception
 | ditto
 | turf and hardcode to current behavior
-| ⭐ continue to support for general usage
+| ⭐ continue to support for general usage, perhaps extend to allow to fail slow (continue after failure in ns)
 
 | `:metadata`
 | a way to provide default metadata where it is missing
@@ -209,9 +230,15 @@ I was curious how source links for api docs were resolved to correct scm urls.  
 all scm files is also saved to the database as part of the separate git analysis. This list is compared against the `:file`
 above for a best match. This work is similar to what codox does when populating `:path`
 
+==== curiosities
+
+Questions we do not necessarily need to answer:
+
+* is protocol :members -> :type always :var?
+
 === Musings on new behavior
 
-In short, I think cljdoc-analyzer steal responsibilities from the current cljdoc analysis runner and, at least initially,
+In short, I think cljdoc-analyzer should steal responsibilities from the current cljdoc analysis runner and, at least initially,
 focus on the cljdoc use case of operating on jars (rather than source repos).
 
 ==== choice #1 - cljdoc scope
@@ -233,13 +260,18 @@ This usage likely plays out by adding cljdoc-analyzer as a dev dependency to you
 Proposal: I see value in this, but would like to focus on cljdoc use case first. We can entertain this at a later date
 if there is interest.
 
+=== Migration plan
+Testing should include running a large sample of projects through current cljdoc analysis runner and comparing results
+with the cljdoc-analyzer. I think this should give us the confidence we need.
+
+
 == Testing
 
-We make use of https://github.com/lambdaisland/kaocha[koacha] for testing
+We make use of https://github.com/lambdaisland/kaocha[kaocha] for testing
 
 
 == Notes preserved from codox docs
-Directly from codox README...
+TODO: Directly from codox README... Not sure of relevance... need to understand.
 
 === AOT Compilation
 
@@ -251,7 +283,12 @@ profile, such as `:uberjar`.
 
 == Metadata Options
 
-To force Codox to skip a public var, add `:no-doc true` to the var's metadata. For example:
+Cljdoc analyzer will recognize and return the following metadata.
+
+=== :no-doc
+The `:no-doc` metadata key is a convention invented by codox to indicate that an element should not be included in api documentation.
+
+Examples:
 
 [source,clojure]
 ----
@@ -268,7 +305,7 @@ To force Codox to skip a public var, add `:no-doc true` to the var's metadata. F
   (* x x))
 ----
 
-You can also skip namespaces by adding `:no-doc true` to the namespace's metadata.
+`:no-doc` can also be used at the namespace level:
 
 For example:
 
@@ -276,6 +313,8 @@ For example:
 ----
 (ns ^:no-doc hidden-ns)
 ----
+
+=== :added
 
 To denote the library version the var was added in, use the `:added` metadata key:
 
@@ -288,7 +327,9 @@ To denote the library version the var was added in, use the `:added` metadata ke
   (* x x))
 ----
 
-Similar, deprecated vars can be denoted with the `:deprecated` metadata key:
+=== :deprecated
+
+Similar to `:added`, deprecated vars can be denoted with the `:deprecated` metadata key:
 
 [source,clojure]
 ----
@@ -298,7 +339,6 @@ Similar, deprecated vars can be denoted with the `:deprecated` metadata key:
   [x]
   (* x x))
 ----
-
 
 == Licenses
 

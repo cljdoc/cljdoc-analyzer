@@ -1,8 +1,16 @@
 * What to do with shared code?
   I have copied in code from cljdoc shared-utils, which is not ideal.
-  Verify if it is really shared.
-  If so... create a new lib?
-  Or bring cljdoc-analyzer in under existing analysis runner module. I'd prefer a separate project to encourage reuse tho.
+  I have used clj-kondo tools to rip out what is unused to get an idea of what code is duped.
+  Options:
+  1. dupe shared code in cljdoc-analyzer
+     1. PROS: quick
+     2. CONS: updates in 2 places
+  2. move shared-utils to its own github repo and reuse
+     1. PROS: update in 1 place
+     2. CONS more awkward for cljdoc authors
+  3. move cljdoc-analyzer back under cljdoc analysis runner.
+     1. PROS: easier for cljdoc authors
+     2. CONS: cljdoc-analyzer will likely not be used outside of cljdoc
 * [resolved] Why is repos currently external to runner?
    I'm not sure.
    These are the base maven repos to use and is currently:
@@ -40,3 +48,5 @@
 * edn only as commandline perhaps a bit awkward
    totally appropriate for cljdoc usage.
    but for general usage might be a bit awkward
+* consider output to stdout for piping?
+   Think of borkdude's tools here. Might be nice to simply pipe metadata output through other tools
