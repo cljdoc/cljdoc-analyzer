@@ -111,21 +111,22 @@
    ;; included for https://github.com/FundingCircle/jackdaw
    "confluent" {:url "https://packages.confluent.io/maven/"}})
 
-(defn resolved-and-cp
-  "Build a classpath for the project specified by `pom-url`."
-  [jar-url pom-url repos]
+(defn resolved-deps
+  "Returns resolved deps for `pom-url`."
+  [jar-url pom-url]
   {:pre [(string? jar-url) (string? pom-url)]}
-  (println pom-url repos)
   (let [pom (pom/parse (slurp pom-url))
-        project (util/clojars-id (pom/artifact-info pom))
-        resolved (tdeps/resolve-deps {:deps (deps pom),
-                                      :mvn/repos (merge default-repos
-                                                        (extra-repos pom)
-                                                        repos)}
-                                     {:extra-deps {(symbol project) {:local/root jar-url}}
-                                      :verbose false})]
-    {:resolved-deps resolved
-     :classpath (tdeps/make-classpath resolved [] nil)}))
+        project (util/clojars-id (pom/artifact-info pom))]
+    (tdeps/resolve-deps {:deps (deps pom),
+                         :mvn/repos (merge default-repos
+                                           (extra-repos pom))}
+                        {:extra-deps {(symbol project) {:local/root jar-url}}
+                         :verbose false})))
+
+(defn make-classpath
+  "Build a classpath for `resolved-deps`."
+  [resolved-deps]
+  (tdeps/make-classpath resolved-deps [] nil))
 
 (defn print-tree [resolved-deps]
   (tdeps/print-tree resolved-deps))

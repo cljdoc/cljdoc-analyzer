@@ -149,7 +149,8 @@
       (let [project (symbol project)
             local-jar-path (resolve-jar! jarpath work-dir)
             jar-contents-dir (unpack-jar! local-jar-path work-dir)
-            {:keys [classpath resolved-deps]} (deps/resolved-and-cp local-jar-path pompath {})]
+            resolved-deps (deps/resolved-deps local-jar-path pompath)
+            classpath (deps/make-classpath resolved-deps)]
         (print-dependencies resolved-deps)
         (-> {:group-id (util/group-id project)
              :artifact-id (util/artifact-id project)
