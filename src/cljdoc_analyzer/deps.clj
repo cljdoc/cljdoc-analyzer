@@ -53,8 +53,7 @@
   Maybe should be able to configure this via their cljdoc.edn configuration
   file but this situation being an edge case this is a sufficient fix for now."
   [pom]
-  {:pre [(pom/jsoup? pom)]}
-  (->> (pom/dependencies pom)
+  (->> (:dependencies pom)
        ;; compile/runtime scopes will be included by the normal dependency resolution.
        (filter #(or (#{"provided" "system" "test"} (:scope %))
                     (:optional %)))
@@ -71,10 +70,9 @@
                [(symbol group-id artifact-id) {:mvn/version version}]))
        (into {})))
 
-(defn clj-cljs-deps
+(defn- clj-cljs-deps
   [pom]
-  {:pre [(pom/jsoup? pom)]}
-  (->> (pom/dependencies pom)
+  (->> (:dependencies pom)
        (map (fn [{:keys [group-id artifact-id version]}]
               [(symbol group-id artifact-id) {:mvn/version version}]))
        (filter #(-> % first #{'org.clojure/clojure 'org.clojure/clojurescript}))
@@ -82,8 +80,7 @@
 
 (defn- extra-repos
   [pom]
-  {:pre [(pom/jsoup? pom)]}
-  (->> (pom/repositories pom)
+  (->> (:repositories pom)
        (map (fn [repo] [(:id repo) (dissoc repo :id)]))
        (into {})))
 
@@ -91,8 +88,7 @@
   "Create a deps.edn style :deps map for the project specified by the
   Jsoup document `pom`."
   [pom]
-  {:pre [(pom/jsoup? pom)]}
-  (let [{:keys [group-id artifact-id]} (pom/artifact-info pom)
+  (let [{:keys [group-id artifact-id]} (:artifact-info pom)
         project (symbol group-id artifact-id)]
     (-> (extra-deps pom)
         (merge (clj-cljs-deps pom))
@@ -116,7 +112,7 @@
   [jar-url pom-url]
   {:pre [(string? jar-url) (string? pom-url)]}
   (let [pom (pom/parse (slurp pom-url))
-        project (util/clojars-id (pom/artifact-info pom))]
+        project (util/clojars-id (:artifact-info pom))]
     (tdeps/resolve-deps {:deps (deps pom),
                          :mvn/repos (merge default-repos
                                            (extra-repos pom))}
