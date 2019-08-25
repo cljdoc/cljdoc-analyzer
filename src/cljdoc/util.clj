@@ -55,7 +55,7 @@
   (edn/read-string {:readers {'regex re-pattern}} (slurp file)))
 
 
-(defn clojars-id [{:keys [group-id artifact-id] :as artifact-entity}]
+(defn clojars-id [{:keys [group-id artifact-id]}]
   (if (= group-id artifact-id)
     artifact-id
     (str group-id "/" artifact-id)))
