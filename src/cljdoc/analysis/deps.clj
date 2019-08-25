@@ -35,8 +35,8 @@
           'javax.servlet/javax.servlet-api {:mvn/version "4.0.1"}}
          deps-map))
 
-(def cljdoc-analyzer-reader
-  {'cljdoc-analyzer/reader {:local/root "analysis"}})
+(def cljdoc-analyzer-metagetta
+  {'cljdoc-analyzer/reader {:local/root "metagetta"}})
 
 (def hardcoded-deps
   ;; fixups for specific projects.
@@ -100,7 +100,7 @@
         (merge (get hardcoded-deps project))
         (ensure-required-deps)
         (ensure-recent-ish)
-        (merge cljdoc-analyzer-reader))))
+        (merge cljdoc-analyzer-metagetta))))
 
 (def ^:private default-repos
   {"central" {:url "https://repo1.maven.org/maven2/"},

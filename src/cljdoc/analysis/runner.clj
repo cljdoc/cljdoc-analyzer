@@ -117,7 +117,7 @@
                          :output-filename  (.getAbsolutePath metadata-output-file)}
           process (sh/sh "java"
                          "-cp" classpath
-                         "clojure.main" "-m" "cljdoc-analyzer.reader.main"
+                         "clojure.main" "-m" "cljdoc-analyzer.metagetta.main"
                          (pr-str analysis-args)
                          ;; supplying :dir is necessary to avoid local deps.edn being included
                          ;; once -Srepro is finalized it might be useful for this purpose

@@ -1,6 +1,6 @@
-(ns cljdoc-analyzer.reader.main-test
+(ns cljdoc-analyzer.metagetta.main-test
   (:require [clojure.test :as t]
-            [cljdoc-analyzer.reader.main :as main]))
+            [cljdoc-analyzer.metagetta.main :as main]))
 
 (defn- analyze-sources [language]
   (main/get-metadata {:root-path "test-sources"

@@ -1,11 +1,11 @@
-(ns cljdoc-analyzer.reader.clojure
+(ns cljdoc-analyzer.metagetta.clojure
   "Read raw documentation information from Clojure source directory."
   (:import java.util.jar.JarFile
            java.io.FileNotFoundException)
   (:require [clojure.java.io :as io]
             [clojure.tools.namespace.find :as ns]
             [clojure.string :as str]
-            [cljdoc-analyzer.reader.utils :as utils] ))
+            [cljdoc-analyzer.metagetta.utils :as utils] ))
 
 (defn try-require [namespace]
   (try

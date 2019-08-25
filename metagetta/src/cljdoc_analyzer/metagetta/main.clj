@@ -1,13 +1,13 @@
-(ns cljdoc-analyzer.reader.main
+(ns cljdoc-analyzer.metagetta.main
   "Main namespace for generating documentation"
   (:require [clojure.walk]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
-            [cljdoc-analyzer.reader.clojure :as clj]
-            [cljdoc-analyzer.reader.clojurescript :as cljs]
-            [cljdoc-analyzer.reader.utils :as utils]
-            [cljs.util :as cljs-util] ))
+            [cljs.util :as cljs-util]
+            [cljdoc-analyzer.metagetta.clojure :as clj]
+            [cljdoc-analyzer.metagetta.clojurescript :as cljs]
+            [cljdoc-analyzer.metagetta.utils :as utils]))
 
 (def ^:private namespace-readers
   {"clj"  clj/read-namespaces
