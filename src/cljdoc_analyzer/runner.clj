@@ -175,6 +175,7 @@
           (save-result output-file))
       (log/info "results file:" (.getAbsolutePath output-file))
       (log/info "Analysis succeeded.")
+      ;; TODO: consider writing these out to file well, they could be especially interesting to caller on failure
       {:analysis-status :success
        :analysis-result output-file})
     (catch Throwable t
