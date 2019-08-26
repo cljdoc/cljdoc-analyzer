@@ -4,6 +4,7 @@
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
+            [clojure.string :as string]
             [cljs.util :as cljs-util]
             [cljdoc-analyzer.metagetta.clojure :as clj]
             [cljdoc-analyzer.metagetta.clojurescript :as cljs]
@@ -98,13 +99,15 @@
       ;; TODO: fixup languages validation
       #_(assert (#{"clj" "cljs"} language))
       (assert (.exists (io/as-file jar-contents-path)))
-      (printf "Args:\n")
-      (pprint/pprint args)
-      (printf "Clojure version %s\n" (clojure-version))
-      (printf "ClojureScript version %s\n" (cljs-util/clojurescript-version))
+      (println "Args:" (-> (with-out-str (pprint/pprint args))
+                           (string/trim)
+                           (string/replace #"\n" "\n      ")))
+
+      (println "Clojure version" (clojure-version))
+      (println "ClojureScript version" (cljs-util/clojurescript-version))
 
       (->> (map #(do
-                   (printf "Analysing for %s\n" %)
+                   (println "Analysing for" %)
                    (get-metadata {:namespaces namespaces
                                   :root-path jar-contents-path
                                   :language %}))

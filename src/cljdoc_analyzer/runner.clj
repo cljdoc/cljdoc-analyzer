@@ -13,6 +13,7 @@
   (:require [clojure.java.io :as io]
             [clojure.java.shell :as sh]
             [clojure.string :as string]
+            [clojure.tools.logging :as log]
             [cljdoc-analyzer.util :as util]
             [cljdoc-analyzer.deps :as deps]
             [cljdoc-analyzer.spec :as spec])
@@ -22,7 +23,7 @@
 
 (defn- download-jar! [jar-uri target-dir]
   (let [jar-f (io/file target-dir "downloaded.jar")]
-    (printf "Downloading remote jar...\n")
+    (log/infof "Downloading %s" jar-uri)
     (util/copy jar-uri jar-f)
     (.getPath jar-f)))
 
@@ -44,7 +45,7 @@
   NOTE this means projects with the group-id `public` will fail to build."
   [unpacked-jar-dir]
   (when (.exists (io/file unpacked-jar-dir "public"))
-    (println "Deleting public/ dir")
+    (log/info "Deleting public/ dir")
     (util/delete-directory! (io/file unpacked-jar-dir "public")))
   ;; Delete .class files that have a corresponding .clj or .cljc file
   ;; to circle around https://dev.clojure.org/jira/browse/CLJ-130
@@ -60,7 +61,7 @@
                           (map #(string/replace % #"(\.clj$|\.cljc$)" "__init.class"))
                           (map io/file))]
     (when (.exists class-file)
-      (println "Deleting" (.getPath class-file))
+      (log/info "Deleting" (.getPath class-file))
       (.delete class-file)))
   (doseq [path ["deps.cljs" "data_readers.clj" "data_readers.cljc"]
           :let [file (io/file unpacked-jar-dir path)]]
@@ -68,7 +69,7 @@
     ;; when present this should probably be fixed in codox as well
     ;; but just deleting the file will also do the job for now
     (when (.exists file)
-      (println "Deleting" path)
+      (log/info "Deleting" path)
       (.delete file))))
 
 (defn- resolve-jar!
@@ -87,30 +88,27 @@
     (clean-jar-contents! jar-contents-dir)
     jar-contents-dir))
 
-(defn- print-separator [s]
-  (let [prefix (str "-[" s "]")]
-    (println (str prefix (apply str (repeat (- 80 (count prefix)) "-"))))))
+(defn- log-process-result [proc]
+  (log/info (str "metagetta results:\nexit-code " (:exit proc)
+                 "\nstdout:\n " (-> proc
+                                    :out
+                                    (string/trim)
+                                    (string/replace #"\n" "\n "))
+                 (when (seq (:err proc))
+                   "\nstderr:\n " (-> proc
+                                      :err
+                                      (string/trim)
+                                      (string/replace #"\n" "\n "))))))
 
-(defn- print-process-result [proc]
-  (print-separator (str "exit-code " (:exit proc)))
-  (print-separator "stdout")
-  (println (string/trim (:out proc)))
-  (print-separator "end of stdout")
-  (when (seq (:err proc))
-    (print-separator "stderr")
-    (println (string/trim (:err proc)))
-    (print-separator "end of stderr")))
-
-(defn- print-dependencies [resolved-deps]
-  (print-separator "dependencies for analysis")
-  (deps/print-tree resolved-deps)
-  (print-separator "end of dependencies for analysis"))
+(defn- log-dependencies [resolved-deps]
+  (log/info (str "dependencies for analysis:\n"
+                 (with-out-str (deps/print-tree resolved-deps)))))
 
 (defn- launch-metagetta
   "Analysis to get metadata is launched in a separate process to minimize dependencies to those of project being analyzed."
   [{:keys [project namespaces src-dir languages classpath]}]
   (let [metadata-output-file (util/system-temp-file project ".edn")]
-    (println "launching analysis for:" project "languages:" languages)
+    (log/info "launching metagetta for:" project "languages:" languages)
     (let [analysis-args {:namespaces namespaces
                          :jar-contents-path (str src-dir)
                          :languages languages
@@ -122,7 +120,7 @@
                          ;; supplying :dir is necessary to avoid local deps.edn being included
                          ;; once -Srepro is finalized it might be useful for this purpose
                          :dir (.getParentFile metadata-output-file))
-          _ (print-process-result process)]
+          _ (log-process-result process)]
       (if (zero? (:exit process))
         (let [result (util/read-cljdoc-edn metadata-output-file)]
           (assert result "No data was saved in output file")
@@ -151,7 +149,7 @@
             jar-contents-dir (unpack-jar! local-jar-path work-dir)
             resolved-deps (deps/resolved-deps local-jar-path pompath)
             classpath (deps/make-classpath resolved-deps)]
-        (print-dependencies resolved-deps)
+        (log-dependencies resolved-deps)
         (-> {:group-id (util/group-id project)
              :artifact-id (util/artifact-id project)
              :version version
@@ -175,14 +173,14 @@
     (let [output-file  (io/file util/analysis-output-prefix (util/cljdoc-edn project version))]
       (-> (get-metadata args)
           (save-result output-file))
-      (println "results file:" (.getAbsolutePath output-file))
-      (println "Analysis succeeded!")
+      (log/info "results file:" (.getAbsolutePath output-file))
+      (log/info "Analysis succeeded.")
       {:analysis-status :success
        :analysis-result output-file})
     (catch Throwable t
       (let [msg (.getMessage t)]
-        (println msg)
-        (flush)
-        ;; TODO: consider returning exception as data
+        (log/error t "Analysis failed")
+        ;; TODO: hmmm caller is not using this info
         {:analysis-status :fail
-         :fail-reason msg}))))
+         :fail-reason msg
+         :exception (Throwable->map t)}))))
