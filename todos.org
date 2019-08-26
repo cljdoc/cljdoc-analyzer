@@ -1,4 +1,4 @@
-* resolved for me, but good idea to review with project owner (Martin)
+* following are resolved for me, but good idea to review with project owner (Martin)
 ** Ignore repos configured by cljdoc, rely on repos configured in analysis runner only
    These are the base maven repos to use and is currently:
 
@@ -40,6 +40,9 @@
    The hardcoded config specifies overrides for specific projects with regards to both api analysis and doc parsing.
    I'll need to separate the two. I am only interested in api analysis.
 ** Reintroduce :exception-handler in runner
+** runner main returns map that is not really used by caller.
+   Consider doing any cleanup necessary in finally block and letting exception go through uncaught.  This would
+   give the caller more info as to what went wrong.
 * Research
 ** Why are jar and pom passsed into runner?
    Is pom not always included in jar for clojure projects?  Maybe not. I shall assume not for now.
