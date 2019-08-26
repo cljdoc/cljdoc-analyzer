@@ -24,6 +24,64 @@ ClojureScript import-vars type metadata manipulation.
 This library picks up from the cljdoc codox unmerged PR. It extracts the analysis portion of codox and leaves the rest
 behind.
 
+== Usage
+TODO: Review and thing more about usage
+
+=== cljdoc use
+Cljdoc-analyzer's first customer is cljdoc. It does not currently cater to general usability. Cljdoc started with using conventional command line arguments but then switched to edn because it made more sense for its use case.
+I'm not sure how important this is, but assume that we'll stick with edn for now?
+
+Example of analyzing cljfmt v0.6.4:
+[source,bash,options="nowrap"]
+----
+clojure -m cljdoc-analyzer.cljdoc-main '{:project "cljfmt/cljfmt" :version "0.6.4" :jarpath "http://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.jar" :pompath "http://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.pom"}'
+----
+
+This will log to stdout and, if successful, write to a file in a predefined know spot, as indicated in the output logs:
+[source,options="nowrap"]
+----
+2019-08-26 14:22:28,061 INFO  cljdoc-analyzer.runner - results file: /tmp/cljdoc/analysis-out/cljdoc-edn/cljfmt/cljfmt/0.6.4/cljdoc.edn
+----
+
+=== general use
+TODO: review
+
+As a general user, I want to get metadata for: a project up on a a repo, or a project I am working on locally.
+
+For general usage we'll take inspiration, and also conform to, the `cljdoc ingest` command line.
+Options of interest to us are:
+
+[source,shell session,options="nowrap"]
+----
+OPTIONS:
+   -p, --project S*  Project to import
+   -v, --version S*  Version to import
+   -j, --jar S       Jar file to use (may be local)
+       --pom S       POM file to use (may be local)
+----
+I am still curious if we can reliably infer data from jar and/or pom (see todos.org).
+
+To consider: these names are quite similar to those in edn above. For consistency, it would be nice if they were the
+same. It is probably less disruptive to rename keys in edn as folks are already using `cljdoc ingest`.
+
+The output prefix of `/tmp/cljdoc/analysis-out/cljdoc-edn` seems a bit odd for general usage and should, at least, be
+overideable.
+
+We can also consider writing metadata stdout, but if we do, our default of logging to the console would have be
+redirected to a .log file.
+
+
+== Internal Workings
+
+We use clojure.tools.namespace cljs.analyzer.api to load source and collect metadata. This requires the loading of a
+project's dependencies. To avoid dependency conflicts and confusion, we keep dependencies at a minimum during metadata
+collection time by splitting the work into two distinct phases.
+
+. Prepare for analysis - the source for this work can be found under link:src[src]. Here we do everything we can to prepare for
+  metadata collection.
+. Collect metadata - the source for this work can be found under link:metagetta[metagetta]. A separate metagetta process
+  is launched to collect metadata on sources prepared in step 1.
+
 == Analysis & Design Ramblings
 
 === Questions & TODOS
