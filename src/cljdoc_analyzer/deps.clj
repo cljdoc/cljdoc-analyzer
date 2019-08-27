@@ -34,20 +34,10 @@
           'javax.servlet/javax.servlet-api {:mvn/version "4.0.1"}}
          deps-map))
 
-(def cljdoc-analyzer-metagetta
+(def cljdoc-analyzer-metagetta-dep
   {'cljdoc-analyzer/reader {:local/root "metagetta"}})
 
-(def hardcoded-deps
-  ;; fixups for specific projects.
-  ;; Make sure to always use group-id/artifact-id even if they're the same
-  '{clj-time/clj-time {org.clojure/java.jdbc {:mvn/version "0.7.7"}}
-    com.taoensso/tufte {com.taoensso/timbre {:mvn/version "4.10.0"}}
-    cider/cider-nrepl {boot/core {:mvn/version "2.7.2"}
-                       boot/base {:mvn/version "2.7.2"}
-                       leiningen {:mvn/version "2.8.1"}}
-    io.aviso/pretty {leiningen {:mvn/version "2.8.1"}}})
-
-(defn- extra-deps
+(defn- extra-pom-deps
   "Some projects require additional depenencies that have either been specified with
   scope 'provided', 'system', 'test', are marked 'optional' or are specified via documentation, e.g. a README.
   Maybe should be able to configure this via their cljdoc.edn configuration
@@ -87,15 +77,13 @@
 (defn- deps
   "Create a deps.edn style :deps map for the project specified by the
   Jsoup document `pom`."
-  [pom]
-  (let [{:keys [group-id artifact-id]} (:artifact-info pom)
-        project (symbol group-id artifact-id)]
-    (-> (extra-deps pom)
-        (merge (clj-cljs-deps pom))
-        (merge (get hardcoded-deps project))
-        (ensure-required-deps)
-        (ensure-recent-ish)
-        (merge cljdoc-analyzer-metagetta))))
+  [pom compensating-deps]
+  (-> (extra-pom-deps pom)
+      (merge (clj-cljs-deps pom))
+      (merge compensating-deps)
+      (ensure-required-deps)
+      (ensure-recent-ish)
+      (merge cljdoc-analyzer-metagetta-dep)))
 
 (def ^:private default-repos
   {"central" {:url "https://repo1.maven.org/maven2/"},
@@ -108,12 +96,13 @@
    "confluent" {:url "https://packages.confluent.io/maven/"}})
 
 (defn resolved-deps
-  "Returns resolved deps for `pom-url`."
-  [jar-url pom-url]
+  "Returns resolved deps for `pom-url` and include `jar-url` as one of those deps.
+  Include `compensating-deps` when needed."
+  [jar-url pom-url compensating-deps]
   {:pre [(string? jar-url) (string? pom-url)]}
   (let [pom (pom/parse (slurp pom-url))
         project (util/clojars-id (:artifact-info pom))]
-    (tdeps/resolve-deps {:deps (deps pom),
+    (tdeps/resolve-deps {:deps (deps pom compensating-deps)
                          :mvn/repos (merge default-repos
                                            (extra-repos pom))}
                         {:extra-deps {(symbol project) {:local/root jar-url}}

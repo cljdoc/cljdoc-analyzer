@@ -1,0 +1,20 @@
+{;; Overrides for specific projects where automatic resolution/detection is not sufficient.
+ ;; Manually sorted alphabetically by project only for easier at-a-glance updates.
+ ;; Comments that add reason why override is necessary are encouraged.
+ ;; Specify both group-id and artifact-id for project key even if they are the same.
+ :project-overrides
+ {"cider/cider-nrepl" {:languages ["clj"]
+                       :deps {boot/core {:mvn/version "2.7.2"}
+                              boot/base {:mvn/version "2.7.2"}
+                              leiningen {:mvn/version "2.8.1"}}}
+  "clj-time/clj-time" {:deps {org.clojure/java.jdbc {:mvn/version "0.7.7"}}}
+  "com.rpl/specter" {:languages ["clj"]}
+  "com.taoensso/tufte" {:deps {com.taoensso/timbre {:mvn/version "4.10.0"}}}
+  "dali/dali" {:languages ["clj"]}
+  "io.aviso/pretty" {:deps {leiningen {:mvn/version "2.8.1"}}}
+  "manifold/manifold" {:namespaces [manifold.deferred manifold.stream manifold.time manifold.bus manifold.executor]
+                       :languages ["clj"]}
+  "reagent/reagent" {;; fails because reagent.debug is missing, file exists though
+                     :languages ["cljs"]}
+  "uruk/uruk" {:languages ["clj"]}
+  "ventas-core/ventas-core" {:languages ["clj"]}}}

@@ -112,6 +112,7 @@ We will:
 ** wildcard support for `:namespaces`
 ** `:writer` option - folks can do what they want with the returned data
 ** `:exclude-vars` option - we can bring this back if ever there proves to be a need
+* project specific overrides for languages (aka platforms), namespaces and deps will be moved to a local config file.
 
 We might:
 

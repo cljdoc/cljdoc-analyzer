@@ -14,6 +14,8 @@
             [clojure.java.shell :as sh]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
+            [clojure.edn :as edn]
+            [clojure.pprint :as pprint]
             [cljdoc-analyzer.util :as util]
             [cljdoc-analyzer.deps :as deps]
             [cljdoc-analyzer.spec :as spec])
@@ -104,6 +106,11 @@
   (log/info (str "dependencies for analysis:\n"
                  (with-out-str (deps/print-tree resolved-deps)))))
 
+(defn- log-overrides [overrides]
+  (when overrides
+    (log/info (str "the following project overrides are active:\n"
+                   (with-out-str (pprint/pprint overrides))))))
+
 (defn- launch-metagetta
   "Analysis to get metadata is launched in a separate process to minimize dependencies to those of project being analyzed."
   [{:keys [project namespaces src-dir languages classpath]}]
@@ -138,32 +145,37 @@
     (io/make-parents)
     (spit (util/serialize-cljdoc-edn ana-result))))
 
-(defn get-metadata
+(defn- get-metadata*
   "Return metadata for project"
-  [{:keys [project version jarpath pompath] :as opts}]
+  [{:keys [project version jarpath pompath overrides] :as opts}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (let [work-dir (util/system-temp-dir (str "cljdoc-" project "-" version))]
     (try
       (let [project (symbol project)
             local-jar-path (resolve-jar! jarpath work-dir)
             jar-contents-dir (unpack-jar! local-jar-path work-dir)
-            resolved-deps (deps/resolved-deps local-jar-path pompath)
+            resolved-deps (deps/resolved-deps local-jar-path pompath (:deps overrides))
             classpath (deps/make-classpath resolved-deps)]
+        (log-overrides overrides)
         (log-dependencies resolved-deps)
         (-> {:group-id (util/group-id project)
              :artifact-id (util/artifact-id project)
              :version version
              :codox (launch-metagetta (assoc opts
                                             :src-dir (.getPath jar-contents-dir)
-                                            ;; TODO: reintroduce platform overrides for specific projects
-                                            :languages :auto-detect
-                                            ;; TODO: reintroduce namespaces overrides for specfic projects
-                                            :namespaces :all
+                                            :languages (or (:languages overrides) :auto-detect)
+                                            :namespaces (or (:namespaces overrides) :all)
                                             :classpath classpath))
              :pom-str (slurp pompath)}
             (validate-result)))
       (finally
         (util/delete-directory! work-dir)))))
+
+(defn get-metadata
+  [{:keys [project] :as opts}]
+  (let [config (edn/read-string (slurp (io/resource "config.edn")))
+        overrides (get-in config [:project-overrides project])]
+    (get-metadata* (assoc opts :overrides overrides))))
 
 (defn analyze!
   "Return metadata analysis `:analysis-status` and result in `:analysis-result` file"

@@ -10,12 +10,6 @@
             [clojure.walk :as walk])
   (:import (java.nio.file Files Paths)))
 
-(def hardcoded-config
-  ;; NOTE `delay` is used here because the stripped-down analysis env
-  ;; doesn't have `hardcoded-projects-config.edn` on the classpath
-  ;; TODO move elsewhere
-  (delay (edn/read-string (slurp (io/resource "hardcoded-projects-config.edn")))))
-
 (defn group-id [project]
   (or (if (symbol? project)
         (namespace project)
