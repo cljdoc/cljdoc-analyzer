@@ -2,16 +2,17 @@
   (:require [clojure.test :as t]
             [cljdoc-analyzer.metagetta.main :as main]))
 
-(defn- analyze-sources [language]
+;; TODO: not testing namespaces option yet
+(defn- analyze-sources [languages]
   (main/get-metadata {:root-path "test-sources"
-                      :language language}))
+                      :languages languages}))
 
-(defn- publics [r ns]
-  (some->> r
+(defn- publics [r language ns]
+  (some->> (get r language)
            (filter #(= (:name %) ns))
            first))
 
-(defn- common-analysis-testing [analysis]
+(defn- common-analysis-testing [language analysis]
 
   (t/testing "altered-metadata"
     (t/is (= {:name 'cljdoc-analyzer-test.altered
@@ -36,7 +37,7 @@
                          :line 6,
                          :name 'fn-pointing-to-protocol-fn,
                          :type :var}]}
-             (publics analysis 'cljdoc-analyzer-test.altered))))
+             (publics analysis language 'cljdoc-analyzer-test.altered))))
 
   (t/testing "macros"
     (t/is (= {:name 'cljdoc-analyzer-test.macro
@@ -56,7 +57,7 @@
                          :type :macro
                          :file "cljdoc_analyzer_test/macro.cljc"
                          :line 17}]}
-             (publics analysis 'cljdoc-analyzer-test.macro))))
+             (publics analysis language 'cljdoc-analyzer-test.macro))))
 
   (t/testing "multiarity"
     (t/is (= {:name 'cljdoc-analyzer-test.multiarity
@@ -66,7 +67,7 @@
                          :doc "Multiarity comment\n"
                          :file "cljdoc_analyzer_test/multiarity.cljc"
                          :line 7}]}
-             (publics analysis 'cljdoc-analyzer-test.multiarity))))
+             (publics analysis language 'cljdoc-analyzer-test.multiarity))))
 
   (t/testing "multimethods"
     (t/is (= {:name 'cljdoc-analyzer-test.multimethod
@@ -74,7 +75,7 @@
                          :type :multimethod
                          :file "cljdoc_analyzer_test/multimethod.cljc"
                          :line 6}]}
-             (publics analysis 'cljdoc-analyzer-test.multimethod))))
+             (publics analysis language 'cljdoc-analyzer-test.multimethod))))
 
   (t/testing "no-doc-ns"
     (t/is (= [] (filter #(= (:name %) 'cljdoc-analyzer-test.no-doc-ns) analysis))))
@@ -98,7 +99,7 @@
                                     {:arglists ([y]), :name zoolander, :type :var})
                          :file "cljdoc_analyzer_test/protocols.cljc"
                          :line 6}]}
-             (publics analysis 'cljdoc-analyzer-test.protocols))))
+             (publics analysis language 'cljdoc-analyzer-test.protocols))))
 
 
   (t/testing "records"
@@ -111,7 +112,7 @@
                          :type :var
                          :file "cljdoc_analyzer_test/record.cljc"
                          :line 8}]}
-             (publics analysis 'cljdoc-analyzer-test.record))))
+             (publics analysis language 'cljdoc-analyzer-test.record))))
 
   (t/testing "special-tags"
     (t/is (= {:name 'cljdoc-analyzer-test.special-tags
@@ -133,12 +134,25 @@
                          :dynamic true
                          :file "cljdoc_analyzer_test/special_tags.cljc"
                          :line 21}]}
-             (publics analysis 'cljdoc-analyzer-test.special-tags)))))
+             (publics analysis language 'cljdoc-analyzer-test.special-tags)))))
+
+;; TODO: this technique has problems... I like that on error I see exactly where in the tree I have failed,
+;; but I don't like that I am only matching portions of the tree.
 
 (t/deftest analyze-clojure-code-test
-  (let [a (analyze-sources "clj")]
-    (common-analysis-testing a)))
+  (let [a (analyze-sources #{"clj"})]
+    (common-analysis-testing "clj" a)))
 
 (t/deftest analyze-clojurecript-code-test
-  (let [a (analyze-sources "cljs")]
-    (common-analysis-testing a)))
+  (let [a (analyze-sources #{"cljs"})]
+    (common-analysis-testing "cljs" a)))
+
+(t/deftest analyze-clojure-and-clojurecript-code-test
+  (let [a (analyze-sources #{"clj" "cljs"})]
+    (common-analysis-testing "clj" a)
+    (common-analysis-testing "cljs" a)))
+
+(t/deftest analyze-clojure-and-clojurecript-code-via-auto-detect-test
+  (let [a (analyze-sources :auto-detect)]
+    (common-analysis-testing "clj" a)
+    (common-analysis-testing "cljs" a)))

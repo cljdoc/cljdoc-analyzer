@@ -60,45 +60,44 @@
         (remove-excluded-vars exclude-vars)
         (add-ns-defaults metadata))))
 
-(def defaults
-  ;; TODO: is this a good default for root-path?  I dunno we are working on exploded jars.
-  (let [root-path (System/getProperty "user.dir")]
-    {:language     :auto-detect
-     :root-path    root-path
-     :namespaces   :all}))
-
-(defn determine-languages [lang-opt src-dir]
+(defn- determine-languages [lang-opt src-dir]
   (if (= :auto-detect lang-opt)
     (utils/infer-platforms-from-src-dir (io/file src-dir))
     lang-opt))
 
 (defn get-metadata
   "Get metadata from source files."
-  ([options]
-   (let [options    (-> (merge defaults options)
-                        (update :root-path utils/canonical-path))]
-     (read-namespaces options))))
+  ([{:keys [namespaces root-path languages]}]
+
+   (assert (.exists (io/as-file root-path)))
+   (pprint/pprint languages)
+   (assert (or (= :auto-detect languages)
+               (and (set? languages) (>= (count languages) 1) (every? #{"clj" "cljs"} languages))))
+   (let [root-path (utils/canonical-path root-path)
+         actual-languages (determine-languages languages root-path)
+         options {:namespaces (or namespaces :all)
+                  :root-path root-path}]
+     (->> (map #(do
+                  (println "Analyzing for" %)
+                  (read-namespaces (assoc options :language %)))
+               actual-languages)
+          (zipmap actual-languages)))))
 
 (defn -main
-  "This is intended to be called internally only to analyze clojure/clojurescript
-  sources and return their metadata.
+  "This is intended to be called internally only to analyze clojure/clojurescript sources and return their metadata.
 
-  Launching a separate process for analysis is necessary to limit the
-  dependencies to the minimum required.
+  Input is edn string of:
+  - `:namespaces` - vector of namespaces to include or `:all` - defaults to `:all`
+  - `:root-dir`- path to exploded/prepped jar dir
+  - `:languages` - set of where language is `\"clj\"` and or `\"cljs\" or :auto-detect - defaults to `:auto-detect`
+  - `:output-filename` - on success, edn is serialized to this file with special encoding for regexes.
 
-  Caller is responsible for resolving and setting the classpath appropriately.
+  Launching a separate process for analysis is necessary to limit the dependencies to the minimum required.
 
-  One might argue that process isolation is not necessary for clojure vs
-  clojurescript for a single project (we could do both runs in one process),
-  but that's the way we'll roll for now."
-  ;; TODO: if regexes are not by default serializable... so if any options contain regexes...
+  Caller is responsible for resolving and setting the classpath appropriately."
   [edn-arg]
   (try
-    (let [{:keys [namespaces jar-contents-path languages output-filename] :as args} (edn/read-string edn-arg)
-          actual-languages (determine-languages languages jar-contents-path)]
-      ;; TODO: fixup languages validation
-      #_(assert (#{"clj" "cljs"} language))
-      (assert (.exists (io/as-file jar-contents-path)))
+    (let [{:keys [output-filename] :as args} (edn/read-string edn-arg)]
       (println "Args:" (-> (with-out-str (pprint/pprint args))
                            (string/trim)
                            (string/replace #"\n" "\n      ")))
@@ -106,13 +105,7 @@
       (println "Clojure version" (clojure-version))
       (println "ClojureScript version" (cljs-util/clojurescript-version))
 
-      (->> (map #(do
-                   (println "Analysing for" %)
-                   (get-metadata {:namespaces namespaces
-                                  :root-path jar-contents-path
-                                  :language %}))
-                actual-languages)
-           (zipmap actual-languages)
+      (->> (get-metadata args)
            (utils/serialize-cljdoc-edn)
            (spit output-filename)))
     (finally

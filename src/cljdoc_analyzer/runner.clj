@@ -117,7 +117,7 @@
   (let [metadata-output-file (util/system-temp-file project ".edn")]
     (log/info "launching metagetta for:" project "languages:" languages)
     (let [analysis-args {:namespaces namespaces
-                         :jar-contents-path (str src-dir)
+                         :root-path (str src-dir)
                          :languages languages
                          :output-filename  (.getAbsolutePath metadata-output-file)}
           process (sh/sh "java"
