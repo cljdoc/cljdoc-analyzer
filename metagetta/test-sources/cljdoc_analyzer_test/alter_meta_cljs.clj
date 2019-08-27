@@ -1,6 +1,6 @@
-(ns cljdoc-analyzer-test.alter-meta-cljs
+;; TODO: move this support outside of analyzed sources
+(ns ^:no-doc cljdoc-analyzer-test.alter-meta-cljs
   (:require [cljs.analyzer :as ana]
-            [cljs.analyzer.api :as ana-api]
             [cljs.env :as env]
             [clojure.java.io :as io]))
 

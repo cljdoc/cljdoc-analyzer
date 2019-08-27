@@ -70,7 +70,6 @@
   ([{:keys [namespaces root-path languages]}]
 
    (assert (.exists (io/as-file root-path)))
-   (pprint/pprint languages)
    (assert (or (= :auto-detect languages)
                (and (set? languages) (>= (count languages) 1) (every? #{"clj" "cljs"} languages))))
    (let [root-path (utils/canonical-path root-path)

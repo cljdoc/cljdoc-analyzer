@@ -1,4 +1,5 @@
-(ns cljdoc-analyzer-test.alter-meta-clj
+;; TODO: move this support out of analyzed sources
+(ns ^:no-doc cljdoc-analyzer-test.alter-meta-clj
   (:require [clojure.java.io :as io]))
 
 (defmacro alter-the-meta-data![ns name meta-changes]

@@ -157,5 +157,6 @@
                (->> (io/file path)
                     (find-namespaces)
                     (mapcat #(read-ns % path exception-handler))
-                    (remove :no-doc))))
+                    (remove :no-doc)
+                    (sort-by :name))))
            paths)))
