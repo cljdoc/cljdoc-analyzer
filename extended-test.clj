@@ -69,6 +69,7 @@
    :jarpath (str base-url ".jar")
    :pompath (str base-url ".pom")})
 
+
 (defn local->args [[project version base-url]]
   (let [{:keys [jarpath pompath] :as args}
         (remote->args [project version base-url])
@@ -77,15 +78,20 @@
            :jarpath (download-temp! jarpath (str prefix ".jar"))
            :pompath (download-temp! pompath (str prefix ".pom")))))
 
+
 (->> (for [{:keys [project version] :as args}
            (concat (map local->args local-candidates)
                    (map remote->args remote-candidates))]
-       (let [args ["clojure" "-m" "cljdoc-analyzer.main" (pr-str args)]
+       (let [args ["clojure" "--report" "stderr" "-m" "cljdoc-analyzer.main" (pr-str args)]
              _ (do (println "Analyzing" project version) (println (string/join " " args) sep))
-             {:keys [exit out]} (apply sh/sh args)]
+             {:keys [exit out err]} (apply sh/sh args)]
          (when-not (zero? exit)
            (println "Analysis failed for" project version sep)
+           (println "exit code:" exit)
+           (println "stdout:")
            (println out)
+           (println "stderr:")
+           (println err)
            (println sep))
 
          {:project project
