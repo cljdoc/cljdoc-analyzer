@@ -15,7 +15,7 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "metagetta/deps.edn" }}
+            - v1-dependencies-{{checksum "deps.edn"}}-{{ checksum "metagetta/deps.edn" }}
             - v1-dependencies- # fallback if cache not found
 
       - run:
@@ -35,15 +35,21 @@ jobs:
 
       - run:
           name: Run extended integration tests
-          command: clojure extended-test.clj
+          command: clojure -Atest --reporter documentation --plugin koacha.plugin/junit.xml --junit-xml-file target/test-results/integration/results.xml
 
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "metagetta/deps.edn" }}
+          key: v1-dependencies-{{checksum "deps.edn"}}-{{ checksum "metagetta/deps.edn" }}
 
       - store_test_results:
           path: metagetta/target/test-results
 
+      - store_test_results:
+          path: target/test-results
+
       - store_artifacts:
           path: metagetta/target/test-results
+
+      - store_artifacts:
+          path: target/test-results

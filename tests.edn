@@ -1,0 +1,4 @@
+#kaocha/v1
+{:tests [{:id :extended
+          :source-paths []
+          :test-paths  ["test"]}]}
