@@ -158,13 +158,10 @@ And because code is evaluated while getting metadata, cljdoc takes care to isola
 by launching a separate process.
 
 
-==== integration points
+==== external integration points
 
-The current cljdoc analysis runner-ng.main is launched by:
+The current cljdoc analysis runner-ng.main is launched, as far a I can see, only by:
 . cljdoc/analysis/service.clj
-. modules/analysis-runner/extended-test.clj
-
-TODO: move extended-test here into cljdoc-analyzer.
 
 ==== tools support
 
