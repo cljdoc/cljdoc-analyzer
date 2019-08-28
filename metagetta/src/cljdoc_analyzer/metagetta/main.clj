@@ -101,9 +101,9 @@
                            (string/trim)
                            (string/replace #"\n" "\n      ")))
 
+      (println "Java version" (System/getProperty "java.version"))
       (println "Clojure version" (clojure-version))
       (println "ClojureScript version" (cljs-util/clojurescript-version))
-
       (->> (get-metadata args)
            (utils/serialize-cljdoc-edn)
            (spit output-filename)))
