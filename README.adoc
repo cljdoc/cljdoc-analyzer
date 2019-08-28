@@ -157,7 +157,16 @@ Because cljdoc works on unknown projects, it goes through some special steps to 
 And because code is evaluated while getting metadata, cljdoc takes care to isolate this work and minimize dependencies
 by launching a separate process.
 
-==== Tools support
+
+==== integration points
+
+The current cljdoc analysis runner-ng.main is launched by:
+. cljdoc/analysis/service.clj
+. modules/analysis-runner/extended-test.clj
+
+TODO: move extended-test here into cljdoc-analyzer.
+
+==== tools support
 
 Codox contains specific tool support for lein and boot.
 
