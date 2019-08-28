@@ -1,5 +1,5 @@
-;; TODO: move this support outside of analyzed sources
-(ns ^:no-doc cljdoc-analyzer-test.alter-meta-cljs
+(ns cljdoc-analyzer-test.util.alter-meta-cljs
+  "Hacky little utilities to support simulating import-vars type operations in cljs for test-sources"
   (:require [cljs.analyzer :as ana]
             [cljs.env :as env]
             [clojure.java.io :as io]))

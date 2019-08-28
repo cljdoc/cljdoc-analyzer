@@ -3,58 +3,58 @@
             [cljdoc-analyzer.metagetta.main :as main]))
 
 (def expected-analysis-result
-  '({:name cljdoc-analyzer-test.altered
+  '({:name cljdoc-analyzer-test.metagetta.altered
     :publics [{:name altered-def-with-absolute-file
                :type :var
-               :file "cljdoc_analyzer_test/record.cljc"
+               :file "cljdoc_analyzer_test/metagetta/record.cljc"
                :line 7}
               {:name altered-fn-with-source-relative-file
                :arglists ([])
                :type :var
-               :file "cljdoc_analyzer_test/multimethod.cljc"
+               :file "cljdoc_analyzer_test/metagetta/multimethod.cljc"
                :line 14}
               {:name altered-macro-with-root-relative-file
                :arglists ([])
                :type :macro
                :doc "added doc\n"
-               :file "cljdoc_analyzer_test/multimethod.cljc"
+               :file "cljdoc_analyzer_test/metagetta/multimethod.cljc"
                :line 3}
               {:arglists ([x]),
                :doc "Operation 1 docs\n",
-               :file "cljdoc_analyzer_test/protocols.cljc",
+               :file "cljdoc_analyzer_test/metagetta/protocols.cljc",
                :line 6,
                :name fn-pointing-to-protocol-fn,
                :type :var}]}
-   {:name cljdoc-analyzer-test.macro
+   {:name cljdoc-analyzer-test.metagetta.macro
     :publics [{:name macdoc
                :arglists ([a b c d])
                :type :macro
                :doc "Macro docs\n"
-               :file "cljdoc_analyzer_test/macro.cljc"
+               :file "cljdoc_analyzer_test/metagetta/macro.cljc"
                :line 23}
               {:name simple
                :arglists ([a b])
                :type :macro
-               :file "cljdoc_analyzer_test/macro.cljc"
+               :file "cljdoc_analyzer_test/metagetta/macro.cljc"
                :line 11}
               {:name varargs
                :arglists ([a & xs])
                :type :macro
-               :file "cljdoc_analyzer_test/macro.cljc"
+               :file "cljdoc_analyzer_test/metagetta/macro.cljc"
                :line 17}]}
-   {:name cljdoc-analyzer-test.multiarity
+   {:name cljdoc-analyzer-test.metagetta.multiarity
     :publics [{:name multiarity
                :arglists ([] [a] [a b] [a b c d])
                :type :var
                :doc "Multiarity comment\n"
-               :file "cljdoc_analyzer_test/multiarity.cljc"
+               :file "cljdoc_analyzer_test/metagetta/multiarity.cljc"
                :line 7}]}
-   {:name cljdoc-analyzer-test.multimethod
+   {:name cljdoc-analyzer-test.metagetta.multimethod
     :publics [{:name start
                :type :multimethod
-               :file "cljdoc_analyzer_test/multimethod.cljc"
+               :file "cljdoc_analyzer_test/metagetta/multimethod.cljc"
                :line 6}]}
-   {:name cljdoc-analyzer-test.protocols
+   {:name cljdoc-analyzer-test.metagetta.protocols
     :publics [{:name ProtoTest
                :type :protocol
                :doc "Protocol comment.\n"
@@ -70,35 +70,35 @@
                           :name operation-one,
                           :type :var}
                          {:arglists ([y]), :name zoolander, :type :var})
-               :file "cljdoc_analyzer_test/protocols.cljc"
+               :file "cljdoc_analyzer_test/metagetta/protocols.cljc"
                :line 6}]}
-   {:name cljdoc-analyzer-test.record
+   {:name cljdoc-analyzer-test.metagetta.record
     :publics [{:name DefRecordTest
                :type :var
-               :file "cljdoc_analyzer_test/record.cljc"
+               :file "cljdoc_analyzer_test/metagetta/record.cljc"
                :line 6}
               {:name record-test
                :type :var
-               :file "cljdoc_analyzer_test/record.cljc"
+               :file "cljdoc_analyzer_test/metagetta/record.cljc"
                :line 8}]}
-   {:name cljdoc-analyzer-test.special-tags
+   {:name cljdoc-analyzer-test.metagetta.special-tags
     :publics [{:name added-fn
                :arglists ([a b])
                :type :var
                :added "10.2.2"
-               :file "cljdoc_analyzer_test/special_tags.cljc"
+               :file "cljdoc_analyzer_test/metagetta/special_tags.cljc"
                :line 26}
               {:name deprecated-fn
                :arglists ([x])
                :type :var
                :deprecated "0.4.0"
-               :file "cljdoc_analyzer_test/special_tags.cljc"
+               :file "cljdoc_analyzer_test/metagetta/special_tags.cljc"
                :line 10}
               {:name dynamic-def
                :type :var
                :doc "dynamic def docs\n"
                :dynamic true
-               :file "cljdoc_analyzer_test/special_tags.cljc"
+               :file "cljdoc_analyzer_test/metagetta/special_tags.cljc"
                :line 21}]}))
 
 ;; TODO: not testing namespaces option yet

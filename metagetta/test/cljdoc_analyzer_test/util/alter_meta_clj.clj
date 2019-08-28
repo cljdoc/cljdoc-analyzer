@@ -1,5 +1,5 @@
-;; TODO: move this support out of analyzed sources
-(ns ^:no-doc cljdoc-analyzer-test.alter-meta-clj
+(ns cljdoc-analyzer-test.util.alter-meta-clj
+  "Hacky little utilities to support simulating import-vars type operations in clj for test-sources"
   (:require [clojure.java.io :as io]))
 
 (defmacro alter-the-meta-data![ns name meta-changes]

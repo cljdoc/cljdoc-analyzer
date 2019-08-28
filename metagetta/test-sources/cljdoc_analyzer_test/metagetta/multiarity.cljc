@@ -1,7 +1,7 @@
 ;;
 ;; Note: this file is used in tests that rely on line numbers
 ;;
-(ns cljdoc-analyzer-test.multiarity)
+(ns cljdoc-analyzer-test.metagetta.multiarity)
 
 
 (defn multiarity
