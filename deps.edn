@@ -6,7 +6,7 @@
         org.jsoup/jsoup {:mvn/version "1.12.1"}
         version-clj {:mvn/version "0.1.2"}}
  :aliases {:test
-           {:extra-paths ["test"]
+           {:extra-paths ["test" "test-resources"]
             :extra-deps {lambdaisland/kaocha {:mvn/version "0.0-529"}
                          lambdaisland/kaocha-junit-xml {:mvn/version "0.0-70"}}
             :main-opts ["-m" "kaocha.runner" "--reporter" "documentation"]}}}
