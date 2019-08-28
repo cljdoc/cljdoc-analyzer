@@ -35,7 +35,7 @@ jobs:
 
       - run:
           name: Run extended integration tests
-          command: clojure -Atest --reporter documentation --plugin koacha.plugin/junit.xml --junit-xml-file target/test-results/integration/results.xml
+          command: clojure -Atest --reporter documentation --plugin kaocha.plugin/junit.xml --junit-xml-file target/test-results/integration/results.xml
 
       - save_cache:
           paths:
