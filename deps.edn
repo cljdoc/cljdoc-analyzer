@@ -9,4 +9,4 @@
            {:extra-paths ["test" "test-resources"]
             :extra-deps {lambdaisland/kaocha {:mvn/version "0.0-529"}
                          lambdaisland/kaocha-junit-xml {:mvn/version "0.0-70"}}
-            :main-opts ["-m" "kaocha.runner" "--reporter" "documentation"]}}}
+            :main-opts ["-m" "kaocha.runner"]}}}

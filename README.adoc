@@ -332,7 +332,30 @@ with the cljdoc-analyzer. I think this should give us the confidence we need.
 
 == Testing
 
-We make use of https://github.com/lambdaisland/kaocha[kaocha] for testing
+We make use of https://github.com/lambdaisland/kaocha[kaocha] for testing.
+
+Metagetta is a separate sub-project with its own unit tests. To run metagetta unit tests:
+----
+cd metagetta
+clojure -A:test
+----
+
+Cljdoc-analyzer has integration and unit tests, to run them all, ensure you are in cljdoc-analyzer root dir and:
+----
+clojure -A:test
+----
+
+The integration tests can take a while to run, to focus on unit tests only:
+----
+clojure -A:test --skip-meta integration
+----
+
+To focus on integration tests only:
+----
+clojure -A:test --focus-meta integration
+----
+
+To run in watch mode tack on a `--watch` to any of the above commands. See kaocha docs for other options.
 
 
 == Notes preserved from codox docs

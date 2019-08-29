@@ -1,4 +1,4 @@
-(ns cljdoc-analyzer.extended-test
+(ns ^:integration cljdoc-analyzer.extended-test
   (:require [clojure.test :as t]
             [clojure.java.shell :as shell]
             [clojure.string :as string]

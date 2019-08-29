@@ -25,7 +25,6 @@
   Be careful when changing it since that path is also hardcoded in the
   [cljdoc-builder](https://github.com/martinklepsch/cljdoc-builder)
   CircleCI configuration"
-  ;; ---
   "/tmp/cljdoc/analysis-out/")
 
 (defn cljdoc-edn
@@ -43,11 +42,13 @@
                          %))
        (pr-str)))
 
+(defn deserialize-cljdoc-edn [s]
+  (edn/read-string {:readers {'regex re-pattern}} s))
+
 (defn read-cljdoc-edn
   [file]
   {:pre [(some? file)]}
-  (edn/read-string {:readers {'regex re-pattern}} (slurp file)))
-
+  (deserialize-cljdoc-edn (slurp file)))
 
 (defn clojars-id [{:keys [group-id artifact-id]}]
   (if (= group-id artifact-id)
