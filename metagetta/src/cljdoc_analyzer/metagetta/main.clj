@@ -106,6 +106,8 @@
       (println "ClojureScript version" (cljs-util/clojurescript-version))
       (->> (get-metadata args)
            (utils/serialize-cljdoc-edn)
-           (spit output-filename)))
+           (spit output-filename))
+      (println "Done"))
+
     (finally
       (flush))))
