@@ -193,7 +193,7 @@
     (catch Throwable t
       (let [msg (.getMessage t)]
         (log/error t "Analysis failed")
-        ;; TODO: hmmm caller is not using this info
+        ;; TODO: hmmm caller is not using this info... except for analysis-status
         {:analysis-status :fail
          :fail-reason msg
          :exception (Throwable->map t)}))))
