@@ -19,4 +19,5 @@ EOM
 }
 
 #analyze "lread" "cljdoc-exerciser" "1.0.19"
-analyze "cljfmt" "cljfmt" "0.6.4"
+#analyze "cljfmt" "cljfmt" "0.6.4"
+analyze "orchestra" "orchestra" "2018.11.07-1"

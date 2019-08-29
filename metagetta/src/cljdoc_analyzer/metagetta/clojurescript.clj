@@ -83,7 +83,7 @@
          (remove unreferenced-protocol?)
          (remove no-doc?)
          (map (partial read-var source-path file vars))
-         (sort-by (comp str/lower-case :name)))))
+         )))
 
 (defn- analyze-file [file]
   (let [opts  (cljs.closure/add-implicit-options {})
@@ -95,7 +95,6 @@
 
 (defn- read-file [source-path file exception-handler]
   (try
-
     (let [source  (io/file source-path file)
           ns-name (:ns (ana/parse-ns source))
           state   (analyze-file source)]
@@ -109,6 +108,13 @@
     (catch Exception e
       (exception-handler e file))))
 
+(defn- ns-merger [val-first val-next]
+  {:name (:name val-first)
+   :publics (->> (concat (:publics val-first) (:publics val-next))
+                 (into #{})
+                 (into ()))})
+
+;; TODO: consider removing support for multiple paths. cljdoc-analyzer does not use it and we don't test the case.
 (defn read-namespaces
   "Read ClojureScript namespaces from a set of source directories
   (defaults to [\"src\"]), and return a list of maps suitable for
@@ -135,13 +141,15 @@
   ([paths] (read-namespaces paths {}))
   ([paths {:keys [exception-handler]
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
-   (mapcat (fn [path]
-             (let [path (io/file (utils/canonical-path path))
-                   file-reader #(read-file path % exception-handler)]
-               (->> (find-files path)
-                    (map file-reader)
-                    (apply merge)
-                    (vals)
-                    (remove :no-doc)
-                    (sort-by :name))))
-           paths)))
+   (->>
+    (mapcat (fn [path]
+              (let [path (io/file (utils/canonical-path path))
+                    file-reader #(read-file path % exception-handler)]
+                (->> (find-files path)
+                     (map file-reader)
+                     (apply merge-with ns-merger)
+                     (vals)
+                     (remove :no-doc))))
+            paths)
+    (map #(assoc % :publics (sort-by (comp str/lower-case :name) (:publics %))))
+    (sort-by :name))))
