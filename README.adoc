@@ -6,8 +6,8 @@ WARNING: PRE-ALPHA work here.
 
 == Rationale
 
-A library to return metadata for Clojure/ClojureScript source code projects with the understanding that metadata is
-sometimes altered in those projects at load time.
+A library to return publics for namespaces in Clojure/ClojureScript source code projects with the understanding that
+this data is sometimes altered in those projects at load time.
 
 cljdoc-analyzer's first use is for cljdoc but others might find value in this library as well.
 
@@ -44,32 +44,21 @@ This will log to stdout and, if successful, write to a file in a predefined know
 ----
 
 === general use
-TODO: review
+TODO: design phase only - not implemented
 
-As a general user, I want to get metadata for: a project up on a a repo, or a project I am working on locally.
+You can use cljdoc-analyzer ad hoc to get data for a project published to a known maven repo.
 
-For general usage we'll take inspiration, and also conform to, the `cljdoc ingest` command line.
-Options of interest to us are:
-
-[source,shell session,options="nowrap"]
+If the project you want to analyze is up on a maven repo:
+[source,bash,no-wrap]
 ----
-OPTIONS:
-   -p, --project S*  Project to import
-   -v, --version S*  Version to import
-   -j, --jar S       Jar file to use (may be local)
-       --pom S       POM file to use (may be local)
+clojure -m cljdoc.analyzer.main --project io.aviso/pretty --version "0.1.29"
 ----
-I am still curious if we can reliably infer data from jar and/or pom (see todos.org).
+If everything works, you'll find the output in the current directory in `io.aviso-pretty-0.1.29.edn`
 
-To consider: these names are quite similar to those in edn above. For consistency, it would be nice if they were the
-same. It is probably less disruptive to rename keys in edn as folks are already using `cljdoc ingest`.
+If you are working on a local project, publish it to your local maven repo first, then run the cljdoc analyze command.
 
-The output prefix of `/tmp/cljdoc/analysis-out/cljdoc-edn` seems a bit odd for general usage and should, at least, be
-overideable.
-
-We can also consider writing metadata stdout, but if we do, our default of logging to the console would have be
-redirected to a .log file.
-
+There is no facility yet for specifying different repos than the default repos cljdoc-analyzer knows about - if you need
+to do this hacking the code might make sense.
 
 == Internal Workings
 
