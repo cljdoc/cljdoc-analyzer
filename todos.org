@@ -36,9 +36,6 @@
    The amount of code is small, I am leaning toward #1 but will bounce of Martin to see if he has a strong opinion.
 
 * General todos
-** Reintroduce hardcoded config
-   The hardcoded config specifies overrides for specific projects with regards to both api analysis and doc parsing.
-   I'll need to separate the two. I am only interested in api analysis.
 ** Reintroduce :exception-handler in runner
 ** runner main returns map that is not really used by caller.
    Consider doing any cleanup necessary in finally block and letting exception go through uncaught.  This would
