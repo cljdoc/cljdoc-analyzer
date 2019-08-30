@@ -27,6 +27,17 @@
 (defn- remove-excluded-vars [namespaces exclude-vars]
   (map #(update-in % [:publics] remove-matching-vars exclude-vars %) namespaces))
 
+(defn- contains-any-key? [m ks]
+  (seq (select-keys m ks)))
+
+(defn- remove-excluded-keys [namespaces exclude-with]
+  (->> (remove #(contains-any-key? % exclude-with) namespaces)
+       (map (fn [ns]
+              (update ns :publics
+                      (fn [vars]
+                        (remove #(contains-any-key? % exclude-with) vars)))))))
+
+
 (defn- ns-matches? [{ns-name :name} pattern]
   (cond
     (instance? java.util.regex.Pattern pattern) (re-find pattern (str ns-name))
@@ -39,12 +50,13 @@
     namespaces))
 
 (defn- read-namespaces
-  [{:keys [language root-path namespaces] :as opts}]
+  [{:keys [language root-path namespaces exclude-with] :as opts}]
   (let [record-constructor-function-vars #"^(map)?->\p{Upper}"
         reader (namespace-readers language)]
     (-> (reader root-path (select-keys opts [:exception-handler]))
         (filter-namespaces namespaces)
-        (remove-excluded-vars record-constructor-function-vars))))
+        (remove-excluded-vars record-constructor-function-vars)
+        (remove-excluded-keys exclude-with))))
 
 (defn- determine-languages [lang-opt src-dir]
   (if (= :auto-detect lang-opt)
@@ -53,29 +65,31 @@
 
 (defn get-metadata
   "Get metadata from source files."
-  ([{:keys [namespaces root-path languages]}]
+  ([{:keys [namespaces root-path languages exclude-with]}]
 
    (assert (.exists (io/as-file root-path)))
    (assert (or (= :auto-detect languages)
                (and (set? languages) (>= (count languages) 1) (every? #{"clj" "cljs"} languages))))
    (let [root-path (utils/canonical-path root-path)
-         actual-languages (determine-languages languages root-path)
-         options {:namespaces (or namespaces :all)
-                  :root-path root-path}]
-     (->> (map #(do
-                  (println "Analyzing for" %)
-                  (read-namespaces (assoc options :language %)))
+         actual-languages (determine-languages languages root-path)]
+     (->> (map (fn [lang]
+                  (println "Analyzing for" lang)
+                  (read-namespaces {:namespaces (or namespaces :all)
+                                    :root-path root-path
+                                    :language lang
+                                    :exclude-with exclude-with}))
                actual-languages)
           (zipmap actual-languages)))))
 
 (defn -main
-  "This is intended to be called internally only to analyze clojure/clojurescript sources and return their metadata.
+  "This is intended to be called internally only. It relies on the caller doing proper setup.
 
   Input is edn string of:
   - `:namespaces` - vector of namespaces to include or `:all` - defaults to `:all`
   - `:root-dir`- path to exploded/prepped jar dir
   - `:languages` - set of where language is `\"clj\"` and or `\"cljs\" or :auto-detect - defaults to `:auto-detect`
   - `:output-filename` - on success, edn is serialized to this file with special encoding for regexes.
+  - `:exclude-with` - optional - exclude ns and publics with any key in vector - ex [:no-doc :no-wiki]
 
   Launching a separate process for analysis is necessary to limit the dependencies to the minimum required.
 

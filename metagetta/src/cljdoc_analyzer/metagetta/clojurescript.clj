@@ -33,9 +33,6 @@
          (filter cljs-file?)
          (keep (strip-parent file)))))
 
-(defn- no-doc? [var]
-  (or (:skip-wiki var) (:no-doc var)))
-
 (defn- protocol-methods [protocol vars]
   (let [proto-name (name (:name protocol))]
     (filter #(if-let [p (:protocol %)] (= proto-name (name p))) vars)))
@@ -54,7 +51,9 @@
   (let [vt (var-type var)
         normalize (partial utils/normalize-to-source-path source-path)]
     (-> var
-        (select-keys [:name :file :line :arglists :doc :dynamic :added :deprecated :doc/format])
+        (select-keys [:name :file :line :arglists :doc :dynamic
+                      :added :deprecated :doc/format
+                      :no-doc :skip-wiki])
         (utils/update-some :name (comp symbol name))
         (utils/update-some :arglists remove-quote)
         (utils/update-some :doc utils/correct-indent)
@@ -81,9 +80,7 @@
     (->> vars
          (remove :anonymous)
          (remove unreferenced-protocol?)
-         (remove no-doc?)
-         (map (partial read-var source-path file vars))
-         )))
+         (map (partial read-var source-path file vars)))))
 
 (defn- analyze-file [file]
   (let [opts  (cljs.closure/add-implicit-options {})
@@ -102,7 +99,7 @@
        (-> (ana/find-ns state ns-name)
            (select-keys [:name :doc])
            (utils/update-some :doc utils/correct-indent)
-           (merge (-> ns-name meta (select-keys [:no-doc])))
+           (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki])))
            (utils/remove-empties)
            (assoc :publics (read-publics state ns-name source-path file)))})
     (catch Exception e
@@ -116,13 +113,17 @@
   a list of namespaces with their public vars.
 
   Supported options using the second argument:
+  TODO: this one is likely soon to be hardcoded
     :exception-handler - function (fn [ex file]) to handle exceptions
     while reading a namespace
 
   The keys in the maps are:
-    :name   - the name of the namespace
-    :doc    - the doc-string on the namespace
-    :author - the author of the namespace
+    :name    - the name of the namespace
+    :doc     - the doc-string on the namespace
+  TODO: author? test
+    :author  - if the metadata is there, we return it
+    :no-doc  - request for namespace not to be documented
+    :no-wiki - legacy synonym for :no-doc
     :publics
       :name       - the name of a public function, macro, or value
       :file       - the file the var was declared in
@@ -131,7 +132,9 @@
       :doc        - the doc-string of the var
       :type       - one of :macro, :protocol or :var
       :added      - the library version the var was added in
-      :deprecated - the library version the var was deprecated in"
+      :deprecated - the library version the var was deprecated in
+      :no-doc     - request for var not to be documented
+      :no-wiki    - legacy synonym for :no-doc"
   ([path] (read-namespaces path {}))
   ([path {:keys [exception-handler]
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
@@ -141,6 +144,5 @@
           (map file-reader)
           (apply merge-with ns-merger)
           (vals)
-          (remove :no-doc)
           (map #(assoc % :publics (sort-by (comp str/lower-case :name) (:publics %))))
           (sort-by :name)))))

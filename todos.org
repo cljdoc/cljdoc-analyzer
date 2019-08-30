@@ -48,7 +48,22 @@
 
    The first version of the exception handler fails on first exception.
 
+* In progress
+** Look at returning all publics
+   We currently skip all no-docs which is still appropriate for cljdoc usage but does not satisfy ad hoc usage.
+   - added exclude-with array
+     for cljdoc main this is hardcoded to [:no-doc :no-wiki]
+     for ad hoc main default is nil, can be changed via --exclude-with option
+   - next
+     add tests that do not exclude no-doc
+
 * General todos
+** Look at common code in readers
+   Things like sorting seem to be common and could be done after fetching.
+   Favor code readability over DRY.
+** Codox comment sez it return :author on ns. verify.
+   It might just return whatever metadata happens to be on ns.
+   If so, maybe not such a great idea - as we might not be able to serialize arbitrary metadata.
 ** Does cljdoc make use of codox ^:doc/format?
    It does not look like it.
    I think cljdoc assumes doc strings are in always in markdown format.
@@ -59,21 +74,6 @@
    Maybe :publics would be better?
 ** Throw error on duplicate publics in ns
 ** Add namespace tests
-** Look at returning all publics
-   We currently skip all no-docs which is still appropriate for cljdoc usage but does not satisfy ad hoc usage.
-
-   A general solution to skip/include with arbitrary metadata key would imply
-   returning all metadata. I don't want to to solve for unknown use cases.
-
-   We could return everything and include no-doc in metadata and consider filtering
-   up to the caller. This was Martin's preference.
-
-   But I think I want the normal behavior cater to cljdoc. This will make initial testing more straightforward.
-
-   Maybe we could have --skip-no-doc for this initial release.
-
-   We'd start to include :no-doc metadata in result.
-
 ** runner main returns map that is not really used by caller.
    Consider doing any cleanup necessary in finally block and letting exception go through uncaught.  This would
    give the caller more info as to what went wrong.

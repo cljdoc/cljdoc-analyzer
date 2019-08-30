@@ -113,13 +113,14 @@
 
 (defn- launch-metagetta
   "Analysis to get metadata is launched in a separate process to minimize dependencies to those of project being analyzed."
-  [{:keys [project namespaces src-dir languages classpath]}]
+  [{:keys [project namespaces src-dir languages exclude-with classpath]}]
   (let [metadata-output-file (util/system-temp-file project ".edn")]
     (log/info "launching metagetta for:" project "languages:" languages)
     (let [analysis-args {:namespaces namespaces
                          :root-path (str src-dir)
                          :languages languages
-                         :output-filename  (.getAbsolutePath metadata-output-file)}
+                         :output-filename  (.getAbsolutePath metadata-output-file)
+                         :exclude-with exclude-with}
           process (sh/sh "java"
                          "-cp" classpath
                          "clojure.main" "-m" "cljdoc-analyzer.metagetta.main"
@@ -182,6 +183,7 @@
   [{:keys [project version jarpath pompath output-filename] :as args}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (try
+    (log/info (str "args:\n" (with-out-str (pprint/pprint args))))
     (let [output-file  (io/file output-filename)]
       (-> (get-metadata args)
           (save-result output-file))

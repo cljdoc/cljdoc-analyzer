@@ -105,7 +105,8 @@
 ;; TODO: only currently testing cljc, include clj and cljs
 (defn- analyze-sources [languages]
   (main/get-metadata {:root-path "test-sources"
-                      :languages languages}))
+                      :languages languages
+                      :exclude-with [:no-doc :no-wiki]}))
 
 (t/deftest analyze-cljs-code-test
   (let [actual (analyze-sources #{"cljs"})

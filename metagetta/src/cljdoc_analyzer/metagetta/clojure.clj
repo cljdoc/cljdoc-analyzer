@@ -30,10 +30,6 @@
        (vals)
        (sort-by (comp :name meta))))
 
-(defn- no-doc? [var]
-  (let [{:keys [skip-wiki no-doc]} (meta var)]
-    (or skip-wiki no-doc)))
-
 (defn- proxy? [var]
   (re-find #"proxy\$" (-> var meta :name str)))
 
@@ -81,7 +77,8 @@
     (-> (meta var)
         (include-record-factory-as-defrecord)
         (select-keys [:name :file :line :arglists :doc :dynamic
-                      :added :deprecated :doc/format])
+                      :added :deprecated :doc/format
+                      :no-doc :skip-wiki])
         (utils/update-some :doc utils/correct-indent)
         (utils/update-some :file normalize)
         (utils/assoc-some  :type (var-type var)
@@ -94,7 +91,6 @@
   (let [vars (sorted-public-vars namespace)]
     (->> vars
          (remove proxy?)
-         (remove no-doc?)
          (remove (partial protocol-method? vars))
          (map (partial read-var source-path vars))
          (sort-by (comp str/lower-case :name)))))
@@ -129,15 +125,18 @@
    namespaces with their public vars.
 
   Supported options using the second argument:
+
+  TODO: this one is likely soon to be hardcoded
     :exception-handler - function (fn [ex ns]) to handle exceptions
     while reading a namespace
 
-  Any namespace with {:no-doc true} in its metadata will be skipped.
-
   The keys in the maps are:
-    :name   - the name of the namespace
-    :doc    - the doc-string on the namespace
-    :author - the author of the namespace
+    :name    - the name of the namespace
+    :doc     - the doc-string on the namespace
+  TODO: author? test
+    :author  - if the metadata is there, we return it
+    :no-doc  - request for namespace not to be documented
+    :no-wiki - legacy synonym for :no-doc
     :publics
       :name       - the name of a public function, macro, or value
       :file       - the file the var was declared in
@@ -146,7 +145,10 @@
       :doc        - the doc-string of the var
       :type       - one of :macro, :protocol, :multimethod or :var
       :added      - the library version the var was added in
-      :deprecated - the library version the var was deprecated in"
+      :deprecated - the library version the var was deprecated in
+      :no-doc     - request for var not to be documented
+      :no-wiki    - legacy synonym for :no-doc"
+
   ([path] (read-namespaces path {}))
   ([path {:keys [exception-handler]
            :or {exception-handler (partial utils/default-exception-handler "Clojure")}}]
@@ -154,5 +156,4 @@
      (->> (io/file path)
           (find-namespaces)
           (mapcat #(read-ns % path exception-handler))
-          (remove :no-doc)
           (sort-by :name)))))

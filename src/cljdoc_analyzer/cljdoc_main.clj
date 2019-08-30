@@ -27,6 +27,7 @@
                                                     :version version
                                                     :jarpath jarpath
                                                     :pompath pompath
+                                                    :exclude-with [:no-doc :no-wiki]
                                                     :output-filename (str analysis-output-prefix (cljdoc-edn-filepath project version))})]
     (shutdown-agents)
     (System/exit (if (= :success analysis-status) 0 1))))

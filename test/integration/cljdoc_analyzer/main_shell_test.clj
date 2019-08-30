@@ -17,6 +17,8 @@
                                                   "analyze"
                                                   "--project" project
                                                   "--version" version
+                                                  "--exclude-with" ":no-doc"
+                                                  "--exclude-with" ":no-wiki"
                                                   "--output-filename" edn-out-filename))))
 
 ;; main testing is done in cljdoc-main-test, this is a sanity run that this main path works as well.
