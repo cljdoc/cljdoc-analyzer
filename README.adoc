@@ -201,6 +201,8 @@ For example:
 (ns ^:no-doc hidden-ns)
 ----
 
+For autodoc legacy reasons, codox considers `:skip-wiki` to be equivalent to `:no-doc` and cljdoc-analyzer does the same.
+
 === :added
 
 To denote the library version the var was added in, use the `:added` metadata key:
