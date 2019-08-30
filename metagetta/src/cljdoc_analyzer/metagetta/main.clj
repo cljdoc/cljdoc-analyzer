@@ -27,18 +27,6 @@
 (defn- remove-excluded-vars [namespaces exclude-vars]
   (map #(update-in % [:publics] remove-matching-vars exclude-vars %) namespaces))
 
-(defn- add-var-defaults [vars defaults]
-  (for [var vars]
-    (-> (merge defaults var)
-        (update-in [:members] add-var-defaults defaults))))
-
-(defn- add-ns-defaults [namespaces defaults]
-  (if (seq defaults)
-    (for [namespace namespaces]
-      (-> (merge defaults namespace)
-          (update-in [:publics] add-var-defaults defaults)))
-    namespaces))
-
 (defn- ns-matches? [{ns-name :name} pattern]
   (cond
     (instance? java.util.regex.Pattern pattern) (re-find pattern (str ns-name))
@@ -52,13 +40,11 @@
 
 (defn- read-namespaces
   [{:keys [language root-path namespaces] :as opts}]
-  (let [exclude-vars #"^(map)?->\p{Upper}"
-        metadata {}
+  (let [record-constructor-function-vars #"^(map)?->\p{Upper}"
         reader (namespace-readers language)]
-    (-> (reader [root-path] (select-keys opts [:exception-handler]))
+    (-> (reader root-path (select-keys opts [:exception-handler]))
         (filter-namespaces namespaces)
-        (remove-excluded-vars exclude-vars)
-        (add-ns-defaults metadata))))
+        (remove-excluded-vars record-constructor-function-vars))))
 
 (defn- determine-languages [lang-opt src-dir]
   (if (= :auto-detect lang-opt)

@@ -124,11 +124,9 @@
     (.isDirectory file) (set (ns/find-namespaces-in-dir file))
     (jar-file? file)    (set (ns/find-namespaces-in-jarfile (JarFile. file)))))
 
-;; TODO: consider removing support for multiple paths. cljdoc-analyzer does not use it and we don't test the case.
 (defn read-namespaces
-  "Read Clojure namespaces from a set of source directories (defaults
-  to [\"src\"]), and return a list of maps suitable for documentation
-  purposes.
+  "Read Clojure namespaces from a source directory and return a list
+   namespaces with their public vars.
 
   Supported options using the second argument:
     :exception-handler - function (fn [ex ns]) to handle exceptions
@@ -149,15 +147,12 @@
       :type       - one of :macro, :protocol, :multimethod or :var
       :added      - the library version the var was added in
       :deprecated - the library version the var was deprecated in"
-  ([] (read-namespaces ["src"] {}))
-  ([paths] (read-namespaces paths {}))
-  ([paths {:keys [exception-handler]
+  ([path] (read-namespaces path {}))
+  ([path {:keys [exception-handler]
            :or {exception-handler (partial utils/default-exception-handler "Clojure")}}]
-   (->> (mapcat (fn [path]
-                  (let [path (utils/canonical-path path)]
-                    (->> (io/file path)
-                         (find-namespaces)
-                         (mapcat #(read-ns % path exception-handler))
-                         (remove :no-doc))))
-                paths)
-        (sort-by :name))))
+   (let [path (utils/canonical-path path)]
+     (->> (io/file path)
+          (find-namespaces)
+          (mapcat #(read-ns % path exception-handler))
+          (remove :no-doc)
+          (sort-by :name)))))

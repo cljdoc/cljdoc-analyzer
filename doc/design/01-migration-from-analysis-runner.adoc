@@ -24,11 +24,13 @@ We will:
 ** vector of languages to analyze which can be one or both of: `"clj"` `"cljs"`
 ** `:auto-detect`
 * process languages in a single pass
-* in the spirit of dropping features that have no known current use, drop:
-** wildcard support for `:namespaces`
+* in the spirit of dropping features that have no known current use, drop codox:
+** `:metadata` option - we have no need to provide default metadata
 ** `:writer` option - folks can do what they want with the returned data
-** `:exclude-vars` option - we can bring this back if ever there proves to be a need
-* project specific overrides for languages (aka platforms), namespaces and deps will be moved to a local config file.
+** `:exclude-vars` option - we'll hardcode the codox default - we can bring this back if ever there proves to be a need
+* we'll leave in codox wildcard support for namespaces, code is simple and the feature seems useful.
+* project specific overrides for languages (aka platforms), namespaces and deps will be moved from cljdoc to a local
+  cljdoc-analyzer config file.
 
 We might:
 

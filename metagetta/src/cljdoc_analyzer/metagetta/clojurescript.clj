@@ -111,11 +111,9 @@
 (defn- ns-merger [val-first val-next]
   (update val-first :publics #(seq (into (set %) (:publics val-next)))))
 
-;; TODO: consider removing support for multiple paths. cljdoc-analyzer does not use it and we don't test the case.
 (defn read-namespaces
-  "Read ClojureScript namespaces from a set of source directories
-  (defaults to [\"src\"]), and return a list of maps suitable for
-  documentation purposes.
+  "Read ClojureScript namespaces from a source directory and return
+  a list of namespaces with their public vars.
 
   Supported options using the second argument:
     :exception-handler - function (fn [ex file]) to handle exceptions
@@ -134,19 +132,15 @@
       :type       - one of :macro, :protocol or :var
       :added      - the library version the var was added in
       :deprecated - the library version the var was deprecated in"
-  ([] (read-namespaces ["src"] {}))
-  ([paths] (read-namespaces paths {}))
-  ([paths {:keys [exception-handler]
+  ([path] (read-namespaces path {}))
+  ([path {:keys [exception-handler]
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
-   (->>
-    (mapcat (fn [path]
-              (let [path (io/file (utils/canonical-path path))
-                    file-reader #(read-file path % exception-handler)]
-                (->> (find-files path)
-                     (map file-reader)
-                     (apply merge-with ns-merger)
-                     (vals)
-                     (remove :no-doc))))
-            paths)
-    (map #(assoc % :publics (sort-by (comp str/lower-case :name) (:publics %))))
-    (sort-by :name))))
+   (let [path (io/file (utils/canonical-path path))
+         file-reader #(read-file path % exception-handler)]
+     (->> (find-files path)
+          (map file-reader)
+          (apply merge-with ns-merger)
+          (vals)
+          (remove :no-doc)
+          (map #(assoc % :publics (sort-by (comp str/lower-case :name) (:publics %))))
+          (sort-by :name)))))
