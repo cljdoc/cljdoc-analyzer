@@ -35,23 +35,38 @@
      2. CONS: cljdoc-analyzer will likely not be used outside of cljdoc
    The amount of code is small, I am leaning toward #1 but will bounce of Martin to see if he has a strong opinion.
 
+** Use logging for cljdoc-analyzer.
+   Logging to stdout by default.
+   Still use println for metagetta to avoid bringing in more deps.
+** edn only as commandline perhaps a bit awkward
+   added support for ad hoc usage with more conventional cmd line args.
 * General todos
 ** Reintroduce :exception-handler in runner
+** Add namespace tests
+** Look at returning all publics
+   We currently skip all no-docs which is still appropriate for cljdoc usage but does not satisfy ad hoc usage.
+
+   A general solution to skip/include with arbitrary metadata key would imply
+   returning all metadata. I don't want to to solve for unknown use cases.
+
+   We could return everything and include no-doc in metadata and consider filtering
+   up to the caller. This was Martin's preference.
+
+   But I think I want the normal behavior cater to cljdoc. This will make initial testing more straightforward.
+
+   Maybe we could have --skip-no-doc for this initial release.
+
+   We'd start to include :no-doc metadata in result.
+
 ** runner main returns map that is not really used by caller.
    Consider doing any cleanup necessary in finally block and letting exception go through uncaught.  This would
    give the caller more info as to what went wrong.
 * Research
-** Why are jar and pom passsed into runner?
-   Is pom not always included in jar for clojure projects?  Maybe not. I shall assume not for now.
-** Why are project (group-id/artifact-id) and version passed into runner?
-   Can't I glean these from jar and/or pom?  Maybe not? I shall asumme not for now.
 * To ponder
 ** Include args used in result?
    Might be nice to know what :namespaces and :languages were requested (Actually did I accidentally turf this?)
    Also GMT of run sounds useful.
-** edn only as commandline perhaps a bit awkward
-   totally appropriate for cljdoc usage.
-   but for general usage might be a bit awkward
+   But remember.. if we include changing state we are no longer idempotent.
 ** consider output to stdout for piping?
    Think of borkdude's tools here. Might be nice to simply pipe metadata output through other tools
    We are currently logging to stdout... so we'd have to quiet that completely to support this.
