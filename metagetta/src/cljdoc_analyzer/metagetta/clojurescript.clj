@@ -109,10 +109,7 @@
       (exception-handler e file))))
 
 (defn- ns-merger [val-first val-next]
-  {:name (:name val-first)
-   :publics (->> (concat (:publics val-first) (:publics val-next))
-                 (into #{})
-                 (into ()))})
+  (update val-first :publics #(seq (into (set %) (:publics val-next)))))
 
 ;; TODO: consider removing support for multiple paths. cljdoc-analyzer does not use it and we don't test the case.
 (defn read-namespaces
