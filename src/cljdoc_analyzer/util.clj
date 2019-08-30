@@ -19,8 +19,6 @@
 (defn artifact-id [project]
   (name (symbol project)))
 
-
-
 (defn serialize-cljdoc-edn [analyze-result]
   ;; the analyzed structure can contain regex #"..." (e.g. in :arglists)
   ;; and they can't be read in again using edn/read-string
