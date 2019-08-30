@@ -44,14 +44,11 @@ This will log to stdout and, if successful, write to a file in a predefined know
 ----
 
 === general use
-TODO: design phase only - not implemented
+You can use cljdoc-analyzer ad hoc to get data for a project published to a maven repo. For example:
 
-You can use cljdoc-analyzer ad hoc to get data for a project published to a known maven repo.
-
-If the project you want to analyze is up on a maven repo:
 [source,bash,no-wrap]
 ----
-clojure -m cljdoc.analyzer.main --project io.aviso/pretty --version "0.1.29"
+clojure -m cljdoc-analyzer.main analyze --project io.aviso/pretty --version "0.1.29" --output-filename "io-aviso-pretty-0.1.29.edn"
 ----
 If everything works, you'll find the output in the current directory in `io.aviso-pretty-0.1.29.edn`
 
@@ -59,6 +56,8 @@ If you are working on a local project, publish it to your local maven repo first
 
 There is no facility yet for specifying different repos than the default repos cljdoc-analyzer knows about - if you need
 to do this hacking the code might make sense.
+
+We can look at other features as we get a feel for what folks are interested in.
 
 == Internal Workings
 
@@ -334,17 +333,17 @@ Cljdoc-analyzer has integration and unit tests, to run them all, ensure you are 
 clojure -A:test
 ----
 
-The integration tests can take a while to run, to focus on unit tests only:
+The integration tests can take a while to run, to run unit tests only:
 ----
-clojure -A:test --skip-meta integration
-----
-
-To focus on integration tests only:
-----
-clojure -A:test --focus-meta integration
+clojure -A:test unit
 ----
 
-To run in watch mode tack on a `--watch` to any of the above commands. See kaocha docs for other options.
+To run integration tests only:
+----
+clojure -A:test integration
+----
+
+To automatically rerun tests on any changes, tack on a `--watch` to any of the above commands. See kaocha docs for other options.
 
 
 == Notes preserved from codox docs

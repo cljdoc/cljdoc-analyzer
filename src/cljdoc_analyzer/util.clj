@@ -19,18 +19,7 @@
 (defn artifact-id [project]
   (name (symbol project)))
 
-(def analysis-output-prefix
-  "The -main of `cljdoc-analyzer.runner` will write files to this directory.
 
-  Be careful when changing it since that path is also hardcoded in the
-  [cljdoc-builder](https://github.com/martinklepsch/cljdoc-builder)
-  CircleCI configuration"
-  "/tmp/cljdoc/analysis-out/")
-
-(defn cljdoc-edn
-  [project version]
-  {:pre [(some? project) (string? version)]}
-  (str "cljdoc-edn/" (group-id project) "/" (artifact-id project) "/" version "/cljdoc.edn"))
 
 (defn serialize-cljdoc-edn [analyze-result]
   ;; the analyzed structure can contain regex #"..." (e.g. in :arglists)

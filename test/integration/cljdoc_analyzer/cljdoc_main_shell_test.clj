@@ -1,9 +1,9 @@
-(ns ^:integration cljdoc-analyzer.extended-test
+(ns ^:integration cljdoc-analyzer.cljdoc-main-shell-test
   (:require [clojure.test :as t]
             [clojure.java.shell :as shell]
             [clojure.string :as string]
             [clojure.java.io :as io]
-            [cljdoc-analyzer.util :as util])
+            [cljdoc-analyzer.test-helper :as test-helper])
   (:import [java.nio.file Files]
            [java.net URI]))
 
@@ -48,29 +48,15 @@
            :jarpath (download-temp! jarpath (str prefix ".jar"))
            :pompath (download-temp! pompath (str prefix ".pom")))))
 
-(defn- edn-filename [prefix project version]
-  (let [project (if (string/index-of project "/")
-                  project
-                  (str project "/" project))]
-    (str prefix "/" project "/" version "/cljdoc.edn")))
-
 (defn- run-analysis [{:keys [project version] :as args}]
   (let [;; convention for metadata output file
-        edn-out-filename (edn-filename "/tmp/cljdoc/analysis-out/cljdoc-edn" project version)
+        edn-out-filename (test-helper/edn-filename "/tmp/cljdoc/analysis-out/cljdoc-edn" project version)
         ;; wipe out any file from previous analysis
         _  (io/delete-file edn-out-filename true)
-        args ["clojure" "--report" "stderr" "-m" "cljdoc-analyzer.main" (pr-str args)]
-        _ (do (println "Analyzing" project version) (println (string/join " " args)))
-        {:keys [exit out err]} (apply shell/sh args)]
-    (println "analysis exit code:" exit)
-    (println "analysis stdout:")
-    (println out)
-    (println "analysis stderr:")
-    (println err)
-    (t/is (zero? exit))
-    ;; assumes read-cljdoc-edn is well tested elsewhere
-    (t/is (= (util/read-cljdoc-edn (io/resource (edn-filename "expected-edn" project version)))
-             (util/read-cljdoc-edn edn-out-filename)))))
+        args ["clojure" "--report" "stderr" "-m" "cljdoc-analyzer.cljdoc-main" (pr-str args)]]
+    (println (string/join " " args))
+    (println "Analyzing" project version)
+    (test-helper/verify-analysis-result project version edn-out-filename (apply shell/sh args))))
 
 (t/deftest muuntaja-unpublished-locally
   ;; known to work

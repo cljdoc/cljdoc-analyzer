@@ -179,10 +179,10 @@
 
 (defn analyze!
   "Return metadata analysis `:analysis-status` and result in `:analysis-result` file"
-  [{:keys [project version jarpath pompath] :as args}]
+  [{:keys [project version jarpath pompath output-filename] :as args}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (try
-    (let [output-file  (io/file util/analysis-output-prefix (util/cljdoc-edn project version))]
+    (let [output-file  (io/file output-filename)]
       (-> (get-metadata args)
           (save-result output-file))
       (log/info "results file:" (.getAbsolutePath output-file))

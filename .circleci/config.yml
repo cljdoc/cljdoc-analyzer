@@ -30,16 +30,30 @@ jobs:
 
       - run:
           name: Run metagetta unit tests
-          command: clojure -Atest --reporter documentation --plugin kaocha.plugin/junit-xml --junit-xml-file target/test-results/metagetta-unit/results.xml
+          command: >
+            clojure -Atest
+            --reporter documentation
+            --plugin kaocha.plugin/junit-xml
+            --junit-xml-file target/test-results/metagetta-unit/results.xml
           working_directory: ~/repo/metagetta
 
       - run:
           name: Run cldoc-analyzer unit tests
-          command: clojure -Atest --focus-meta integration --reporter documentation --plugin kaocha.plugin/junit-xml --junit-xml-file target/test-results/cljdoc-analyzer-unit/results.xml
+          command: >
+            clojure -Atest
+            --reporter documentation
+            --plugin kaocha.plugin/junit-xml
+            --junit-xml-file target/test-results/cljdoc-analyzer-unit/results.xml
+            unit
 
       - run:
           name: Run cldoc-analyzer integration tests
-          command: clojure -Atest --skip-meta integration --reporter documentation --plugin kaocha.plugin/junit-xml --junit-xml-file target/test-results/cljdoc-analyzer-integration/results.xml
+          command: >
+            clojure -Atest
+            --reporter documentation
+            --plugin kaocha.plugin/junit-xml
+            --junit-xml-file target/test-results/cljdoc-analyzer-integration/results.xml
+            integration
 
       - save_cache:
           paths:

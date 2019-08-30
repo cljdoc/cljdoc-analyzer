@@ -15,7 +15,7 @@ function analyze() {
  :pompath "${repo_prefix}.pom"}
 EOM
 )
-    clojure --report stderr -m cljdoc-analyzer.main "${OPTS}"
+    clojure --report stderr -m cljdoc-analyzer.cljdoc-main "${OPTS}"
 }
 
 #analyze "lread" "cljdoc-exerciser" "1.0.19"

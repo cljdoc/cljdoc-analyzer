@@ -14,9 +14,7 @@
   (t/is (= "a-group-id" (util/artifact-id "a-group-id")))
   (t/is (= "b-group-id" (util/artifact-id 'b-group-id))))
 
-(t/deftest cldoc-edn-test
-  (t/is (= "cljdoc-edn/gid1/art1/v1/cljdoc.edn" (util/cljdoc-edn 'gid1/art1 "v1")))
-  (t/is (= "cljdoc-edn/art2/art2/v2/cljdoc.edn" (util/cljdoc-edn 'art2 "v2"))))
+
 
 (t/deftest serialize-cldoc-edn-test
   (t/is (= "{:regex-test #regex \".*booya.*\"}" (util/serialize-cljdoc-edn {:regex-test #".*booya.*"})))

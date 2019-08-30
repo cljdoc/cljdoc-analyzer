@@ -1,5 +1,6 @@
 (ns cljdoc-analyzer.deps
   (:require [clojure.tools.deps.alpha :as tdeps]
+            [clojure.string :as string]
             [version-clj.core :as v]
             [cljdoc-analyzer.pom :as pom]
             [cljdoc-analyzer.util :as util]))
@@ -107,6 +108,17 @@
                                            (extra-repos pom))}
                         {:extra-deps {(symbol project) {:local/root jar-url}}
                          :verbose false})))
+
+(defn resolve-dep
+  "Return resolved local `:jar` and `:pom` for maven repo hosted `project` `version`"
+  [project version]
+  (let [jar (-> (tdeps/resolve-deps {:deps {project {:mvn/version version}}
+                                     :mvn/repos default-repos} nil)
+                (get project)
+                :paths
+                first)
+        pom (string/replace jar #"\.jar$" ".pom")]
+    {:jar jar :pom pom}))
 
 (defn make-classpath
   "Build a classpath for `resolved-deps`."

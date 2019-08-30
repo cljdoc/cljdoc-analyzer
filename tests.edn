@@ -1,6 +1,9 @@
 #kaocha/v1
-{:tests [{:id :extended
-          :source-paths []
-          :test-paths  ["test"]}]
+{:tests [{:id :unit
+          :source-paths ["src" "test-resources"]
+          :test-paths ["test/unit"]}
+         {:id :integration
+          :source-paths ["src" "test-resources"]
+          :test-paths ["test/integration"]}]
  :reporter kaocha.report.progress/report
  :plugins [:kaocha.plugin/notifier]}
