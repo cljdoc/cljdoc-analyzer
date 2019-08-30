@@ -28,6 +28,7 @@ We will:
 ** `:metadata` option - we have no need to provide default metadata
 ** `:writer` option - folks can do what they want with the returned data
 ** `:exclude-vars` option - we'll hardcode the codox default - we can bring this back if ever there proves to be a need
+** `:exception-handler` option - we'll keep the inner workings in metagetta and start with a fast failing error handler
 * we'll leave in codox wildcard support for namespaces, code is simple and the feature seems useful.
 * project specific overrides for languages (aka platforms), namespaces and deps will be moved from cljdoc to a local
   cljdoc-analyzer config file.
@@ -36,6 +37,7 @@ We might:
 
 * support failing slow. Codox currently stops processing on first problem. We'll look at trying to find multiple
   errors in a single run.
+  aa
 
 == Potential users
 In addition to cljdoc, who else might find value in cljdoc-analyzer?
@@ -139,8 +141,8 @@ leaning toward.
 | `:exception-handler`
 | behavior to execute on exception
 | ditto
-| turf and hardcode to current behavior
-| ⭐ continue to support for general usage, perhaps extend to allow to fail slow (continue after failure in ns)
+| ⭐ turf eternal option, hardcode to fail slow
+| continue to support for general usage, perhaps extend to allow to fail slow (continue after failure in ns)
 
 | `:metadata`
 | a way to provide default metadata where it is missing

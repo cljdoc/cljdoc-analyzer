@@ -64,6 +64,59 @@ to do this hacking the code might make sense.
 
 We can look at other features as we get a feel for what folks are interested in.
 
+== Output format
+
+The output is a map of namespaces and their publics.
+
+=== edn encoding
+
+The edn has a twist. Function arglists can sometimes contain regular expressions. Since edn does not support
+deserializing serialized regular expressions, we adapt by serializing regexes as `#regex` followed by the string
+version of regex. For example
+----
+#".*booya.*"
+----
+is serialized as:
+----
+#regex ".*booya.*"
+----
+See `cljdoc-analyzer.util/serialize-cljdoc-edn` and `cljdoc-analyzer.util/deserialize-cljdoc-edn`.
+
+=== map
+
+The edn output is a map of:
+
+* `:group-id` project group-id
+* `:artifact-id` project artifact-id
+* `:version` project version
+;; TODO: check impact of changing :codox to something else.
+* `:codox` codox analysis for languages which can consist of a map with none, one or both of:
+** `:clj` list of namespaces (see below)
+** `:cljs` list of namespaces (see below)
+* `:pom-str` slurp of maven pom file
+
+list of namespaces is a list of maps of:
+
+** `:name` namespace name
+** `:doc` namespace doc string
+** `:publics` namespace publics which is a list of maps of:
+*** `:name` public element name
+*** `:type` one of: `:macro` `:multimethod` `:protocol` `:var`
+*** `:doc`  doc string
+*** `:file` file relative to jar root
+*** `:line` line number
+*** `:arglists` list of vectors of arglists, omitted for `def` `record` and `protocol` elements
+*** `:members`  only applicable when `:type` is `:protocol`, list of maps of:
+**** `:arglists`  list of vectors of arglists
+**** `:name` name of protocol method
+**** `:type` can this be only `:var`?
+
+special metadata tags when present are included in publics:
+
+* `:added` version an element was added
+* `:deprecated` version an element was deprecated
+* `:dynamic` for dynamic defs
+
 == Internal Workings
 
 We use `clojure.tools.namespace` and `cljs.analyzer.api` to load source and collect metadata. This requires the loading
@@ -115,9 +168,9 @@ directives in your project; instead, place them in a specialized
 profile, such as `:uberjar`.
 
 
-== Metadata Options
+== Metadata Examples
 
-Cljdoc analyzer will recognize and return the following metadata.
+Cljdoc analyzer will recognize the following metadata.
 
 === :no-doc
 The `:no-doc` metadata key is a convention invented by codox to indicate that an element should not be included in api documentation.

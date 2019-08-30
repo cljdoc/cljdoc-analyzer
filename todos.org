@@ -40,8 +40,20 @@
    Still use println for metagetta to avoid bringing in more deps.
 ** edn only as commandline perhaps a bit awkward
    added support for ad hoc usage with more conventional cmd line args.
-* General todos
 ** Reintroduce :exception-handler in runner
+   Actually, since metagetta and the runner are coupled, I see no reason to make
+   the exception handler externally configurable at this time. We can leave in
+   the mechanics from in to configure an exception handler within metagetta, but
+   this would be an internal metagetta config only.
+
+   The first version of the exception handler fails on first exception.
+
+* General todos
+** Check impact to cljdoc of changing :codox in edn
+   We are moving away from codox. Can we change :codox in our edn to something more generic?
+   I think :metadata might be good, but have come to realize that might be a confusing name as folks might
+   assume it is, you know, ^:metadata.
+   Maybe :publics would be better?
 ** Throw error on duplicate publics in ns
 ** Add namespace tests
 ** Look at returning all publics
@@ -62,6 +74,9 @@
 ** runner main returns map that is not really used by caller.
    Consider doing any cleanup necessary in finally block and letting exception go through uncaught.  This would
    give the caller more info as to what went wrong.
+
+   Or... include status in generated edn. This would mean that, on failure, the caller could get details
+   on the failure by cracking open the edn output file.
 * Research
 * To ponder
 ** Include args used in result?
