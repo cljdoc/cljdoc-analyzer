@@ -49,6 +49,9 @@
    The first version of the exception handler fails on first exception.
 
 * General todos
+** Does cljdoc make use of codox ^:doc/format?
+   It does not look like it.
+   I think cljdoc assumes doc strings are in always in markdown format.
 ** Check impact to cljdoc of changing :codox in edn
    We are moving away from codox. Can we change :codox in our edn to something more generic?
    I think :metadata might be good, but have come to realize that might be a confusing name as folks might
