@@ -25,10 +25,9 @@
 (defn typecheck-var [var]
   ((find-var 'clojure.core.typed/check-form-info) (var->symbol var)))
 
-(defn- sorted-public-vars [namespace]
+(defn- public-vars [namespace]
   (->> (ns-publics namespace)
-       (vals)
-       (sort-by (comp :name meta))))
+       (vals)))
 
 (defn- proxy? [var]
   (re-find #"proxy\$" (-> var meta :name str)))
@@ -88,12 +87,11 @@
         utils/remove-empties)))
 
 (defn- read-publics [source-path namespace]
-  (let [vars (sorted-public-vars namespace)]
+  (let [vars (public-vars namespace)]
     (->> vars
          (remove proxy?)
          (remove (partial protocol-method? vars))
-         (map (partial read-var source-path vars))
-         (sort-by (comp str/lower-case :name)))))
+         (map (partial read-var source-path vars)))))
 
 (defn- read-ns [namespace source-path exception-handler]
   (try-require 'clojure.core.typed.check)
@@ -155,5 +153,4 @@
    (let [path (utils/canonical-path path)]
      (->> (io/file path)
           (find-namespaces)
-          (mapcat #(read-ns % path exception-handler))
-          (sort-by :name)))))
+          (mapcat #(read-ns % path exception-handler))))))

@@ -62,8 +62,7 @@
                      :members (->> (protocol-methods var vars)
                                    (map (partial read-var source-path file vars))
                                    (map utils/remove-empties)
-                                   (map #(dissoc % :file :line))
-                                   (sort-by :name)))
+                                   (map #(dissoc % :file :line))))
         utils/remove-empties)))
 
 (defn- unreferenced-protocol-fn?
@@ -143,6 +142,4 @@
      (->> (find-files path)
           (map file-reader)
           (apply merge-with ns-merger)
-          (vals)
-          (map #(assoc % :publics (sort-by (comp str/lower-case :name) (:publics %))))
-          (sort-by :name)))))
+          (vals)))))

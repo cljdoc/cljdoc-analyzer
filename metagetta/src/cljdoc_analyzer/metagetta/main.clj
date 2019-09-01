@@ -37,6 +37,22 @@
                       (fn [vars]
                         (remove #(contains-any-key? % exclude-with) vars)))))))
 
+(defn- case-insensitive-comparator [a b]
+  (let [la (and a (string/lower-case a))
+        lb (and b (string/lower-case b))]
+     (if (= la lb)
+       (compare a b)
+       (compare la lb))))
+
+(defn- sort-by-name
+  "Sorts all collections of maps with :name by :name.
+  Sort is case insensitive with consistent sort order if :name is case sensitive unique across collection
+  and all maps in collection have :name."
+  [namespaces]
+  (clojure.walk/postwalk #(if (and (coll? %) (:name (first %)))
+                            (sort-by :name case-insensitive-comparator %)
+                            %)
+                         namespaces))
 
 (defn- ns-matches? [{ns-name :name} pattern]
   (cond
@@ -56,7 +72,8 @@
     (-> (reader root-path (select-keys opts [:exception-handler]))
         (filter-namespaces namespaces)
         (remove-excluded-vars record-constructor-function-vars)
-        (remove-excluded-keys exclude-with))))
+        (remove-excluded-keys exclude-with)
+        (sort-by-name))))
 
 (defn- determine-languages [lang-opt src-dir]
   (if (= :auto-detect lang-opt)
