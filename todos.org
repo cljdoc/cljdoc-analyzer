@@ -73,6 +73,8 @@
    assume it is, you know, ^:metadata.
    Maybe :publics would be better?
 ** Throw error on duplicate publics in ns
+    Martin and I decided that this makes sense, but also that maybe its not that important because it is rare.
+    Also... I vaguely remember it being valid to have a macro and a fn with the same name in a ns for cljs?
 ** Add namespace tests
 ** runner main returns map that is not really used by caller.
    Consider doing any cleanup necessary in finally block and letting exception go through uncaught.  This would
@@ -80,8 +82,10 @@
 
    Or... include status in generated edn. This would mean that, on failure, the caller could get details
    on the failure by cracking open the edn output file.
-* Research
 * To ponder
+** Maybe metagetta doesn't need to write to stdout at all
+   Maybe it should just return everything as data and caller can decide what to show.
+   Writing to stdout gives feedback while running tho... so kind of nice for devs?
 ** Include args used in result?
    Might be nice to know what :namespaces and :languages were requested (Actually did I accidentally turf this?)
    Also GMT of run sounds useful.
