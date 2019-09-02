@@ -48,6 +48,15 @@
 
    The first version of the exception handler fails on first exception.
 
+** Throw error on duplicate publics in ns
+    Martin and I decided that this might make sense, but also that maybe its not that important because it is rare.
+
+    Also... I vaguely remember it being valid to have a macro and a fn with the same name in a ns for cljs?
+    This is true, but analyzer only exposes fn, so unique :name within ns is likely still valid.
+
+    I wished, I washed, and decided it might be a protection more against faulty code in metegetta, so decided
+    to include the check.
+
 * In progress
 ** Look at returning all publics
    We currently skip all no-docs which is still appropriate for cljdoc usage but does not satisfy ad hoc usage.
@@ -56,12 +65,6 @@
      for ad hoc main default is nil, can be changed via --exclude-with option
    - next
      add tests that do not exclude no-doc
-** Throw error on duplicate publics in ns
-    Martin and I decided that this makes sense, but also that maybe its not that important because it is rare.
-
-    Also... I vaguely remember it being valid to have a macro and a fn with the same name in a ns for cljs?
-    This is true, but analyzer only exposes fn, so unique :name within ns is likely still valid.
-
 * General todos
 ** Codox comment sez it return :author on ns. verify.
    It might just return whatever metadata happens to be on ns.

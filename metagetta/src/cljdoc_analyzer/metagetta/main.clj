@@ -37,6 +37,17 @@
                       (fn [vars]
                         (remove #(contains-any-key? % exclude-with) vars)))))))
 
+(defn- assert-no-dupes-in-publics [namespaces]
+  (let [dupes (for [ns namespaces
+                    :let [dupes (->> (:publics ns)
+                                     (group-by :name)
+                                     (remove #(= 1 (count (val %)))))]
+                    :when (seq dupes)]
+                {:namespace (:name ns) :dupes dupes})]
+    (if (seq dupes)
+      (throw (ex-info (str "duplicate publics found:\n" (with-out-str (pprint/pprint dupes))) {:dupes dupes}))
+      namespaces)))
+
 (defn- case-insensitive-comparator [a b]
   (let [la (and a (string/lower-case a))
         lb (and b (string/lower-case b))]
@@ -73,6 +84,7 @@
         (filter-namespaces namespaces)
         (remove-excluded-vars record-constructor-function-vars)
         (remove-excluded-keys exclude-with)
+        (assert-no-dupes-in-publics)
         (sort-by-name))))
 
 (defn- determine-languages [lang-opt src-dir]
