@@ -56,11 +56,13 @@
      for ad hoc main default is nil, can be changed via --exclude-with option
    - next
      add tests that do not exclude no-doc
+** Throw error on duplicate publics in ns
+    Martin and I decided that this makes sense, but also that maybe its not that important because it is rare.
+
+    Also... I vaguely remember it being valid to have a macro and a fn with the same name in a ns for cljs?
+    This is true, but analyzer only exposes fn, so unique :name within ns is likely still valid.
 
 * General todos
-** Look at common code in readers
-   Things like sorting seem to be common and could be done after fetching.
-   Favor code readability over DRY.
 ** Codox comment sez it return :author on ns. verify.
    It might just return whatever metadata happens to be on ns.
    If so, maybe not such a great idea - as we might not be able to serialize arbitrary metadata.
@@ -72,9 +74,6 @@
    I think :metadata might be good, but have come to realize that might be a confusing name as folks might
    assume it is, you know, ^:metadata.
    Maybe :publics would be better?
-** Throw error on duplicate publics in ns
-    Martin and I decided that this makes sense, but also that maybe its not that important because it is rare.
-    Also... I vaguely remember it being valid to have a macro and a fn with the same name in a ns for cljs?
 ** Add namespace tests
 ** runner main returns map that is not really used by caller.
    Consider doing any cleanup necessary in finally block and letting exception go through uncaught.  This would

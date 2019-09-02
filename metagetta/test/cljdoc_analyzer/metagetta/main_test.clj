@@ -2,7 +2,7 @@
   (:require [clojure.test :as t]
             [cljdoc-analyzer.metagetta.main :as main]))
 
-(def expected-analysis-result
+(def base-expected-analysis-result
   '({:name metagetta-test.test-ns1.altered
     :publics [{:name altered-def-with-absolute-file
                :type :var
@@ -101,8 +101,34 @@
                :file "metagetta_test/test_ns1/special_tags.cljc"
                :line 21}]}))
 
+
+(def expected-cljs-analysis-result
+  (concat
+   '({:name metagetta-test.cljs-macro-functions.foo.core
+      :publics ({:arglists ([a b])
+                 :file "metagetta_test/cljs_macro_functions/foo/core.cljs"
+                 :line 6
+                 :name add
+                 :type :var})}
+     {:name metagetta-test.cljs-macro-functions.usage
+      :publics ({:arglists ([])
+                 :file "metagetta_test/cljs_macro_functions/usage.cljs"
+                 :line 19
+                 :name example
+                 :type :var})})
+   base-expected-analysis-result))
+
+(def expected-clj-analysis-result
+  (concat
+   '({:name metagetta-test.cljs-macro-functions.foo.core,
+     :publics ({:arglists ([a b]),
+                :file "metagetta_test/cljs_macro_functions/foo/core.clj",
+                :line 6,
+                :name add,
+                :type :macro})})
+   base-expected-analysis-result))
+
 ;; TODO: not testing namespaces option yet
-;; TODO: only currently testing cljc, include clj and cljs
 (defn- analyze-sources [languages]
   (main/get-metadata {:root-path "test-sources"
                       :languages languages
@@ -110,22 +136,22 @@
 
 (t/deftest analyze-cljs-code-test
   (let [actual (analyze-sources #{"cljs"})
-        expected {"cljs" expected-analysis-result}]
+        expected {"cljs" expected-cljs-analysis-result}]
     (t/is (= expected actual))))
 
 (t/deftest analyze-clj-code-test
   (let [actual (analyze-sources #{"clj"})
-        expected {"clj" expected-analysis-result}]
+        expected {"clj" expected-clj-analysis-result}]
     (t/is (= expected actual))))
 
 (t/deftest analyze-clj-and-cljs-code-test
   (let [actual (analyze-sources #{"clj" "cljs"})
-        expected {"clj" expected-analysis-result
-                  "cljs" expected-analysis-result}]
+        expected {"clj" expected-clj-analysis-result
+                  "cljs" expected-cljs-analysis-result}]
     (t/is (= expected actual))))
 
 (t/deftest analyze-clj-and-cljs-via-auto-detect-code-test
   (let [actual (analyze-sources :auto-detect)
-        expected {"clj" expected-analysis-result
-                  "cljs" expected-analysis-result}]
+        expected {"clj" expected-clj-analysis-result
+                  "cljs" expected-cljs-analysis-result}]
     (t/is (= expected actual))))
