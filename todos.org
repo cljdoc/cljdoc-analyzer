@@ -57,8 +57,7 @@
     I wished, I washed, and decided it might be a protection more against faulty code in metegetta, so decided
     to include the check.
 
-* In progress
-** Codox comment sez it return :author on ns. verify.
+** ns metadata now consistent
    Ok, clojure returns all metadata on ns, and cljs return just doc.
    This effectively means that clojure returns :deprecated on ns as well where cljs does not.
 
@@ -68,9 +67,10 @@
    :author
    :deprecated
    :added
+   :no-doc
+   :no-wiki
 
-   We'll adjust to match codox docs for now: return only author and ignore arbitrary.
-
+* In progress
 ** Look at returning all publics
    We currently skip all no-docs which is still appropriate for cljdoc usage but does not satisfy ad hoc usage.
    - added exclude-with array
@@ -80,6 +80,7 @@
      add tests that do not exclude no-doc
 * General todos
 ** Add note to readme on potential risk of running?
+   No riskier than running any library really, but worth a note that this is not necessarily read-only.
 ** Add deploy support
 ** Does cljdoc make use of codox ^:doc/format?
    It does not look like it.
