@@ -26,6 +26,12 @@ behind.
 
 See link:doc/design/01-migration-from-analysis-runner.adoc[migration from analisys runner] for more details.
 
+
+== Warning
+
+Cljdoc-analyzer is not a static code analyzer.  It is interested in the result of programmatic load time alterations.
+Use the same judgement you would when using any 3rd party library. If you don't trust it, don't cljdoc-analyze it.
+
 == Usage
 
 === cljdoc use
