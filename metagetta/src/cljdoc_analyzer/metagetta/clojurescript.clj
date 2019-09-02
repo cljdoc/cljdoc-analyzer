@@ -97,7 +97,7 @@
        (-> (ana/find-ns state ns-name)
            (select-keys [:name :doc])
            (utils/update-some :doc utils/correct-indent)
-           (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki])))
+           (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki :author :deprecated :added])))
            (utils/remove-empties)
            (assoc :publics (read-publics state ns-name source-path file)))})
     (catch Exception e
@@ -118,7 +118,6 @@
   The keys in the maps are:
     :name    - the name of the namespace
     :doc     - the doc-string on the namespace
-  TODO: author? test
     :author  - if the metadata is there, we return it
     :no-doc  - request for namespace not to be documented
     :no-wiki - legacy synonym for :no-doc

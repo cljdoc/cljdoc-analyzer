@@ -58,6 +58,19 @@
     to include the check.
 
 * In progress
+** Codox comment sez it return :author on ns. verify.
+   Ok, clojure returns all metadata on ns, and cljs return just doc.
+   This effectively means that clojure returns :deprecated on ns as well where cljs does not.
+
+   What I'll do:
+   Match clj and cljdoc. They will both potentially return the following on ns:
+   :doc
+   :author
+   :deprecated
+   :added
+
+   We'll adjust to match codox docs for now: return only author and ignore arbitrary.
+
 ** Look at returning all publics
    We currently skip all no-docs which is still appropriate for cljdoc usage but does not satisfy ad hoc usage.
    - added exclude-with array
@@ -66,10 +79,8 @@
    - next
      add tests that do not exclude no-doc
 * General todos
+** Add note to readme on potential risk of running?
 ** Add deploy support
-** Codox comment sez it return :author on ns. verify.
-   It might just return whatever metadata happens to be on ns.
-   If so, maybe not such a great idea - as we might not be able to serialize arbitrary metadata.
 ** Does cljdoc make use of codox ^:doc/format?
    It does not look like it.
    I think cljdoc assumes doc strings are in always in markdown format.

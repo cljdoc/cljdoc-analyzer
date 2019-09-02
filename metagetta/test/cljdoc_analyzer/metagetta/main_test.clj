@@ -82,6 +82,10 @@
                 :file "metagetta_test/test_ns1/record.cljc"
                 :line 8}]}
     {:name metagetta-test.test-ns1.special-tags
+     :doc "document the special tags namespace\n"
+     :author "Respect my authoritah"
+     :added "0.1.1"
+     :deprecated "0.5.2"
      :publics [{:name added-fn
                 :arglists ([a b])
                 :type :var

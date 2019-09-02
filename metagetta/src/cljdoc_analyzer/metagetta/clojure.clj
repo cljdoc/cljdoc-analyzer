@@ -100,7 +100,7 @@
     (require namespace)
     (-> (find-ns namespace)
         (meta)
-        (dissoc :file :line :column :end-column :end-line)
+        (select-keys [:doc :author :deprecated :added :no-doc :no-wiki])
         (assoc :name namespace)
         (assoc :publics (read-publics source-path namespace))
         (utils/update-some :doc utils/correct-indent)
@@ -130,7 +130,6 @@
   The keys in the maps are:
     :name    - the name of the namespace
     :doc     - the doc-string on the namespace
-  TODO: author? test
     :author  - if the metadata is there, we return it
     :no-doc  - request for namespace not to be documented
     :no-wiki - legacy synonym for :no-doc
