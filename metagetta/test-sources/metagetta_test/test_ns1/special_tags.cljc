@@ -27,4 +27,4 @@
 
 
 
-(defn ^:skip-wiki dont-wiki-me "no docs also please" [y])
+(defn ^:skip-wiki dont-wiki-me "no docs also please" [y] y)
