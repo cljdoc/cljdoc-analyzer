@@ -75,7 +75,7 @@
     (-> (meta var)
         (include-record-factory-as-defrecord)
         (select-keys [:name :file :line :arglists :doc :dynamic
-                      :added :deprecated :doc/format
+                      :added :deprecated
                       :no-doc :skip-wiki])
         (utils/update-some :doc utils/correct-indent)
         (utils/update-some :file normalize)

@@ -51,7 +51,7 @@
         normalize (partial utils/normalize-to-source-path source-path)]
     (-> var
         (select-keys [:name :file :line :arglists :doc :dynamic
-                      :added :deprecated :doc/format
+                      :added :deprecated
                       :no-doc :skip-wiki])
         (utils/update-some :name (comp symbol name))
         (utils/update-some :arglists remove-quote)

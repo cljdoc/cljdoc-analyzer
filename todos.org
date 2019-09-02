@@ -70,6 +70,8 @@
    :no-doc
    :no-wiki
 
+** turfed :doc/format metadata
+   cljdoc does not use this codox feature
 * In progress
 ** Look at returning all publics
    We currently skip all no-docs which is still appropriate for cljdoc usage but does not satisfy ad hoc usage.
@@ -80,9 +82,6 @@
      add tests that do not exclude no-doc
 * General todos
 ** Add deploy support
-** Does cljdoc make use of codox ^:doc/format?
-   It does not look like it.
-   I think cljdoc assumes doc strings are in always in markdown format.
 ** Check impact to cljdoc of changing :codox in edn
    We are moving away from codox. Can we change :codox in our edn to something more generic?
    I think :metadata might be good, but have come to realize that might be a confusing name as folks might
