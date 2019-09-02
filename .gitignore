@@ -10,3 +10,4 @@ checkouts/
 .lein-*
 .nrepl-port
 .eastwood
+.clj-kondo/.cache

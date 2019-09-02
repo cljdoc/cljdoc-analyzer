@@ -10,4 +10,8 @@
            {:extra-paths ["test/unit" "test/integration" "test-resources"]
             :extra-deps {lambdaisland/kaocha {:mvn/version "0.0-529"}
                          lambdaisland/kaocha-junit-xml {:mvn/version "0.0-70"}}
-            :main-opts ["-m" "kaocha.runner"]}}}
+            :main-opts ["-m" "kaocha.runner"]}
+
+           :clj-kondo
+           {:extra-deps {clj-kondo {:mvn/version "2019.08.21-alpha"}}
+            :main-opts ["-m" "clj-kondo.main"]}}}

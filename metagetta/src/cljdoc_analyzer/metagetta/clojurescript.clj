@@ -4,7 +4,6 @@
             [cljs.analyzer.api :as ana]
             [cljs.closure]
             [cljs.env]
-            [clojure.string :as str]
             [cljdoc-analyzer.metagetta.utils :as utils]))
 
 (defn- cljs-filename? [filename]

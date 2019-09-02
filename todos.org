@@ -66,6 +66,7 @@
    - next
      add tests that do not exclude no-doc
 * General todos
+** Add deploy support
 ** Codox comment sez it return :author on ns. verify.
    It might just return whatever metadata happens to be on ns.
    If so, maybe not such a great idea - as we might not be able to serialize arbitrary metadata.

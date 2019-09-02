@@ -3,7 +3,7 @@
 ;;
 (ns metagetta-test.test-ns1.multimethod)
 
-(defmulti start (fn [k opts] k))
+(defmulti start (fn [k _opts] k))
 
 (defmethod start :car [_ opts]
   (println "Starting car..." opts))

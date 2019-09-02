@@ -1,0 +1,3 @@
+{:linters {:unresolved-symbol
+           {:exclude [metagetta-test.test-ns1.altered]}}
+ :output {:include-files ["^src" "^test" "^metagetta"]}}

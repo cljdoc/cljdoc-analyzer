@@ -174,6 +174,11 @@ clojure -A:test integration
 
 To automatically rerun tests on any changes, tack on a `--watch` to any of the above commands. See kaocha docs for other options.
 
+== Linting
+
+We make use of https://github.com/borkdude/clj-kondo[clj-kondo] for linting.
+
+Our build server validates the code is lint free with `script/lint.sh` and so can you.
 
 == Notes preserved from codox docs
 TODO: Directly from codox README... Not sure of relevance... need to understand.

@@ -7,7 +7,7 @@
 
 
 
-(defn  ^{:deprecated "0.4.0"} deprecated-fn[x])
+(defn  ^{:deprecated "0.4.0"} deprecated-fn[x] x)
 
 
 

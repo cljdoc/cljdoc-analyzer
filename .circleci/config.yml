@@ -29,6 +29,10 @@ jobs:
           working_directory: ~/repo/metagetta
 
       - run:
+          name: Lint
+          command: ./script/lint.sh
+
+      - run:
           name: Run metagetta unit tests
           command: >
             clojure -Atest
