@@ -79,8 +79,6 @@
    - next
      add tests that do not exclude no-doc
 * General todos
-** Add note to readme on potential risk of running?
-   No riskier than running any library really, but worth a note that this is not necessarily read-only.
 ** Add deploy support
 ** Does cljdoc make use of codox ^:doc/format?
    It does not look like it.
