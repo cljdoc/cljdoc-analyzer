@@ -100,7 +100,7 @@
     (require namespace)
     (-> (find-ns namespace)
         (meta)
-        (select-keys [:doc :author :deprecated :added :no-doc :no-wiki])
+        (select-keys [:doc :author :deprecated :added :no-doc :skip-wiki])
         (assoc :name namespace)
         (assoc :publics (read-publics source-path namespace))
         (utils/update-some :doc utils/correct-indent)
@@ -128,11 +128,11 @@
     while reading a namespace
 
   The keys in the maps are:
-    :name    - the name of the namespace
-    :doc     - the doc-string on the namespace
-    :author  - if the metadata is there, we return it
-    :no-doc  - request for namespace not to be documented
-    :no-wiki - legacy synonym for :no-doc
+    :name      - the name of the namespace
+    :doc       - the doc-string on the namespace
+    :author    - if the metadata is there, we return it
+    :no-doc    - request for namespace not to be documented
+    :skip-wiki - legacy synonym for :no-doc
     :publics
       :name       - the name of a public function, macro, or value
       :file       - the file the var was declared in
@@ -143,7 +143,7 @@
       :added      - the library version the var was added in
       :deprecated - the library version the var was deprecated in
       :no-doc     - request for var not to be documented
-      :no-wiki    - legacy synonym for :no-doc"
+      :skip-wiki    - legacy synonym for :no-doc"
 
   ([path] (read-namespaces path {}))
   ([path {:keys [exception-handler]

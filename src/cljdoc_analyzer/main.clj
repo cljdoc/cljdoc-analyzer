@@ -25,7 +25,7 @@
                     :type :string :default :present}
 
                    {:option "exclude-with" :short "e"
-                    :as "Exclude namespaces and publics with key present"
+                    :as "Exclude namespaces and publics with metadata key present"
                     :type :keyword :multiple true}
 
                    {:option "output-filename" :short "o"

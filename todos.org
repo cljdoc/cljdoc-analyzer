@@ -68,18 +68,10 @@
    :deprecated
    :added
    :no-doc
-   :no-wiki
+   :skip-wiki
 
 ** turfed :doc/format metadata
    cljdoc does not use this codox feature
-* In progress
-** Look at returning all publics
-   We currently skip all no-docs which is still appropriate for cljdoc usage but does not satisfy ad hoc usage.
-   - added exclude-with array
-     for cljdoc main this is hardcoded to [:no-doc :no-wiki]
-     for ad hoc main default is nil, can be changed via --exclude-with option
-   - next
-     add tests that do not exclude no-doc
 * General todos
 ** Add deploy support
 ** Check impact to cljdoc of changing :codox in edn

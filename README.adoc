@@ -66,7 +66,7 @@ On successful completion, you'll find the output in the current directory in `io
 When you are working on a local project, publish it to your local maven repo first, then run the cljdoc analyze command.
 
 If you only want to suppress items that have been marked to be excluded from documentation you can use the `--exclude-with`.
-To match what cljdoc uses, you would exclude namespaces and publics tagged with `:no-doc` and/or `:no-wiki`, the above
+To match what cljdoc uses, you would exclude namespaces and publics tagged with `:no-doc` and/or `:skip-wiki`, the above
 command would become:
 
 [source,bash,no-wrap]
@@ -75,7 +75,7 @@ clojure -m cljdoc-analyzer.main analyze \
   --project io.aviso/pretty --version "0.1.29" \
   --output-filename "io-aviso-pretty-0.1.29.edn" \
   --exclude-with :no-doc \
-  --exclude-with :no-wiki
+  --exclude-with :skip-wiki
 ----
 
 There is no facility yet for specifying different repos than the default repos cljdoc-analyzer knows about - if you need
@@ -139,7 +139,7 @@ special metadata tags when present are included in publics:
 special metadata tags when present are included on namespaces and publics:
 
 * `:no-doc` author requests that this item be excluded from docs
-* `:no-wiki` legacy synonym for `:no-doc`, please use `:no-doc`.
+* `:skip-wiki` legacy synonym for `:no-doc`, please use `:no-doc`.
 
 == Internal Workings
 

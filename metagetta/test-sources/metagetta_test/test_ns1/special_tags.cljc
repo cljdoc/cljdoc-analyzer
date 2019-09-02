@@ -24,3 +24,7 @@
 
 
 (defn ^{:added "10.2.2"} added-fn[a b] (+ a b))
+
+
+
+(defn ^:skip-wiki dont-wiki-me "no docs also please" [y])

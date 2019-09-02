@@ -118,7 +118,7 @@
   - `:root-dir`- path to exploded/prepped jar dir
   - `:languages` - set of where language is `\"clj\"` and or `\"cljs\" or :auto-detect - defaults to `:auto-detect`
   - `:output-filename` - on success, edn is serialized to this file with special encoding for regexes.
-  - `:exclude-with` - optional - exclude ns and publics with any key in vector - ex [:no-doc :no-wiki]
+  - `:exclude-with` - optional - exclude ns and publics with any key in vector - ex [:no-doc :skip-wiki]
 
   Launching a separate process for analysis is necessary to limit the dependencies to the minimum required.
 
