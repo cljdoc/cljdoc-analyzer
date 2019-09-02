@@ -1,4 +1,4 @@
-(ns cljdoc-analyzer-test.util.alter-meta-clj
+(ns metagetta-test.util.alter-meta-clj
   "Hacky little utilities to support simulating import-vars type operations in clj for test-sources"
   (:require [clojure.java.io :as io]))
 

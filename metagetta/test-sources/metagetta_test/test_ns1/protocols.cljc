@@ -1,7 +1,7 @@
 ;;
 ;; Note: this file is used in tests that rely on line numbers
 ;;
-(ns cljdoc-analyzer-test.metagetta.protocols)
+(ns metagetta-test.test-ns1.protocols)
 
 (defprotocol ProtoTest
   "Protocol comment."

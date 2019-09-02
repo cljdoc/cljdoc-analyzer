@@ -1,7 +1,7 @@
 ;;
 ;; Note: this file is used in tests that rely on line numbers
 ;;
-(ns cljdoc-analyzer-test.metagetta.multimethod)
+(ns metagetta-test.test-ns1.multimethod)
 
 (defmulti start (fn [k opts] k))
 
