@@ -9,22 +9,91 @@ WARNING: PRE-ALPHA work here.
 A library to return public APIs for Clojure/ClojureScript projects. Recognizes that publics APIs can be altered at load
 time by tools such as import-vars.
 
-Cljdoc-analyzer's first use is for cljdoc but others might find value in this library as well.
+Cljdoc-analyzer's first use is for cljdoc but others might find value in this library.
 
 == History
 
-Some Clojure/ClojureScript projects alter their metadata at load time through tools such as
+Some Clojure/ClojureScript projects alter their APIs and related metadata at load time through tools such as
 https://github.com/ztellman/potemkin[potemkin import-vars].
 
-https://github.com/weavejester/codox[Codox] was coded to understand altered metadata for the Clojure projects it
-documents. Historically, cljdoc took advantage of these smarts via a branch on a fork of codox to get the metadata it
-needed to document Clojure/ClojureScript project APIs. This branch also has an unmerged PR to that understands
+https://github.com/weavejester/codox[Codox] was coded to understand these alterations for the Clojure projects it
+documents. Historically, cljdoc took advantage of these smarts via a branch on a fork of codox to get the API metadata
+it needed to document Clojure/ClojureScript project. This branch also had an unmerged PR to that understood
 ClojureScript import-vars type metadata manipulation.
 
-This library picks up from the cljdoc codox unmerged PR. It extracts the analysis portion of codox and leaves the rest
-behind.
+Cljdoc-analyzer picks up from the cljdoc codox unmerged PR in the internal metagetta sub-project and adds what was the
+cljdoc analysis-runner module under the main src.
 
 See link:doc/design/01-migration-from-analysis-runner.adoc[migration from analisys runner] for more details.
+
+== Tips for library authors
+
+=== AOT Compilation
+
+AOT-compiled namespaces will lose their metadata, which means you'll lose documentation for namespaces. Avoid having
+global `:aot` directives in your project; instead, place them in a specialized profile, such as `:uberjar`.
+
+
+=== Metadata Examples
+
+Cljdoc analyzer will recognize the following special metadata.
+
+==== :no-doc
+The `:no-doc` metadata key is a convention invented by codox to indicate that an element should not be included in api documentation.
+
+Examples:
+
+[source,clojure]
+----
+;; Documented
+(defn square
+"Squares the supplied number."
+[x]
+(* x x))
+
+;; Not documented
+(defn ^:no-doc hidden-square
+"Squares the supplied number."
+[x]
+(* x x))
+----
+
+`:no-doc` can also be used at the namespace level:
+
+For example:
+
+[source,clojure]
+----
+(ns ^:no-doc hidden-ns)
+----
+
+For autodoc legacy reasons, codox considers `:skip-wiki` to be equivalent to `:no-doc` and cljdoc-analyzer does the same.
+
+==== :added
+
+To denote the library version the var was added in, use the `:added` metadata key:
+
+[source,clojure]
+----
+(defn square
+"Squares the supplied number."
+{:added "1.0"}
+[x]
+(* x x))
+----
+
+==== :deprecated
+
+Similar to `:added`, deprecated vars can be denoted with the `:deprecated` metadata key:
+
+[source,clojure]
+----
+(defn square
+"Squares the supplied number."
+{:deprecated "2.0"}
+[x]
+(* x x))
+----
 
 
 == Warning
@@ -36,8 +105,8 @@ Use the same judgement you would when using any 3rd party library. If you don't 
 
 === cljdoc use
 
-Cljdoc-analyzer's first customer is cljdoc. This usage does not cater to general usability. Cljdoc started with using
-conventional command line arguments but then switched to edn because it made more sense for its use case.
+Cljdoc-analyzer's first customer is cljdoc. This usage does not cater to general usability. Cljdoc started with
+a conventional command line arguments but then switched to edn because it made more sense for its use case.
 
 Example of analyzing cljfmt v0.6.4:
 [source,bash,options="nowrap"]
@@ -108,7 +177,9 @@ The edn output is a map of:
 * `:group-id` project group-id
 * `:artifact-id` project artifact-id
 * `:version` project version
+
 ;; TODO: check impact of changing :codox to something else.
+
 * `:codox` codox analysis for languages which can consist of a map with none, one or both of:
 ** `:clj` list of namespaces (see below)
 ** `:cljs` list of namespaces (see below)
@@ -186,81 +257,11 @@ We make use of https://github.com/borkdude/clj-kondo[clj-kondo] for linting.
 
 Our build server validates the code is lint free with `script/lint.sh` and so can you.
 
-== Notes preserved from codox docs
-TODO: Directly from codox README... Not sure of relevance... need to understand.
-
-=== AOT Compilation
-
-AOT-compiled namespaces will lose their metadata, which mean you'll
-lose documentation for namespaces. Avoid having global `:aot`
-directives in your project; instead, place them in a specialized
-profile, such as `:uberjar`.
-
-
-== Metadata Examples
-
-Cljdoc analyzer will recognize the following metadata.
-
-=== :no-doc
-The `:no-doc` metadata key is a convention invented by codox to indicate that an element should not be included in api documentation.
-
-Examples:
-
-[source,clojure]
-----
-;; Documented
-(defn square
-  "Squares the supplied number."
-  [x]
-  (* x x))
-
-;; Not documented
-(defn ^:no-doc hidden-square
-  "Squares the supplied number."
-  [x]
-  (* x x))
-----
-
-`:no-doc` can also be used at the namespace level:
-
-For example:
-
-[source,clojure]
-----
-(ns ^:no-doc hidden-ns)
-----
-
-For autodoc legacy reasons, codox considers `:skip-wiki` to be equivalent to `:no-doc` and cljdoc-analyzer does the same.
-
-=== :added
-
-To denote the library version the var was added in, use the `:added` metadata key:
-
-[source,clojure]
-----
-(defn square
-  "Squares the supplied number."
-  {:added "1.0"}
-  [x]
-  (* x x))
-----
-
-=== :deprecated
-
-Similar to `:added`, deprecated vars can be denoted with the `:deprecated` metadata key:
-
-[source,clojure]
-----
-(defn square
-  "Squares the supplied number."
-  {:deprecated "2.0"}
-  [x]
-  (* x x))
-----
-
 == Licenses
 
-Based on https://github.com/weavejester/codox[Codox]:
-
-* Copyright © 2018 James Reeves
-* Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+* Metagetta code and documentation is derived from https://github.com/weavejester/codox[Codox]:
++
+Copyright © 2018 James Reeves
++
+Distributed under the Eclipse Public License either version 1.0 or (at your option) any later version.
+* Otherwise `EPL-2.0` see `LICENSE`
