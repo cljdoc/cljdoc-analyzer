@@ -79,7 +79,6 @@
    I think :metadata might be good, but have come to realize that might be a confusing name as folks might
    assume it is, you know, ^:metadata.
    Maybe :publics would be better?
-** Add namespace tests
 ** runner main returns map that is not really used by caller.
    Consider doing any cleanup necessary in finally block and letting exception go through uncaught.  This would
    give the caller more info as to what went wrong.

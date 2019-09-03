@@ -67,8 +67,7 @@
 
 (defn- ns-matches? [{ns-name :name} pattern]
   (cond
-    (instance? java.util.regex.Pattern pattern) (re-find pattern (str ns-name))
-    (string? pattern) (= pattern (str ns-name))
+    (string? pattern) (re-find (re-pattern pattern) (str ns-name))
     (symbol? pattern) (= pattern (symbol ns-name))))
 
 (defn- filter-namespaces [namespaces ns-filters]
@@ -92,18 +91,23 @@
     (utils/infer-platforms-from-src-dir (io/file src-dir))
     lang-opt))
 
+
 (defn get-metadata
   "Get metadata from source files."
   ([{:keys [namespaces root-path languages exclude-with]}]
-
-   (assert (.exists (io/as-file root-path)))
+   (assert (or (= :all namespaces)
+               (every? #(or (string? %) (symbol? %)) namespaces))
+           ":namespaces must be either :all or a vector of symbols (absolute match) and/or strings (regex match)")
+   (assert (.exists (io/as-file root-path))
+           ":root-path must exist")
    (assert (or (= :auto-detect languages)
-               (and (set? languages) (>= (count languages) 1) (every? #{"clj" "cljs"} languages))))
+               (and (set? languages) (>= (count languages) 1) (every? #{"clj" "cljs"} languages)))
+           ":languages must be either :auto-detect or a set of set of one or both of: \"clj\", \"cljs\"")
    (let [root-path (utils/canonical-path root-path)
          actual-languages (determine-languages languages root-path)]
      (->> (map (fn [lang]
                   (println "Analyzing for" lang)
-                  (read-namespaces {:namespaces (or namespaces :all)
+                 (read-namespaces {:namespaces namespaces
                                     :root-path root-path
                                     :language lang
                                     :exclude-with exclude-with}))
@@ -114,9 +118,11 @@
   "This is intended to be called internally only. It relies on the caller doing proper setup.
 
   Input is edn string of:
-  - `:namespaces` - vector of namespaces to include or `:all` - defaults to `:all`
   - `:root-dir`- path to exploded/prepped jar dir
   - `:languages` - set of where language is `\"clj\"` and or `\"cljs\" or :auto-detect - defaults to `:auto-detect`
+  - `:namespaces` - vector of namespaces to include or `:all` - defaults to `:all`
+    when namespace is a symbol, match is absolute
+    when namespace is a string, match is by regular expression
   - `:output-filename` - on success, edn is serialized to this file with special encoding for regexes.
   - `:exclude-with` - optional - exclude ns and publics with any key in vector - ex [:no-doc :skip-wiki]
 
@@ -125,7 +131,7 @@
   Caller is responsible for resolving and setting the classpath appropriately."
   [edn-arg]
   (try
-    (let [{:keys [output-filename] :as args} (edn/read-string edn-arg)]
+    (let [{:keys [namespaces output-filename] :as args} (edn/read-string edn-arg)]
       (println "Args:" (-> (with-out-str (pprint/pprint args))
                            (string/trim)
                            (string/replace #"\n" "\n      ")))
@@ -133,7 +139,7 @@
       (println "Java version" (System/getProperty "java.version"))
       (println "Clojure version" (clojure-version))
       (println "ClojureScript version" (cljs-util/clojurescript-version))
-      (->> (get-metadata args)
+      (->> (get-metadata (assoc args :namespaces (or namespaces :all)))
            (utils/serialize-cljdoc-edn)
            (spit output-filename))
       (println "Done"))

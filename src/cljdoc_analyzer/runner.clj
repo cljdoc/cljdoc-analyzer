@@ -173,13 +173,25 @@
         (util/delete-directory! work-dir)))))
 
 (defn get-metadata
+  "Return metadata analysis `:analysis-status` and result in `:analysis-result` specified :output-filename.
+  opts keys are:
+  - :project - project artifact-id/group-id
+  - :version - project version
+  - :jarpath - path to jar file
+  - :pompath - path to pom file"
   [{:keys [project] :as opts}]
   (let [config (edn/read-string (slurp (io/resource "config.edn")))
         overrides (get-in config [:project-overrides project])]
     (get-metadata* (assoc opts :overrides overrides))))
 
 (defn analyze!
-  "Return metadata analysis `:analysis-status` and result in `:analysis-result` file"
+  "Return metadata analysis `:analysis-status` and result in `:analysis-result` specified :output-filename.
+  args keys are:
+  - :project - project artifact-id/group-id
+  - :version - project version
+  - :jarpath - path to jar file
+  - :pompath - path to pom file
+  - :output-filename - where to write output"
   [{:keys [project version jarpath pompath output-filename] :as args}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (try

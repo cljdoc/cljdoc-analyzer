@@ -204,3 +204,26 @@
         expected {"clj" (expected-result :clj :no-doc :skip-wiki)
                   "cljs" (expected-result :cljs :no-doc :skip-wiki)}]
     (t/is (= expected actual))))
+
+(t/deftest analyze-select-namespace-no-matches-test
+  (let [actual (analyze-sources {:languages #{"clj" "cljs"}
+                                 :namespaces ["wont.find.me"]})
+        expected {"clj" []
+                  "cljs" []}]
+    (t/is (= expected actual))))
+
+(t/deftest analyze-specify-namespaces-wildcard-test
+  (let [actual (analyze-sources {:languages #{"clj" "cljs"}
+                                 :namespaces ["metagetta-test.*"]})
+        expected {"clj" (expected-result :clj)
+                  "cljs" (expected-result :cljs)}]
+    (t/is (= expected actual))))
+
+(t/deftest analyze-specify-namespaces-subset-test
+  (let [namespaces ['metagetta-test.cljs-macro-functions.usage
+                    'metagetta-test.test-ns1.protocols]
+        actual (analyze-sources {:languages #{"clj" "cljs"}
+                                 :namespaces namespaces})
+        expected {"clj" (filter #(in? namespaces (:name %)) (expected-result :clj))
+                  "cljs" (filter #(in? namespaces (:name %)) (expected-result :cljs))}]
+    (t/is (= expected actual))))

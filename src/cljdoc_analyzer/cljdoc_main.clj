@@ -27,6 +27,7 @@
                                                     :version version
                                                     :jarpath jarpath
                                                     :pompath pompath
+                                                    :namespaces :all
                                                     :exclude-with [:no-doc :skip-wiki]
                                                     :output-filename (str analysis-output-prefix (cljdoc-edn-filepath project version))})]
     (shutdown-agents)
