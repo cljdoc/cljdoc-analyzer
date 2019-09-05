@@ -75,10 +75,12 @@
 * General todos
 ** Add deploy support
 ** Check impact to cljdoc of changing :codox in edn
-   We are moving away from codox. Can we change :codox in our edn to something more generic?
-   I think :metadata might be good, but have come to realize that might be a confusing name as folks might
-   assume it is, you know, ^:metadata.
-   Maybe :publics would be better?
+
+    Database blobs would not be affected, only code would have to be updated.
+    Instead of :codox we'll call it :analysis. A generic term which matches
+    cljdoc-analyzer in spirit and allows for any number of things to be added in
+    the future.
+
 ** runner main returns map that is not really used by caller.
    Consider doing any cleanup necessary in finally block and letting exception go through uncaught.  This would
    give the caller more info as to what went wrong.

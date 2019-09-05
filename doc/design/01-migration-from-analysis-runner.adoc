@@ -215,6 +215,54 @@ I was curious how source links for api docs were resolved to correct scm urls.  
 all scm files is also saved to the database as part of the separate git analysis. This list is compared against the `:file`
 above for a best match. This work is similar to what codox does when populating `:path`
 
+=== cljdoc blobs
+
+Neutral observation: although some fields are stored outside of blobs in their own columns, on retrieval database row,
+the data is taken primarily from the blob. This is not unusual for NoSQL type designs.
+
+[cols="10,10,40,40"]
+|===
+| table | column | blob content | compatibility concern?
+
+| `versions`
+| `meta`
+a| info on scm, files and docs keys from map:
+
+* `:jar`
+* `:scm` - version control info including list of all files
+* `:doc` - cljdoc.edn hydrated including file content
+* `:config` - cljdoc.edn in original format
+
+| nope we are good. no api information
+
+|`namespaces`
+|`meta`
+a|info on namespace:
+
+* `:doc` - doc string
+* `:name` - namespace name
+* `:platform` - `"clj"` or `"cljs"`
+
+| yes, this comes from codox analysis, at save time `:publics` are removed and `:platform` is added.
+
+| `vars`
+| `meta`
+a| info on public var
+
+* `:name`
+* `:file`
+* `:type`
+* `:line`
+* `:members`
+* `:arglists`
+* `:doc`
+* `:namespace`
+* `:platform`
+
+| yes, this comes from codox analysis, at save time `:namespace` and `:platform` are added.
+
+|===
+
 === curiosities
 
 Questions we do not necessarily need to answer:
