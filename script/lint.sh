@@ -10,10 +10,10 @@ function lint() {
         echo "--[linting and building cache]--"
         # classpath with tests paths
         local classpath;classpath="$(clojure -R:test -C:test -Spath)"
-        lint_args="$classpath metagetta"
+        lint_args="$classpath"
     else
         echo "--[linting]--"
-        lint_args="src test metagetta"
+        lint_args="src test modules/metagetta"
     fi
     set +e
     clojure -A:clj-kondo --lint ${lint_args}

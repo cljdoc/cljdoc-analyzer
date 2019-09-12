@@ -36,7 +36,7 @@
          deps-map))
 
 (def cljdoc-analyzer-metagetta-dep
-  {'cljdoc-analyzer/reader {:local/root "./metagetta"}})
+  {'cljdoc-analyzer/reader {:local/root (clojure.java.io/resource "metagetta")}})
 
 (defn- extra-pom-deps
   "Some projects require additional depenencies that have either been specified with

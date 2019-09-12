@@ -1,3 +1,3 @@
 {:linters {:unresolved-symbol
            {:exclude [metagetta-test.test-ns1.altered]}}
- :output {:include-files ["^src" "^test" "^metagetta"]}}
+ :output {:include-files ["^src" "^test" "^modules/metagetta"]}}
