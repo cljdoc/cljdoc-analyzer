@@ -118,7 +118,6 @@
   a list of namespaces with their public vars.
 
   Supported options using the second argument:
-  TODO: this one is likely soon to be hardcoded
     :exception-handler - function (fn [ex file]) to handle exceptions
     while reading a namespace
 

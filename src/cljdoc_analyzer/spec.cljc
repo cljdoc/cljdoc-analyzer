@@ -6,46 +6,46 @@
 
 (s/def ::platform #{"clj" "cljs"})
 
-;; codox -------------------------------------------------------------
-;; A spec for Codox namespace analysis data
+;; analysis -------------------------------------------------------------
+;; A spec for analysis namespace analysis data
 
-(s/def :cljdoc.codox.public/name symbol? #_(s/or :a string? :b symbol?))
-(s/def :cljdoc.codox.public/file string?)
-(s/def :cljdoc.codox.public/line int?)
-(s/def :cljdoc.codox.public/arglists coll?)
-(s/def :cljdoc.codox.public/doc (s/nilable string?))
-(s/def :cljdoc.codox.public/type #{:var :fn :macro :protocol :multimethod})
-(s/def :cljdoc.codox.public/members (s/coll-of :cljdoc.codox/public))
+(s/def :cljdoc.analysis.public/name symbol? #_(s/or :a string? :b symbol?))
+(s/def :cljdoc.analysis.public/file string?)
+(s/def :cljdoc.analysis.public/line int?)
+(s/def :cljdoc.analysis.public/arglists coll?)
+(s/def :cljdoc.analysis.public/doc (s/nilable string?))
+(s/def :cljdoc.analysis.public/type #{:var :fn :macro :protocol :multimethod})
+(s/def :cljdoc.analysis.public/members (s/coll-of :cljdoc.analysis/public))
 
-(s/def :cljdoc.codox/public
-  (s/keys :req-un [:cljdoc.codox.public/name
-                   :cljdoc.codox.public/type]
-          :opt-un [:cljdoc.codox.public/deprecated
-                   :cljdoc.codox.public/doc
-                   :cljdoc.codox.public/arglists
-                   :cljdoc.codox.public/file
-                   :cljdoc.codox.public/line
-                   :cljdoc.codox.public/members]))
+(s/def :cljdoc.analysis/public
+  (s/keys :req-un [:cljdoc.analysis.public/name
+                   :cljdoc.analysis.public/type]
+          :opt-un [:cljdoc.analysis.public/deprecated
+                   :cljdoc.analysis.public/doc
+                   :cljdoc.analysis.public/arglists
+                   :cljdoc.analysis.public/file
+                   :cljdoc.analysis.public/line
+                   :cljdoc.analysis.public/members]))
 
-(s/def :cljdoc.codox.namespace/name symbol?)
-(s/def :cljdoc.codox.namespace/publics (s/coll-of :cljdoc.codox/public))
-(s/def :cljdoc.codox.namespace/doc (s/nilable string?))
+(s/def :cljdoc.analysis.namespace/name symbol?)
+(s/def :cljdoc.analysis.namespace/publics (s/coll-of :cljdoc.analysis/public))
+(s/def :cljdoc.analysis.namespace/doc (s/nilable string?))
 
-(s/def :cljdoc.codox/namespace
-  (s/keys :req-un [:cljdoc.codox.namespace/name
-                   :cljdoc.codox.namespace/publics]
-          :opt-un [:cljdoc.codox.namespace/doc]))
+(s/def :cljdoc.analysis/namespace
+  (s/keys :req-un [:cljdoc.analysis.namespace/name
+                   :cljdoc.analysis.namespace/publics]
+          :opt-un [:cljdoc.analysis.namespace/doc]))
 
 
 ;; cljdoc.edn ---------------------------------------------------------
 
-(s/def :cljdoc.cljdoc-edn/codox
-  (s/map-of ::platform (s/coll-of :cljdoc.codox/namespace)))
+(s/def :cljdoc.cljdoc-edn/analysis
+  (s/map-of ::platform (s/coll-of :cljdoc.analysis/namespace)))
 
 (s/def :cljdoc.cljdoc-edn/pom-str string?)
 
 (s/def :cljdoc/cljdoc-edn
-  (s/keys :req-un [:cljdoc.cljdoc-edn/codox
+  (s/keys :req-un [:cljdoc.cljdoc-edn/analysis
                    :cljdoc.cljdoc-edn/pom-str]))
 
 ;; utilities ----------------------------------------------------------

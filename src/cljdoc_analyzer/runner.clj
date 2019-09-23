@@ -67,6 +67,7 @@
       (.delete class-file)))
   (doseq [path ["deps.cljs" "data_readers.clj" "data_readers.cljc"]
           :let [file (io/file unpacked-jar-dir path)]]
+    ;; TODO: is this still relevant now that we have switched to metagetta?
     ;; codox returns {:publics ()} for deps.cljs, data_readers.cljc
     ;; when present this should probably be fixed in codox as well
     ;; but just deleting the file will also do the job for now
@@ -162,11 +163,11 @@
         (-> {:group-id (util/group-id project)
              :artifact-id (util/artifact-id project)
              :version version
-             :codox (launch-metagetta (assoc opts
-                                            :src-dir (.getPath jar-contents-dir)
-                                            :languages (or (:languages overrides) :auto-detect)
-                                            :namespaces (or (:namespaces overrides) :all)
-                                            :classpath classpath))
+             :analysis (launch-metagetta (assoc opts
+                                                :src-dir (.getPath jar-contents-dir)
+                                                :languages (or (:languages overrides) :auto-detect)
+                                                :namespaces (or (:namespaces overrides) :all)
+                                                :classpath classpath))
              :pom-str (slurp pompath)}
             (validate-result)))
       (finally

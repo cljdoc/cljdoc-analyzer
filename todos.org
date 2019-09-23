@@ -20,10 +20,3 @@
    Which repeats "clojars" and overrides "central".
 
    So it looks to  me, like I can ignore repos. I think it can safely be removed from cljdoc config.
-* General todos
-** Check impact to cljdoc of changing :codox in edn
-
-    Database blobs would not be affected, only code would have to be updated.
-    Instead of :codox we'll call it :analysis. A generic term which matches
-    cljdoc-analyzer in spirit and allows for any number of things to be added in
-    the future.

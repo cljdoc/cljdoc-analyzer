@@ -172,7 +172,6 @@
                  :file "metagetta_test/test_ns1/special_tags.cljc"
                  :line 21}])})))
 
-;; TODO: not testing namespaces option yet
 (defn- analyze-sources [opts]
   (main/get-metadata (merge opts {:root-path "test-sources"})))
 

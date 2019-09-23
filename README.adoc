@@ -177,12 +177,9 @@ The edn output is a map of:
 * `:group-id` project group-id
 * `:artifact-id` project artifact-id
 * `:version` project version
-
-;; TODO: check impact of changing :codox to something else.
-
-* `:codox` codox analysis for languages which can consist of a map with none, one or both of:
-** `:clj` list of namespaces (see below)
-** `:cljs` list of namespaces (see below)
+* `:analysis` analysis for languages which can consist of a map with none, one or both of:
+** `clj` list of namespaces (see below)
+** `cljs` list of namespaces (see below)
 * `:pom-str` slurp of maven pom file
 
 list of namespaces is a list of maps of:
