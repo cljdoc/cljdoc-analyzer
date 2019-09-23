@@ -80,8 +80,15 @@
          (remove unreferenced-protocol?)
          (map (partial read-var source-path file vars)))))
 
+(def common-foreign-libs
+  "Some ClojureScript projects assume that particular foreign libs
+  have been provided. When these foreign libs are unknown to the analyzer
+  env an error will be thrown so we stub out commonly required names."
+  [{:provides ["react"], :file "intentionally/missing.js"}])
+
 (defn- analyze-file [file]
-  (let [opts  (cljs.closure/add-implicit-options {})
+  (let [opts  (-> {:foreign-libs common-foreign-libs}
+                  (cljs.closure/add-implicit-options))
         state (cljs.env/default-compiler-env opts)]
     (ana/no-warn
      (cljs.closure/validate-opts opts)

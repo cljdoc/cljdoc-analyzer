@@ -106,3 +106,11 @@
                  ["io.aviso/pretty"
                   "0.1.29"
                   "http://repo.clojars.org/io/aviso/pretty/0.1.29/pretty-0.1.29"])))
+
+(t/deftest hx-remotely
+  ;; https://github.com/lread/cljdoc-analyzer/issues/5
+  ;; https://github.com/cljdoc/cljdoc/issues/289
+  (run-analysis (remote->args
+                 ["lilactown/hx"
+                  "0.5.2"
+                  "http://repo.clojars.org/lilactown/hx/0.5.2/hx-0.5.2"])))
