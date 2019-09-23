@@ -81,7 +81,7 @@
          (map (partial read-var source-path file vars)))))
 
 (defn- analyze-file [file]
-  (let [opts  (-> {:foreign-libs [{:file "lib/fl.js"
+  (let [opts  (-> {:foreign-libs [{:file "intentionally/missing.js"
                                    :provides ["react"]}]}
                   (cljs.closure/add-implicit-options))
         state (cljs.env/default-compiler-env opts)]
