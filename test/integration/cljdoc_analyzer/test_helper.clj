@@ -18,5 +18,11 @@
   (println "analysis stderr:")
   (println err)
   (t/is (zero? exit))
-  (t/is (= (util/read-cljdoc-edn (io/resource (edn-filename "expected-edn" project version)))
-           (util/read-cljdoc-edn edn-out-filename))))
+  (let [expected-f (io/resource (edn-filename "expected-edn" project version))]
+    (when-not expected-f
+      (throw (ex-info "expected edn file missing"
+                      {:project project
+                       :version version
+                       :path (edn-filename "expected-edn" project version)})))
+    (t/is (= (util/read-cljdoc-edn expected-f)
+             (util/read-cljdoc-edn edn-out-filename)))))
