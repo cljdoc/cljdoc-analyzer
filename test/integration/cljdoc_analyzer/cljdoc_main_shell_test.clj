@@ -112,5 +112,5 @@
   ;; https://github.com/cljdoc/cljdoc/issues/289
   (run-analysis (remote->args
                  ["lilactown/hx"
-                  "0.5.3"
-                  "http://repo.clojars.org/lilactown/hx/0.5.3/hx-0.5.3"])))
+                  "0.5.2"
+                  "http://repo.clojars.org/lilactown/hx/0.5.2/hx-0.5.2"])))
