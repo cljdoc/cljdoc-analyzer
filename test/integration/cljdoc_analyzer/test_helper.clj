@@ -2,7 +2,7 @@
   (:require [clojure.test :as t]
             [clojure.java.io :as io]
             [clojure.string :as string]
-            [cljdoc-analyzer.util :as util]))
+            [cljdoc-analyzer.analysis-edn :as analysis-edn]))
 
 (defn edn-filename [prefix project version]
   (let [project (if (string/index-of project "/")
@@ -24,5 +24,5 @@
                       {:project project
                        :version version
                        :path (edn-filename "expected-edn" project version)})))
-    (t/is (= (util/read-cljdoc-edn expected-f)
-             (util/read-cljdoc-edn edn-out-filename)))))
+    (t/is (= (analysis-edn/read-cljdoc-edn expected-f)
+             (analysis-edn/read-cljdoc-edn edn-out-filename)))))

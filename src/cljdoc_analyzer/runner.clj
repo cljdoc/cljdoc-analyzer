@@ -1,23 +1,24 @@
 (ns cljdoc-analyzer.runner
-  "Prepares the environment to run analysis in.
+  "Prepares the environment then launches metagetta for analysis.
 
-  The `-main` entry point will construct a directory
-  with the sources of the analyzed jar present as well
-  as some additional files that contain the actual code
-  used during analysis. That code is than ran by shelling
-  out to `clojure` providing all inputs via `-Sdeps`.
+  Constructs a directory with the sources of the analyzed jar present as well as
+  some additional files that contain the actual code used during analysis. That
+  code is than run by shelling out to `java` providing all deps via
+  `-cp`.
 
-  By shelling out to `clojure` we create an isolated
-  environment which does not have the dependencies of
-  this namespace (namely jsoup and version-clj)."
+  By shelling out a separate process we create an isolated environment which
+  does not have the dependencies of this namespace (namely jsoup and
+  version-clj)."
   (:require [clojure.java.io :as io]
             [clojure.java.shell :as sh]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [clojure.edn :as edn]
             [clojure.pprint :as pprint]
-            [cljdoc-analyzer.util :as util]
+            [cljdoc-analyzer.analysis-edn :as analysis-edn]
             [cljdoc-analyzer.deps :as deps]
+            [cljdoc-analyzer.file :as file]
+            [cljdoc-analyzer.proj :as proj]
             [cljdoc-analyzer.spec :as spec])
   (:import (java.util.zip ZipFile GZIPInputStream)
            (java.net URI)
@@ -26,7 +27,7 @@
 (defn- download-jar! [jar-uri target-dir]
   (let [jar-f (io/file target-dir "downloaded.jar")]
     (log/infof "Downloading %s" jar-uri)
-    (util/copy jar-uri jar-f)
+    (file/copy jar-uri jar-f)
     (.getPath jar-f)))
 
 (defn- unzip!
@@ -36,7 +37,7 @@
       (doseq [entry entries
               :when (not (.isDirectory ^java.util.zip.ZipEntry entry))
               :let [f (io/file target-dir (str entry))]]
-        (util/copy (.getInputStream zip entry) f)))))
+        (file/copy (.getInputStream zip entry) f)))))
 
 (defn- clean-jar-contents!
   "Some projects include their `out` directories in their jars,
@@ -48,7 +49,7 @@
   [unpacked-jar-dir]
   (when (.exists (io/file unpacked-jar-dir "public"))
     (log/info "Deleting public/ dir")
-    (util/delete-directory! (io/file unpacked-jar-dir "public")))
+    (file/delete-directory! (io/file unpacked-jar-dir "public")))
   ;; Delete .class files that have a corresponding .clj or .cljc file
   ;; to circle around https://dev.clojure.org/jira/browse/CLJ-130
   ;; This only affects Jars with AOT compiled namespaces where the
@@ -115,7 +116,7 @@
 (defn- launch-metagetta
   "Analysis to get metadata is launched in a separate process to minimize dependencies to those of project being analyzed."
   [{:keys [project namespaces src-dir languages exclude-with classpath]}]
-  (let [metadata-output-file (util/system-temp-file project ".edn")]
+  (let [metadata-output-file (file/system-temp-file project ".edn")]
     (log/info "launching metagetta for:" project "languages:" languages)
     (let [analysis-args {:namespaces namespaces
                          :root-path (str src-dir)
@@ -131,7 +132,7 @@
                          :dir (.getParentFile metadata-output-file))
           _ (log-process-result process)]
       (if (zero? (:exit process))
-        (let [result (util/read-cljdoc-edn metadata-output-file)]
+        (let [result (analysis-edn/read-cljdoc-edn metadata-output-file)]
           (assert result "No data was saved in output file")
           result)
         (throw (ex-info (str "Analysis failed with code " (:exit process)) {:code (:exit process)}))))))
@@ -145,23 +146,23 @@
 (defn- save-result [ana-result output-file]
   (doto output-file
     (io/make-parents)
-    (spit (util/serialize-cljdoc-edn ana-result))))
+    (analysis-edn/write-cljdoc-edn ana-result)))
 
 (defn- get-metadata*
   "Return metadata for project"
   [{:keys [project version jarpath pompath overrides] :as opts}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
-  (let [work-dir (util/system-temp-dir (str "cljdoc-" project "-" version))]
+  (let [work-dir (file/system-temp-dir (str "cljdoc-" project "-" version))]
     (try
       (let [project (symbol project)
             local-jar-path (resolve-jar! jarpath work-dir)
             jar-contents-dir (unpack-jar! local-jar-path work-dir)
-            resolved-deps (deps/resolved-deps local-jar-path pompath (:deps overrides))
+            resolved-deps (deps/resolved-deps work-dir local-jar-path pompath (:deps overrides))
             classpath (deps/make-classpath resolved-deps)]
         (log-overrides overrides)
         (log-dependencies resolved-deps)
-        (-> {:group-id (util/group-id project)
-             :artifact-id (util/artifact-id project)
+        (-> {:group-id (proj/group-id project)
+             :artifact-id (proj/artifact-id project)
              :version version
              :analysis (launch-metagetta (assoc opts
                                                 :src-dir (.getPath jar-contents-dir)
@@ -171,7 +172,7 @@
              :pom-str (slurp pompath)}
             (validate-result)))
       (finally
-        (util/delete-directory! work-dir)))))
+        (file/delete-directory! work-dir)))))
 
 (defn get-metadata
   "Return metadata analysis `:analysis-status` and result in `:analysis-result` specified :output-filename.

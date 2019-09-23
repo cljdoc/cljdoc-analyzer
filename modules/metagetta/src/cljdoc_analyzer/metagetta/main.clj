@@ -1,4 +1,4 @@
-(ns cljdoc-analyzer.metagetta.main
+(ns ^:no-doc cljdoc-analyzer.metagetta.main
   "Main namespace for generating documentation"
   (:require [clojure.walk]
             [clojure.edn :as edn]

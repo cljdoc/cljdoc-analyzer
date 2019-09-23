@@ -152,6 +152,11 @@ to do this hacking the code might make sense.
 
 We can look at other features as we get a feel for what folks are interested in.
 
+=== logging
+
+If using cljdoc-analyzer as a library, provide your own logging config as appropriate for your app.
+A sample `logback.xml` config that logs to stdout can be found under `resources`.
+
 == Output format
 
 The output is a map of namespaces and their publics.
@@ -168,7 +173,7 @@ is serialized as:
 ----
 #regex ".*booya.*"
 ----
-See `cljdoc-analyzer.util/serialize-cljdoc-edn` and `cljdoc-analyzer.util/deserialize-cljdoc-edn`.
+See `cljdoc-analyzer.analysis-edn/serialize-cljdoc-edn` and `cljdoc-analyzer.analysis-edn/deserialize-cljdoc-edn`.
 
 === map
 

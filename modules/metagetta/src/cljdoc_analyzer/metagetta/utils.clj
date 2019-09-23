@@ -1,4 +1,4 @@
-(ns cljdoc-analyzer.metagetta.utils
+(ns ^:no-doc cljdoc-analyzer.metagetta.utils
   "Miscellaneous utility functions."
   (:require [clojure.java.io :as io]
             [clojure.string :as str]

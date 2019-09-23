@@ -1,15 +1,15 @@
-(ns cljdoc-analyzer.cljdoc-main
+(ns ^:no-doc cljdoc-analyzer.cljdoc-main
   "Launch cljdoc-analyzer with arguments from edn string"
   (:require [clojure.pprint :as pp]
             [clojure.edn :as edn]
             [clojure.tools.logging :as log]
-            [cljdoc-analyzer.util :as util]
+            [cljdoc-analyzer.proj :as proj]
             [cljdoc-analyzer.runner :as runner]))
 
 (defn cljdoc-edn-filepath
   [project version]
   {:pre [(some? project) (string? version)]}
-  (str "cljdoc-edn/" (util/group-id project) "/" (util/artifact-id project) "/" version "/cljdoc.edn"))
+  (str "cljdoc-edn/" (proj/group-id project) "/" (proj/artifact-id project) "/" version "/cljdoc.edn"))
 
 (def analysis-output-prefix
   "The -main of `cljdoc-analyzer.runner` will write files to this directory.

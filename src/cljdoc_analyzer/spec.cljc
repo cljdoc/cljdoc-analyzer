@@ -1,4 +1,4 @@
-(ns cljdoc-analyzer.spec
+(ns ^:no-doc cljdoc-analyzer.spec
   (:refer-clojure :exclude [assert])
   (:require [clojure.spec.alpha :as s]))
 ;; TODO: while testing leave this on

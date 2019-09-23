@@ -1,4 +1,4 @@
-(ns cljdoc-analyzer.main
+(ns ^:no-doc cljdoc-analyzer.main
   (:require [cli-matic.core :as cli]
             [cljdoc-analyzer.deps :as deps]
             [cljdoc-analyzer.runner :as runner]))

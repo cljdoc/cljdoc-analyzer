@@ -1,9 +1,11 @@
-(ns cljdoc-analyzer.deps
-  (:require [clojure.tools.deps.alpha :as tdeps]
+(ns ^:no-doc cljdoc-analyzer.deps
+  (:require [clojure.java.io :as io]
+            [clojure.tools.deps.alpha :as tdeps]
             [clojure.string :as string]
             [version-clj.core :as v]
+            [cljdoc-analyzer.file :as file]
             [cljdoc-analyzer.pom :as pom]
-            [cljdoc-analyzer.util :as util]))
+            [cljdoc-analyzer.proj :as proj]))
 
 (defn- ensure-recent-ish [deps-map]
   (let [min-versions {'org.clojure/clojure "1.9.0"
@@ -28,8 +30,12 @@
           'javax.servlet/javax.servlet-api {:mvn/version "4.0.1"}}
          deps-map))
 
-(def cljdoc-analyzer-metagetta-dep
-  {'cljdoc-analyzer/reader {:local/root (clojure.java.io/resource "metagetta")}})
+(defn cljdoc-analyzer-metagetta-dep! [target-root-dir]
+  (let [target-dir (str (io/file target-root-dir "metagetta"))]
+    (file/copy-resource "metagetta" target-dir
+                        {:path-patterns [#".*metagetta/deps.edn"
+                                         #".*metagetta/src/.*"]})
+    {'cljdoc-analyzer/reader {:local/root target-dir}}))
 
 (defn- extra-pom-deps
   "Some projects require additional depenencies that have either been specified with
@@ -71,13 +77,13 @@
 (defn- deps
   "Create a deps.edn style :deps map for the project specified by the
   Jsoup document `pom`."
-  [pom compensating-deps]
+  [pom metagetta-dep compensating-deps]
   (-> (extra-pom-deps pom)
       (merge (clj-cljs-deps pom))
       (merge compensating-deps)
       (ensure-required-deps)
       (ensure-recent-ish)
-      (merge cljdoc-analyzer-metagetta-dep)))
+      (merge metagetta-dep)))
 
 (def ^:private default-repos
   {"central" {:url "https://repo1.maven.org/maven2/"},
@@ -92,11 +98,12 @@
 (defn resolved-deps
   "Returns resolved deps for `pom-url` and include `jar-url` as one of those deps.
   Include `compensating-deps` when needed."
-  [jar-url pom-url compensating-deps]
+  [work-dir jar-url pom-url compensating-deps]
   {:pre [(string? jar-url) (string? pom-url)]}
   (let [pom (pom/parse (slurp pom-url))
-        project (util/clojars-id (:artifact-info pom))]
-    (tdeps/resolve-deps {:deps (deps pom compensating-deps)
+        project (proj/clojars-id (:artifact-info pom))
+        metagetta-dep (cljdoc-analyzer-metagetta-dep! work-dir)]
+    (tdeps/resolve-deps {:deps (deps pom metagetta-dep compensating-deps)
                          :mvn/repos (merge default-repos
                                            (extra-repos pom))}
                         {:extra-deps {(symbol project) {:local/root jar-url}}

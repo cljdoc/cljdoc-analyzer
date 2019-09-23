@@ -1,5 +1,3 @@
-pom.xml
-pom.xml.asc
 *jar
 .cpcache/
 lib/
@@ -11,3 +9,4 @@ checkouts/
 .nrepl-port
 .eastwood
 .clj-kondo/.cache
+.rebl

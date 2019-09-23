@@ -1,4 +1,4 @@
-(ns cljdoc-analyzer.metagetta.clojurescript
+(ns ^:no-doc cljdoc-analyzer.metagetta.clojurescript
   "Read raw documentation information from ClojureScript source directory."
   (:require [clojure.java.io :as io]
             [cljs.analyzer.api :as ana]

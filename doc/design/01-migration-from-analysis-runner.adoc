@@ -3,7 +3,7 @@
 :toclevels: 4
 
 == Status
-In progress, expect changes to this doc.
+Nearing completion, changes may come as we tweak for production.
 
 == Introduction
 
@@ -37,7 +37,6 @@ We might:
 
 * support failing slow. Codox currently stops processing on first problem. We'll look at trying to find multiple
   errors in a single run.
-  aa
 
 == Potential users
 In addition to cljdoc, who else might find value in cljdoc-analyzer?
@@ -292,6 +291,28 @@ This usage likely plays out by adding cljdoc-analyzer as a dev dependency to you
 
 Proposal: I see value in this, but would like to focus on cljdoc use case first. We can entertain this at a later date
 if there is interest.
+
+== Explorations
+
+=== metagetta as a subproject
+How well is metagetta as a subproject supported by surrounding tooling?
+
+Metagetta as a subproject works when referenced by cljdoc-analyzer via:
+* `:local/root`
+* `:git/url` (after moving metagetta under modules dir)
+
+Not so lucky when cljdoc-analyzer is packaged in a jar:
+
+1. It seems that tools.deps.alpha expect deps to resolve down to the :file protocol. A file in a jar does not use the :file protocol.
+2. Ironicaly, cljdoc-analyzer cannot analyze itself as it tries to parse
+   metagetta source. We could add an option to exclude-dirs from analysis.
+
+I like having metagetta as an internal subproject within cljdoc-analyzer but if
+this won't fly for technical reasons, I suppose it could be split out into its
+own project.
+
+I've chosen to, for now, copy out metagetta to a temp dir and then reference it
+via `:local/root`.
 
 == Migration plan
 Testing should include running a large sample of projects through current cljdoc analysis runner and comparing results

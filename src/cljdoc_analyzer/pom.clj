@@ -1,4 +1,4 @@
-(ns cljdoc-analyzer.pom
+(ns ^:no-doc cljdoc-analyzer.pom
   "Functions to parse POM files and extract information from them."
   (:require [clojure.string :as string])
   (:import (org.jsoup Jsoup)
