@@ -1,5 +1,5 @@
 {:artifact-id "hx",
- :codox
+ :analysis
    {"clj"
       ({:name hx.hiccup,
         :publics
