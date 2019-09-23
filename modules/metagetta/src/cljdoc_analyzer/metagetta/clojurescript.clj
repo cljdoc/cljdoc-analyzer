@@ -81,11 +81,14 @@
          (map (partial read-var source-path file vars)))))
 
 (defn- analyze-file [file]
-  (let [opts  (cljs.closure/add-implicit-options {})
+  (let [opts  (-> {:foreign-libs [{:file "lib/fl.js"
+                                   :provides ["react"]}]}
+                  (cljs.closure/add-implicit-options))
         state (cljs.env/default-compiler-env opts)]
-    (ana/no-warn
-     (cljs.closure/validate-opts opts)
-     (ana/analyze-file state file opts))
+    (cljs.env/with-compiler-env state
+      (ana/no-warn
+       (cljs.closure/validate-opts opts)
+       (ana/analyze-file file opts)))
     state))
 
 (defn- read-file [source-path file exception-handler]
