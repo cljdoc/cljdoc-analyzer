@@ -157,7 +157,10 @@
       (let [project (symbol project)
             local-jar-path (resolve-jar! jarpath work-dir)
             jar-contents-dir (unpack-jar! local-jar-path work-dir)
-            resolved-deps (deps/resolved-deps work-dir local-jar-path pompath default-repos extra-repos (:deps overrides))
+            resolved-deps (deps/resolved-deps work-dir
+                                              local-jar-path pompath
+                                              default-repos extra-repos
+                                              (:deps overrides))
             classpath (deps/make-classpath resolved-deps)]
         (log-overrides overrides)
         (log-dependencies resolved-deps)
