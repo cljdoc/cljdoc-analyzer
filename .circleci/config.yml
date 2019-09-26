@@ -31,7 +31,7 @@ jobs:
 
       - run:
           name: Lint
-          command: ./script/lint.sh
+          command: ./script/lint
 
       - run:
           name: Run metagetta unit tests

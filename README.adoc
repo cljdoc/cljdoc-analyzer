@@ -265,7 +265,7 @@ To automatically rerun tests on any changes, tack on a `--watch` to any of the a
 
 We make use of https://github.com/borkdude/clj-kondo[clj-kondo] for linting.
 
-Our build server validates the code is lint free with `script/lint.sh` and so can you.
+Our build server validates the code is lint free with `script/lint` and so can you.
 
 == Licenses
 
