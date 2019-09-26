@@ -106,7 +106,7 @@ Use the same judgement you would when using any 3rd party library. If you don't 
 === cljdoc use
 
 Cljdoc-analyzer's first customer is cljdoc. This usage does not cater to general usability. Cljdoc started with
-a conventional command line arguments but then switched to edn because it made more sense for its use case.
+conventional command line arguments but then switched to edn because it made more sense for its use case.
 
 Example of analyzing cljfmt v0.6.4:
 [source,bash,options="nowrap"]
