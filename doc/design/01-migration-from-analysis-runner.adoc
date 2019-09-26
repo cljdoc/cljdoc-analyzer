@@ -12,14 +12,15 @@ codox to this dedicated cljdoc-analyzer project.
 
 == Decisions
 
-We will:
+*We will:*
 
 * focus on the cljdoc use case of analyzing from the jar as opposed to the codox use case of analyzing from the
   source repository root. This means we do not need both of codox`s `:root-path` and `:source-paths` options. We'll use
   `:root-path` and drop `:source-paths`.
-* move to cljdoc-analyzer namespace. This will allow us to move ahead unfettered by the past. It might mean some
+* move to `cljdoc-analyzer` namespace. This will allow us to move ahead unfettered by the past. It will mean minor
   adjustments to cljdoc. We have confirmed that database BLOB metadata uses is unaffected by our changes.
-* allow `^:no-doc` elements to be returned for ad hoc usage.
+* allow `^:no-doc` elements to be returned for ad hoc usage. At least initially, cljdoc will continue to receive
+  the analysis filtered as it is currently.
 * change codox `:language` option to `:languages` and accept one of:
 ** vector of languages to analyze which can be one or both of: `"clj"` `"cljs"`
 ** `:auto-detect`
@@ -33,7 +34,12 @@ We will:
 * project specific overrides for languages (aka platforms), namespaces and deps will be moved from cljdoc to a local
   cljdoc-analyzer config file.
 
-We might:
+*Other minor breaking changes:*
+
+* cljdoc will invoke `cljdoc-analyzer.cljdoc-main`
+** `:repos` is now `:extra-repos`
+
+*We considered, but will not at this time:*
 
 * support failing slow. Codox currently stops processing on first problem. We'll look at trying to find multiple
   errors in a single run.
@@ -134,8 +140,8 @@ leaning toward.
 | `:namespaces`
 | a list of namespaces to include, includes support for regex.
 | used by cljdoc to limit to specific namespaces for problematic projects, otherwise parse all. Does not use regex.
-| ⭐ continue to support without regex
-| continue to support with regex
+| continue to support without regex
+| ⭐ continue to support with regex
 
 | `:exception-handler`
 | behavior to execute on exception
@@ -282,15 +288,14 @@ reason about and maintain cljdoc-analyzer (mostly already complete).
 .. output is metadata.
 .. handle all cljdoc allowances (extra deps, extra repos, etc) through config.
 
-Proposal: I like option #3. It makes cljdoc-analyzer potentially also interesting as an ad hoc tool.
+Chosen path: option #3. It makes cljdoc-analyzer potentially also interesting as an ad hoc tool.
 
 === choice #2 - codox scope
 
 The next choice to make is whether or not cljdoc-analyzer should support source repo dirs and current codox options.
 This usage likely plays out by adding cljdoc-analyzer as a dev dependency to your project.
 
-Proposal: I see value in this, but would like to focus on cljdoc use case first. We can entertain this at a later date
-if there is interest.
+Chosen path: we chose not to entertain this at this time but may pursue at some later date if there is interest.
 
 == Explorations
 
@@ -312,7 +317,8 @@ this won't fly for technical reasons, I suppose it could be split out into its
 own project.
 
 I've chosen to, for now, copy out metagetta to a temp dir and then reference it
-via `:local/root`.
+via `:local/root`. While not strictly necessary when not running from a jar, I do
+this in all cases for a consistent code path.
 
 == Migration plan
 
@@ -320,7 +326,7 @@ Testing should include running a reasonable sample of projects through current
 cljdoc analysis runner and comparing results with the cljdoc-analyzer. I think
 this should give us the confidence we need.
 
-We'll run comparitive tests on the following:
+We'll run comparative tests on the following:
 
 [cols="25,15,60"]
 |===
@@ -379,4 +385,7 @@ a|* dynamically created api
 a|* uses `include-namespaces-from-dependencies` feature
 * cljs clj cljc
 
+| semantic-csv
+| 0.2.1-alpha1
+a|* has a regex in arglist (tests special serialization)
 |===
