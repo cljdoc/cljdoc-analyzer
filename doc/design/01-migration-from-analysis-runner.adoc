@@ -372,7 +372,7 @@ a| * part of current integration tests
 | licaltown/hx
 | 0.5.2
 a| * part of current integration tests
-* added by Martin as fix for failing import
+* added by Martin with a fix for failing import
 * cljs
 
 | amazonica
