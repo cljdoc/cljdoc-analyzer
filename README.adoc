@@ -18,7 +18,7 @@ https://github.com/ztellman/potemkin[potemkin import-vars].
 
 https://github.com/weavejester/codox[Codox] was coded to understand these alterations for the Clojure projects it
 documents. Historically, cljdoc took advantage of these smarts via a branch on a fork of codox to get the API metadata
-it needed to document Clojure/ClojureScript project. This branch also had an unmerged PR to that understood
+it needed to document Clojure/ClojureScript project. This branch also had an unmerged PR that understood
 ClojureScript import-vars type metadata manipulation.
 
 Cljdoc-analyzer picks up from the cljdoc codox unmerged PR in the internal metagetta sub-project and adds what was the
