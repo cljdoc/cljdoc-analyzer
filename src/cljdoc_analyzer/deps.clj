@@ -68,7 +68,7 @@
        (filter #(-> % first #{'org.clojure/clojure 'org.clojure/clojurescript}))
        (into {})))
 
-(defn- extra-repos
+(defn- pom-repos
   [pom]
   (->> (:repositories pom)
        (map (fn [repo] [(:id repo) (dissoc repo :id)]))
@@ -85,35 +85,25 @@
       (ensure-recent-ish)
       (merge metagetta-dep)))
 
-(def ^:private default-repos
-  {"central" {:url "https://repo1.maven.org/maven2/"},
-   "clojars" {:url "https://repo.clojars.org/"}
-   ;; Included to account for https://dev.clojure.org/jira/browse/TDEPS-46
-   ;; specifically anything depending on org.immutant/messaging will fail
-   ;; this includes compojure-api
-   "jboss" {:url "https://repository.jboss.org/nexus/content/groups/public/"}
-   ;; included for https://github.com/FundingCircle/jackdaw
-   "confluent" {:url "https://packages.confluent.io/maven/"}})
-
 (defn resolved-deps
   "Returns resolved deps for `pom-url` and include `jar-url` as one of those deps.
   Include `compensating-deps` when needed."
-  [work-dir jar-url pom-url compensating-deps]
+  [work-dir jar-url pom-url default-repos extra-repos compensating-deps]
   {:pre [(string? jar-url) (string? pom-url)]}
   (let [pom (pom/parse (slurp pom-url))
         project (proj/clojars-id (:artifact-info pom))
-        metagetta-dep (cljdoc-analyzer-metagetta-dep! work-dir)]
+        metagetta-dep (cljdoc-analyzer-metagetta-dep! work-dir)
+        repos (merge default-repos (pom-repos pom) extra-repos)]
     (tdeps/resolve-deps {:deps (deps pom metagetta-dep compensating-deps)
-                         :mvn/repos (merge default-repos
-                                           (extra-repos pom))}
+                         :mvn/repos repos}
                         {:extra-deps {(symbol project) {:local/root jar-url}}
                          :verbose false})))
 
 (defn resolve-dep
   "Return resolved local `:jar` and `:pom` for maven repo hosted `project` `version`"
-  [project version]
+  [project version default-repos extra-repos]
   (let [jar (-> (tdeps/resolve-deps {:deps {project {:mvn/version version}}
-                                     :mvn/repos default-repos} nil)
+                                     :mvn/repos (merge default-repos extra-repos)} nil)
                 (get project)
                 :paths
                 first)

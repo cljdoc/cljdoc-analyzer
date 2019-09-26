@@ -13,9 +13,9 @@
             [clojure.java.shell :as sh]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
-            [clojure.edn :as edn]
             [clojure.pprint :as pprint]
             [cljdoc-analyzer.analysis-edn :as analysis-edn]
+            [cljdoc-analyzer.config :as config]
             [cljdoc-analyzer.deps :as deps]
             [cljdoc-analyzer.file :as file]
             [cljdoc-analyzer.proj :as proj]
@@ -150,14 +150,14 @@
 
 (defn- get-metadata*
   "Return metadata for project"
-  [{:keys [project version jarpath pompath overrides] :as opts}]
+  [{:keys [project version jarpath pompath default-repos extra-repos overrides] :as opts}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (let [work-dir (file/system-temp-dir (str "cljdoc-" project "-" version))]
     (try
       (let [project (symbol project)
             local-jar-path (resolve-jar! jarpath work-dir)
             jar-contents-dir (unpack-jar! local-jar-path work-dir)
-            resolved-deps (deps/resolved-deps work-dir local-jar-path pompath (:deps overrides))
+            resolved-deps (deps/resolved-deps work-dir local-jar-path pompath default-repos extra-repos (:deps overrides))
             classpath (deps/make-classpath resolved-deps)]
         (log-overrides overrides)
         (log-dependencies resolved-deps)
@@ -180,20 +180,24 @@
   - :project - project artifact-id/group-id
   - :version - project version
   - :jarpath - path to jar file
-  - :pompath - path to pom file"
+  - :pompath - path to pom file
+  - :extra-repos - optional map of additional maven repos"
   [{:keys [project] :as opts}]
-  (let [config (edn/read-string (slurp (io/resource "config.edn")))
+  (let [config (config/load)
         overrides (get-in config [:project-overrides project])]
-    (get-metadata* (assoc opts :overrides overrides))))
+    (get-metadata* (assoc opts
+                          :overrides overrides
+                          :default-repos (:repos config)))))
 
 (defn analyze!
   "Return metadata analysis `:analysis-status` and result in `:analysis-result` specified :output-filename.
   args keys are:
-  - :project - project artifact-id/group-id
-  - :version - project version
-  - :jarpath - path to jar file
-  - :pompath - path to pom file
-  - :output-filename - where to write output"
+  - `:project` - project artifact-id/group-id
+  - `:version` - project version
+  - `:jarpath` - path to jar file
+  - `:pompath` - path to pom file
+  - `:extra-repos` - optional additional extra maven repositories in map format: `{repo-id-here {:url \"http://repo.url.here\"}}`
+  - `:output-filename` - where to write output"
   [{:keys [project version jarpath pompath output-filename] :as args}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (try

@@ -18,7 +18,7 @@ We will:
   source repository root. This means we do not need both of codox`s `:root-path` and `:source-paths` options. We'll use
   `:root-path` and drop `:source-paths`.
 * move to cljdoc-analyzer namespace. This will allow us to move ahead unfettered by the past. It might mean some
-  adjustments to cljdoc. We'll also have to verify if any database BLOB metadata uses codox.
+  adjustments to cljdoc. We have confirmed that database BLOB metadata uses is unaffected by our changes.
 * allow `^:no-doc` elements to be returned for ad hoc usage.
 * change codox `:language` option to `:languages` and accept one of:
 ** vector of languages to analyze which can be one or both of: `"clj"` `"cljs"`

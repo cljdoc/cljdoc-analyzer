@@ -112,8 +112,16 @@ Example of analyzing cljfmt v0.6.4:
 [source,bash,options="nowrap"]
 ----
 clojure -m cljdoc-analyzer.cljdoc-main \
-  '{:project "cljfmt/cljfmt" :version "0.6.4" :jarpath "http://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.jar" :pompath "http://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.pom"}'
+  '{:project "cljfmt/cljfmt"
+    :version "0.6.4"
+    :jarpath "http://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.jar"
+    :pompath "http://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.pom"
+    :extra-repos {"clojars" {:url "https://repo.clojars.org/"}
+                  "central" {:url "http://central.maven.org/maven2/"}}}'
 ----
+
+The extra-repos options is somewhat contrived as these repos already exist in cljdoc-analyzer's default config, but this does
+reflect current cljdoc usage.
 
 This will log to stdout and, if successful, write to a file in a predefined known spot, as indicated in the output logs:
 [source,options="nowrap"]
@@ -144,7 +152,9 @@ clojure -m cljdoc-analyzer.main analyze \
   --project io.aviso/pretty --version "0.1.29" \
   --output-filename "io-aviso-pretty-0.1.29.edn" \
   --exclude-with :no-doc \
-  --exclude-with :skip-wiki
+  --exclude-with :skip-wiki \
+  --extra-repo "clojars https://repo.clojars.org/" \
+  --extra-repo "central http://central.maven.org/maven2/"
 ----
 
 There is no facility yet for specifying different repos than the default repos cljdoc-analyzer knows about - if you need
