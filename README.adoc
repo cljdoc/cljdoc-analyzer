@@ -120,7 +120,7 @@ clojure -m cljdoc-analyzer.cljdoc-main \
                   "central" {:url "http://central.maven.org/maven2/"}}}'
 ----
 
-The extra-repos options is somewhat contrived as these repos already exist in cljdoc-analyzer's default config, but this does
+The `:extra-repos` options is somewhat contrived as these repos already exist in cljdoc-analyzer's default config, but this does
 reflect current cljdoc usage.
 
 This will log to stdout and, if successful, write to a file in a predefined known spot, as indicated in the output logs:
@@ -142,8 +142,8 @@ On successful completion, you'll find the output in the current directory in `io
 
 When you are working on a local project, publish it to your local maven repo first, then run the cljdoc analyze command.
 
-If you only want to suppress items that have been marked to be excluded from documentation you can use the `--exclude-with`.
-To match what cljdoc uses, you would exclude namespaces and publics tagged with `:no-doc` and/or `:skip-wiki`, and also used the `--extra-repo` option.
+If you only want to suppress items that have been marked to be excluded from documentation, use `--exclude-with`.
+To match what cljdoc uses, you would exclude namespaces and publics tagged with `:no-doc` and/or `:skip-wiki`, and also use the `--extra-repo` option:
 
 [source,bash,no-wrap]
 ----
