@@ -24,5 +24,5 @@
                       {:project project
                        :version version
                        :path (edn-filename "expected-edn" project version)})))
-    (t/is (= (analysis-edn/read-cljdoc-edn expected-f)
-             (analysis-edn/read-cljdoc-edn edn-out-filename)))))
+    (t/is (= (analysis-edn/read expected-f)
+             (analysis-edn/read edn-out-filename)))))

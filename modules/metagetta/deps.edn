@@ -6,4 +6,7 @@
             {:extra-paths ["test" "test-sources"]
              :extra-deps {lambdaisland/kaocha {:mvn/version "0.0-529"}
                           lambdaisland/kaocha-junit-xml {:mvn/version "0.0-70"}}
-             :main-opts ["-m" "kaocha.runner"]}}}
+             :main-opts ["-m" "kaocha.runner"]}
+           :depstar
+           {:extra-deps
+            {seancorfield/depstar {:mvn/version "0.3.3"}}}}}

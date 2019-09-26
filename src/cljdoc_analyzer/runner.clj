@@ -1,5 +1,5 @@
 (ns cljdoc-analyzer.runner
-  "Prepares the environment then launches metagetta for analysis.
+  "Prepares the environment then launches the internal metagetta subproject for analysis.
 
   Constructs a directory with the sources of the analyzed jar present as well as
   some additional files that contain the actual code used during analysis. That
@@ -7,8 +7,7 @@
   `-cp`.
 
   By shelling out a separate process we create an isolated environment which
-  does not have the dependencies of this namespace (namely jsoup and
-  version-clj)."
+  does not have the dependencies of cljdoc-analyzer."
   (:require [clojure.java.io :as io]
             [clojure.java.shell :as sh]
             [clojure.string :as string]
@@ -132,7 +131,7 @@
                          :dir (.getParentFile metadata-output-file))
           _ (log-process-result process)]
       (if (zero? (:exit process))
-        (let [result (analysis-edn/read-cljdoc-edn metadata-output-file)]
+        (let [result (analysis-edn/read metadata-output-file)]
           (assert result "No data was saved in output file")
           result)
         (throw (ex-info (str "Analysis failed with code " (:exit process)) {:code (:exit process)}))))))
@@ -146,7 +145,7 @@
 (defn- save-result [ana-result output-file]
   (doto output-file
     (io/make-parents)
-    (analysis-edn/write-cljdoc-edn ana-result)))
+    (analysis-edn/write ana-result)))
 
 (defn- get-metadata*
   "Return metadata for project"
@@ -178,13 +177,14 @@
         (file/delete-directory! work-dir)))))
 
 (defn get-metadata
-  "Return metadata analysis `:analysis-status` and result in `:analysis-result` specified :output-filename.
-  opts keys are:
-  - :project - project artifact-id/group-id
-  - :version - project version
-  - :jarpath - path to jar file
-  - :pompath - path to pom file
-  - :extra-repos - optional map of additional maven repos"
+  "Return analysis result map for:
+  - `:project` - project artifact-id/group-id
+  - `:version` - project version
+  - `:jarpath` - path to jar file
+  - `:pompath` - path to pom file
+  - `:extra-repos` - optional map of additional maven repos.
+
+  To serialize/deserialize result see [[cljdoc-analyzer.analysis-edn]]."
   [{:keys [project] :as opts}]
   (let [config (config/load)
         overrides (get-in config [:project-overrides project])]
@@ -193,14 +193,17 @@
                           :default-repos (:repos config)))))
 
 (defn analyze!
-  "Return metadata analysis `:analysis-status` and result in `:analysis-result` specified :output-filename.
+  "Return metadata analysis `:analysis-status` and result in `:analysis-result` file specified by `:output-filename`.
   args keys are:
   - `:project` - project artifact-id/group-id
   - `:version` - project version
   - `:jarpath` - path to jar file
   - `:pompath` - path to pom file
   - `:extra-repos` - optional additional extra maven repositories in map format: `{repo-id-here {:url \"http://repo.url.here\"}}`
-  - `:output-filename` - where to write output"
+  - `:output-filename` - where to write output
+
+  This function wraps [[get-metadata]]. It does some logging and serializes result appropriately. If you want to do
+  your own thing, call [[get-metadata]] directly."
   [{:keys [project version jarpath pompath output-filename] :as args}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (try

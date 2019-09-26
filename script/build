@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+echo "Clean out target"
+mvn clean
+
+SCRIPT_DIR=$(cd $(dirname "$0");pwd)
+TARGET_DIR=${SCRIPT_DIR}/../target
+mkdir -p ${TARGET_DIR}
+
+echo "Updating tag and version in pom.xml"
+mvn versions:set-scm-tag -DnewTag=$(git rev-parse HEAD) -DgenerateBackupPoms=false
+mvn versions:set -DnewVersion=$(script/generate_version) -DgenerateBackupPoms=false
+
+echo "Building metagetta jar"
+cd modules/metagetta
+clojure -A:depstar -m hf.depstar.jar ${TARGET_DIR}/metagetta.jar
+
+echo "Building cljdoc-analyzer jar"
+cd ../..
+mvn package

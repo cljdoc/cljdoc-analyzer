@@ -30,12 +30,15 @@
           'javax.servlet/javax.servlet-api {:mvn/version "4.0.1"}}
          deps-map))
 
-(defn cljdoc-analyzer-metagetta-dep! [target-root-dir]
-  (let [target-dir (str (io/file target-root-dir "metagetta"))]
-    (file/copy-resource "metagetta" target-dir
-                        {:path-patterns [#".*metagetta/deps.edn"
-                                         #".*metagetta/src/.*"]})
-    {'cljdoc-analyzer/reader {:local/root target-dir}}))
+(defn cljdoc-analyzer-metagetta-dep!
+  "Returns appropriate dependency for metagetta. If we are running from a jar we'll find the embedded metagetta.jar as a resource, extract that `target-dir` and reference it. Otherwise we'll simply point to metagetta in our source tree."
+  [target-dir]
+  {'cljdoc-analyzer/metagetta
+   {:local/root (if-let [metagetta-jar-resource (io/resource "metagetta.jar")]
+                  (let [target-jar (str (io/file target-dir "metagetta.jar"))]
+                    (file/copy metagetta-jar-resource target-jar)
+                    target-jar)
+                  (clojure.java.io/resource "metagetta"))}})
 
 (defn- extra-pom-deps
   "Some projects require additional depenencies that have either been specified with

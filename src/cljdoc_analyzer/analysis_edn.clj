@@ -1,8 +1,9 @@
 (ns cljdoc-analyzer.analysis-edn
+  (:refer-clojure :exclude [read])
   (:require [clojure.edn :as edn]
             [clojure.walk :as walk]))
 
-(defn serialize-cljdoc-edn
+(defn serialize
   "Return string serialized analysis result from `analysis-result`"
   [analysis-result]
   ;; the analyzed structure can contain regex #"..." (e.g. in :arglists)
@@ -14,18 +15,18 @@
                          %))
        (pr-str)))
 
-(defn deserialize-cljdoc-edn
+(defn deserialize
   "Return deserialized analysis result from string `s`"
   [s]
   (edn/read-string {:readers {'regex re-pattern}} s))
 
-(defn read-cljdoc-edn
+(defn read
   "Return analysis result edn from `file`"
   [file]
   {:pre [(some? file)]}
-  (deserialize-cljdoc-edn (slurp file)))
+  (deserialize (slurp file)))
 
-(defn write-cljdoc-edn
+(defn write
   "Write `analysis-result` to `file`"
   [file analysis-result]
-  (spit file (serialize-cljdoc-edn analysis-result)))
+  (spit file (serialize analysis-result)))

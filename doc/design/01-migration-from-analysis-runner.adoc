@@ -306,19 +306,20 @@ Metagetta as a subproject works when referenced by cljdoc-analyzer via:
 * `:local/root`
 * `:git/url` (after moving metagetta under modules dir)
 
-Not so lucky when cljdoc-analyzer is packaged in a jar:
+Not so lucky when cljdoc-analyzer is packaged in a jar as a source project:
 
-1. It seems that tools.deps.alpha expect deps to resolve down to the :file protocol. A file in a jar does not use the :file protocol.
+1. It seems that tools.deps.alpha expect deps to resolve down to the :file
+   protocol. A file in a jar does not use the :file protocol.
 2. Ironicaly, cljdoc-analyzer cannot analyze itself as it tries to parse
-   metagetta source. We could add an option to exclude-dirs from analysis.
+   metagetta source.
 
 I like having metagetta as an internal subproject within cljdoc-analyzer but if
 this won't fly for technical reasons, I suppose it could be split out into its
 own project.
 
-I've chosen to, for now, copy out metagetta to a temp dir and then reference it
-via `:local/root`. While not strictly necessary when not running from a jar, I do
-this in all cases for a consistent code path.
+For now, we'll solve issue above by jarring up metagetta and include it in
+cljdoc-analyzer.jar. When we detect we are running from a jar we'll copy the jar
+out to our temp work dir and reference it via `local:root`.
 
 == Migration plan
 

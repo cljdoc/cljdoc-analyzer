@@ -180,7 +180,7 @@ is serialized as:
 ----
 #regex ".*booya.*"
 ----
-See `cljdoc-analyzer.analysis-edn/serialize-cljdoc-edn` and `cljdoc-analyzer.analysis-edn/deserialize-cljdoc-edn`.
+See `cljdoc-analyzer.analysis-edn/serialize` and `cljdoc-analyzer.analysis-edn/deserialize`.
 
 === map
 

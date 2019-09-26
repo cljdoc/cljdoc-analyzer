@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-echo "Updating tag and version in pom.xml"
-mvn versions:set-scm-tag -DnewTag=$(git rev-parse HEAD) -DgenerateBackupPoms=false
-mvn versions:set -DnewVersion=$(script/generate_version) -DgenerateBackupPoms=false

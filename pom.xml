@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>cljdoc</groupId>
   <artifactId>cljdoc-analyzer</artifactId>
-  <version>0.0.582</version>
+  <version>0.0.590</version>
   <name>cljdoc-analyzer</name>
   <dependencies>
     <dependency>
@@ -60,10 +60,9 @@
               </excludes>
           </resource>
           <resource>
-              <directory>modules</directory>
+              <directory>target</directory>
               <includes>
-                  <include>metagetta/src/**</include>
-                  <include>metagetta/deps.edn</include>
+                  <include>metagetta.jar</include>
               </includes>
           </resource>
       </resources>
@@ -72,7 +71,7 @@
   <scm>
       <connection>scm:git:git@github.com:lread/cljdoc-analyzer.git</connection>
       <developerConnection>scm:git:git@github.com:lread/cljdoc-analyzer.git</developerConnection>
-      <tag>0fb549a344488194e1867e029213e909a3b82537</tag>
+      <tag>aaeb5f52dd5f1f0c64496cfe040ba14712ea30c3</tag>
       <url>git@github.com:lread/cljdoc-analyzer</url>
   </scm>
 
