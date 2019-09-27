@@ -327,66 +327,120 @@ Testing should include running a reasonable sample of projects through current
 cljdoc analysis runner and comparing results with the cljdoc-analyzer. I think
 this should give us the confidence we need.
 
-We'll run comparative tests on the following:
+Test scripts and raw results are https://github.com/lread/cljdoc-analyzer-comparative-test[available for review].
 
-[cols="25,15,60"]
+=== Interpreted Test results
+
+==== General differences
+
+Differences I could adjust for during diff:
+
+* `:codox` is now `:analysis`
+* analysis now consistently sorted by `:name`
+* empty `:members` no longer included
+* empty `:doc` no longer included
+* `:members`  now consistently and always omit `:file` and `:line`
+
+Differences I did not automatically compensate for:
+
+* defrecord vars are now included
+* when two files share the same namespace (for example, .clj and cljs) all publics from both namespaces are now included
+* dynamically imported (import-vars) cljs publics now show correctly
+* `:file` was sometimes fully qualified rather than relative to jar-root
+
+Regressions found and fixed
+
+* internal project overrides now applied when project name is not fully qualified, ex `manifold` instead of `manifold/manifold`
+
+Interesting observations
+
+* we have special support for serializing and deserializing regexes. Note though that regexes that look logically equal do not evaluate to logically equal.
++
+[source,clojure-repl]
+----
+user=> (= #"hello" #"hello")
+false
+----
+
+==== Specific tests run
+
+[cols="25,15,30,30"]
 |===
-| project | version | aspect of interest
+| project | version | aspect of interest | test results
 
-| metosin/muuntaja
-| 0.6.3
-a| * part of current integration tests
+| amazonica
+| 0.3.146
+a|* dynamically created api
 * clj
-
-| metosin/compojure-api
-| 2.0.0-alpha27
-a| * part of current integration tests
-* shows as API import failure on current cljdoc prod
-
-| iced-nrepl
-| 0.2.5
-a| * part of current integration tests
-* shows as API import failure on current cljdoc prod
+a|* no differences after making compensations
 
 | bidi
 | 2.1.3
 a| * part of current integration tests
 * cljc
+a|* now includes defrecords
 
-| orchestra
-| 2018.11.07-1
+| iced-nrepl
+| 0.2.5
 a| * part of current integration tests
-* clj cljc cljs
-
-| manifold
-| 0.1.8
-a| * part of current integration tests
-* include in project-overides for :namespaces and :languages
-* clj
+* shows as API import failure on current cljdoc prod
+a|* no differences after making compensations
 
 | io.aviso/pretty
 | 0.1.29
 a| * part of current integration tests
 * included in project-overrides for :deps
 * clj
+a|* no differences after making compensations
 
 | licaltown/hx
 | 0.5.2
 a| * part of current integration tests
 * added by Martin with a fix for failing import
 * cljs
+a| * oh right, old failed, nothing to compare against!
 
-| amazonica
-| 0.3.146
-a|* dynamically created api
+| lread/rewrite-cljs-playground
+| 1.0.0-alpha
+a| * uses internal import-vars on both clj and cljs
+a| * cljs publics dynamically added by import-vars now import correctly
+
+| manifold
+| 0.1.8
+a| * part of current integration tests
+* included in project-overides for :namespaces and :languages
 * clj
+a|* no differences after making compensations
+
+| metosin/compojure-api
+| 2.0.0-alpha27
+a| * part of current integration tests
+* shows as API import failure on current cljdoc prod
+a|* now includes defrecords
+
+| metosin/muuntaja
+| 0.6.3
+a| * part of current integration tests
+* clj
+a|* now includes defrecords
 
 | metosin/reitit
 | 0.3.9
 a|* uses `include-namespaces-from-dependencies` feature
 * cljs clj cljc
+a|* no differences after making compensations
+
+| orchestra
+| 2018.11.07-1
+a| * part of current integration tests
+* clj cljc cljs
+a|* now includes all publics for `orchestra-cljs.spec.test` which spans cljs cand cljc files
+* also noticed that we now properly relavitize `orchestra.core/defn-spec` `:file` (was formerly fully qualified)
 
 | semantic-csv
 | 0.2.1-alpha1
 a|* has a regex in arglist (tests special serialization)
+a|* noticed some fully qualified `:file` elements that are now properly relativized
+* interesting note: the regex is showing as different although they are logically equivalent
+
 |===
