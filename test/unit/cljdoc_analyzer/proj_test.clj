@@ -17,3 +17,7 @@
 (t/deftest clojars-id-test
   (t/is (= "grp1/art1" (proj/clojars-id {:group-id "grp1" :artifact-id "art1"})))
   (t/is (= "art1" (proj/clojars-id {:group-id "art1" :artifact-id "art1"}))))
+
+(t/deftest normalize-test
+  (t/is (= "name-a/name-a" (proj/normalize "name-a")))
+  (t/is (= "name-a/name-b" (proj/normalize "name-a/name-b"))))

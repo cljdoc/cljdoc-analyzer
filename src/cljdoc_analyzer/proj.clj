@@ -11,6 +11,9 @@
 (defn artifact-id [project]
   (name (symbol project)))
 
+(defn normalize [project]
+  (str (group-id project) "/" (artifact-id project)))
+
 (defn clojars-id [{:keys [group-id artifact-id]}]
   (if (= group-id artifact-id)
     artifact-id

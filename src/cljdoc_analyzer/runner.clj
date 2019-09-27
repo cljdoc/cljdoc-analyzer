@@ -187,8 +187,10 @@
   To serialize/deserialize result see [[cljdoc-analyzer.analysis-edn]]."
   [{:keys [project] :as opts}]
   (let [config (config/load)
+        project (proj/normalize project)
         overrides (get-in config [:project-overrides project])]
     (get-metadata* (assoc opts
+                          :project project
                           :overrides overrides
                           :default-repos (:repos config)))))
 

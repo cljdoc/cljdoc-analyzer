@@ -1,7 +1,8 @@
 {;; Overrides for specific projects where automatic resolution/detection is not sufficient.
  ;; Manually sorted alphabetically by project only for easier at-a-glance updates.
  ;; Comments that add reason why override is necessary are encouraged.
- ;; Specify both group-id and artifact-id for project key even if they are the same.
+ ;; Specify both group-id and artifact-id for project key even if they are the same otherwise
+ ;; override lookup will not match.
  :project-overrides
  {"cider/cider-nrepl" {:languages #{"clj"}
                        :deps {boot/core {:mvn/version "2.7.2"}
