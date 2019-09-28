@@ -26,7 +26,7 @@
   (assoc-some m k (apply f (m k) args)))
 
 (defn- find-minimum [coll]
-  (if (seq coll)
+  (when (seq coll)
     (apply min coll)))
 
 (defn- find-smallest-indent [text]
@@ -51,7 +51,7 @@
             (str/join "\n")))))
 
 (defn correct-indent [text]
-  (if text
+  (when text
     (let [lines (str/split-lines text)]
       (->> (rest lines)
            (str/join "\n")

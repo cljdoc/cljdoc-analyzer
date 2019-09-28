@@ -67,7 +67,7 @@
 
 (defn core-typed-type [var]
   (let [{:keys [delayed-errors ret]} (typecheck-var var)]
-    (if (empty? delayed-errors)
+    (when (empty? delayed-errors)
       (:t ret))))
 
 (defn- read-var [source-path vars var]
@@ -80,7 +80,7 @@
         (utils/update-some :doc utils/correct-indent)
         (utils/update-some :file normalize)
         (utils/assoc-some  :type (var-type var)
-                     :type-sig (if (core-typed?) (core-typed-type var))
+                     :type-sig (when (core-typed?) (core-typed-type var))
                      :members (seq (map (partial read-var source-path vars)
                                         (protocol-methods var vars))))
         utils/remove-empties)))
