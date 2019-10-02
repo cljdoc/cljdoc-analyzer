@@ -1,6 +1,6 @@
 {:paths ["src" "resources" "modules"]
  :deps {org.clojure/clojure {:mvn/version "1.10.1"}
-        org.clojure/tools.deps.alpha {:mvn/version "0.7.541"}
+        org.clojure/tools.deps.alpha {:mvn/version "0.7.549"}
         org.clojure/tools.logging {:mvn/version "0.5.0"}
         ch.qos.logback/logback-classic {:mvn/version "1.3.0-alpha4"}
         org.jsoup/jsoup {:mvn/version "1.12.1"}
