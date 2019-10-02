@@ -1,6 +1,6 @@
 (ns ^:no-doc cljdoc-analyzer.metagetta.main
   "Main namespace for generating documentation"
-  (:require [clojure.walk]
+  (:require [clojure.walk :as walk]
             [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
@@ -60,7 +60,7 @@
   Sort is case insensitive with consistent sort order if :name is case sensitive unique across collection
   and all maps in collection have :name."
   [namespaces]
-  (clojure.walk/postwalk #(if (and (coll? %) (:name (first %)))
+  (walk/postwalk #(if (and (coll? %) (:name (first %)))
                             (sort-by :name case-insensitive-comparator %)
                             %)
                          namespaces))
