@@ -10,3 +10,4 @@ checkouts/
 .eastwood
 .clj-kondo/.cache
 .rebl
+.DS_Store
