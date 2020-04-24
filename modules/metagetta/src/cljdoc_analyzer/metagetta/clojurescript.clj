@@ -3,7 +3,6 @@
   (:require [clojure.java.io :as io]
             [cljs.analyzer.api :as ana]
             [cljs.compiler.api :as comp]
-            [cljs.closure]
             [cljs.env]
             [cljdoc-analyzer.metagetta.utils :as utils]))
 
@@ -81,22 +80,35 @@
          (remove unreferenced-protocol?)
          (map (partial read-var source-path file vars)))))
 
-(def common-foreign-libs
-  "Some ClojureScript projects assume that particular foreign libs
-  have been provided. When these foreign libs are unknown to the analyzer
-  env an error will be thrown so we stub out commonly required names."
-  [{:provides ["react"], :file "intentionally/missing.js"}])
+(defn- fakenize-namespace!
+  "For each required namespace which is a string, generate a fake js module in
+  the compiler environment.
+  Return the updated compiler environment, 'state'.
+
+  Rational:
+  Required namespaces that are strings correspond to js library used by the package
+  currently parsed. The clojurescript package generally doesn't involved their js
+  libraries. The js dependencies are usually managed by npm/yarn package managed.
+  https://github.com/cljdoc/cljdoc-analyzer/issues/18"
+  [state requires]
+  ;; fake all string requires since otherwise npm indexing is required
+  (doseq [req requires
+          :when (and (string? req)
+                     (not (contains? (:js-dependency-index @state) req)))]
+    (swap! state assoc-in [:js-dependency-index req] (gensym "fake$module")))
+  state)
 
 (defn- analyze-file [file]
-  (let [opts  (-> {:foreign-libs common-foreign-libs}
-                  (cljs.closure/add-implicit-options))
-        state (cljs.env/default-compiler-env opts)]
+  (let [{requires :requires}
+        (ana/parse-ns file)
+
+        state
+        (fakenize-namespace! (cljs.env/default-compiler-env) requires)]
     (ana/no-warn
-     (cljs.closure/validate-opts opts)
      ;; The 'with-core-cljs' wrapping function ensures the namespace 'cljs.core'
      ;; is available under the sub-call to 'analyze-file'.
      ;; https://github.com/cljdoc/cljdoc/issues/261
-     (comp/with-core-cljs state opts #(ana/analyze-file file)))
+     (comp/with-core-cljs state nil #(ana/analyze-file file)))
     state))
 
 (defn- read-file [source-path file exception-handler]
