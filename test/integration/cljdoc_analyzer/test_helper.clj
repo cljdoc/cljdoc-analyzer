@@ -43,5 +43,4 @@
 
         :else
         (t/is (= expected-analysis
-                 actual-analysis))
-        ))))
+                 actual-analysis))))))
