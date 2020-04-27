@@ -2,6 +2,7 @@
   "Read raw documentation information from ClojureScript source directory."
   (:require [clojure.java.io :as io]
             [cljs.analyzer.api :as ana]
+            [cljs.compiler.api :as comp]
             [cljs.closure]
             [cljs.env]
             [cljdoc-analyzer.metagetta.utils :as utils]))
@@ -92,7 +93,10 @@
         state (cljs.env/default-compiler-env opts)]
     (ana/no-warn
      (cljs.closure/validate-opts opts)
-     (ana/analyze-file state file opts))
+     ;; The 'with-core-cljs' wrapping function ensures the namespace 'cljs.core'
+     ;; is available under the sub-call to 'analyze-file'.
+     ;; https://github.com/cljdoc/cljdoc/issues/261
+     (comp/with-core-cljs state opts #(ana/analyze-file file)))
     state))
 
 (defn- read-file [source-path file exception-handler]

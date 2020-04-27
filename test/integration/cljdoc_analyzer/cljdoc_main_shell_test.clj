@@ -114,3 +114,10 @@
                  ["lilactown/hx"
                   "0.5.2"
                   "http://repo.clojars.org/lilactown/hx/0.5.2/hx-0.5.2"])))
+
+(t/deftest specter-remotely
+  ;; https://github.com/cljdoc/cljdoc/issues/261
+  (run-analysis (remote->args
+                 ["com.rpl/specter"
+                  "1.1.3"
+                  "https://repo.clojars.org/com/rpl/specter/1.1.3/specter-1.1.3"])))
