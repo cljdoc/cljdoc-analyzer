@@ -90,20 +90,16 @@
   currently parsed. The clojurescript package generally doesn't involved their js
   libraries. The js dependencies are usually managed by npm/yarn package managed.
   https://github.com/cljdoc/cljdoc-analyzer/issues/18"
-  [state requires]
+  [state js-dependencies]
   ;; fake all string requires since otherwise npm indexing is required
-  (doseq [req requires
-          :when (and (string? req)
-                     (not (contains? (:js-dependency-index @state) req)))]
-    (swap! state assoc-in [:js-dependency-index req] (gensym "fake$module")))
+  (doseq [dependency js-dependencies
+          :when (not (contains? (:js-dependency-index @state) dependency))]
+    (swap! state assoc-in [:js-dependency-index dependency] (gensym "fake$module")))
   state)
 
-(defn- analyze-file [file]
-  (let [{requires :requires}
-        (ana/parse-ns file)
-
-        state
-        (fakenize-namespace! (cljs.env/default-compiler-env) requires)]
+(defn- analyze-file [js-dependencies file]
+  (let [state
+        (fakenize-namespace! (cljs.env/default-compiler-env) js-dependencies)]
     (ana/no-warn
      ;; The 'with-core-cljs' wrapping function ensures the namespace 'cljs.core'
      ;; is available under the sub-call to 'analyze-file'.
@@ -111,11 +107,11 @@
      (comp/with-core-cljs state nil #(ana/analyze-file file)))
     state))
 
-(defn- read-file [source-path file exception-handler]
+(defn- read-file [source-path js-dependencies file exception-handler]
   (try
     (let [source  (io/file source-path file)
           ns-name (:ns (ana/parse-ns source))
-          state   (analyze-file source)]
+          state   (analyze-file js-dependencies source)]
       {ns-name
        (-> (ana/find-ns state ns-name)
            (select-keys [:name :doc])
@@ -128,6 +124,21 @@
 
 (defn- ns-merger [val-first val-next]
   (update val-first :publics #(seq (into (set %) (:publics val-next)))))
+
+(defn- get-js-package-dependencies
+  "Compute the set of all js dependencies used by a package from its root path.
+
+  Example: for the package 'lilactown-hx-0.5.2', #{\"react\"} is returned."
+  [package-root-path]
+  (->> (find-files package-root-path)
+       (map (fn [file]
+              (->> file
+                   (io/file package-root-path)
+                   (ana/parse-ns)
+                   :requires)))
+       (reduce clojure.set/union)
+       (filter string?)
+       (into #{})))
 
 (defn read-namespaces
   "Read ClojureScript namespaces from a source directory and return
@@ -158,7 +169,8 @@
   ([path {:keys [exception-handler]
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
    (let [path (io/file (utils/canonical-path path))
-         file-reader #(read-file path % exception-handler)]
+         js-dependencies (get-js-package-dependencies path)
+         file-reader #(read-file path js-dependencies % exception-handler)]
      (->> (find-files path)
           (map file-reader)
           (apply merge-with ns-merger)
