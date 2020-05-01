@@ -3,7 +3,6 @@
   (:require [clojure.java.io :as io]
             [cljs.analyzer.api :as ana]
             [cljs.compiler.api :as comp]
-            [cljs.closure]
             [cljs.env]
             [cljdoc-analyzer.metagetta.utils :as utils]))
 
@@ -81,29 +80,36 @@
          (remove unreferenced-protocol?)
          (map (partial read-var source-path file vars)))))
 
-(def common-foreign-libs
-  "Some ClojureScript projects assume that particular foreign libs
-  have been provided. When these foreign libs are unknown to the analyzer
-  env an error will be thrown so we stub out commonly required names."
-  [{:provides ["react"], :file "intentionally/missing.js"}])
+(defn- fake-js-deps
+  "Generate a value for the analyzers :js-dependency-index that 'stubs out' all JS modules
+  listed in `js-dependencies`.
 
-(defn- analyze-file [file]
-  (let [opts  (-> {:foreign-libs common-foreign-libs}
-                  (cljs.closure/add-implicit-options))
-        state (cljs.env/default-compiler-env opts)]
+  Rational:
+  Required namespaces that are strings correspond to JS library used by the namespace
+  currently parsed. Analysis generally doesn't involved those JS libraries but will check
+  that they are present via `:js-dependency-index`. Note that also regular namespaces can
+  be required as strings, e.g. `\"clojure.string\"` isn't invalid in a `ns` form but it's very rarely
+  done in any actual code.
+  https://github.com/cljdoc/cljdoc-analyzer/issues/18"
+  [js-dependencies]
+  (zipmap js-dependencies (repeatedly #(gensym "fake$module"))))
+
+(defn- analyze-file [js-dependencies file]
+  (let [state (cljs.env/default-compiler-env)
+        faked-js-deps (fake-js-deps js-dependencies)]
+    (swap! state update :js-dependency-index #(merge faked-js-deps %))
     (ana/no-warn
-     (cljs.closure/validate-opts opts)
      ;; The 'with-core-cljs' wrapping function ensures the namespace 'cljs.core'
      ;; is available under the sub-call to 'analyze-file'.
      ;; https://github.com/cljdoc/cljdoc/issues/261
-     (comp/with-core-cljs state opts #(ana/analyze-file file)))
+     (comp/with-core-cljs state nil #(ana/analyze-file file)))
     state))
 
-(defn- read-file [source-path file exception-handler]
+(defn- read-file [source-path js-dependencies file exception-handler]
   (try
     (let [source  (io/file source-path file)
           ns-name (:ns (ana/parse-ns source))
-          state   (analyze-file source)]
+          state   (analyze-file js-dependencies source)]
       {ns-name
        (-> (ana/find-ns state ns-name)
            (select-keys [:name :doc])
@@ -116,6 +122,23 @@
 
 (defn- ns-merger [val-first val-next]
   (update val-first :publics #(seq (into (set %) (:publics val-next)))))
+
+(defn- get-string-dependencies
+  "Compute the set of all dependencies expressed as string for a give  package path.
+  Usually, these strings required namespace refer to JS library not embedded in
+  ClojureScript package.
+
+  Example: for the package 'lilactown-hx-0.5.2', #{\"react\"} is returned."
+  [package-root-path]
+  (->> (find-files package-root-path)
+       (map (fn [file]
+              (->> file
+                   (io/file package-root-path)
+                   (ana/parse-ns)
+                   :requires)))
+       (reduce clojure.set/union)
+       (filter string?)
+       (into #{})))
 
 (defn read-namespaces
   "Read ClojureScript namespaces from a source directory and return
@@ -146,7 +169,8 @@
   ([path {:keys [exception-handler]
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
    (let [path (io/file (utils/canonical-path path))
-         file-reader #(read-file path % exception-handler)]
+         js-dependencies (get-string-dependencies path)
+         file-reader #(read-file path js-dependencies % exception-handler)]
      (->> (find-files path)
           (map file-reader)
           (apply merge-with ns-merger)

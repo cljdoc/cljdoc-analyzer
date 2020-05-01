@@ -121,3 +121,11 @@
                  ["com.rpl/specter"
                   "1.1.3"
                   "https://repo.clojars.org/com/rpl/specter/1.1.3/specter-1.1.3"])))
+
+(t/deftest roughcljs-remotely
+  ;; https://github.com/cljdoc/cljdoc-analyzer/issues/18
+  ;; https://github.com/cljdoc/cljdoc/issues/289
+  (run-analysis (remote->args
+                 ["frozar/roughcljs"
+                  "0.2.4"
+                  "https://repo.clojars.org/frozar/roughcljs/0.2.4/roughcljs-0.2.4"])))

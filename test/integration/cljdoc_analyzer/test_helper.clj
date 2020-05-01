@@ -38,8 +38,12 @@
         ;; For specter package, filter the "com.rpl.specter.impl" namespace
         (and (= project "com.rpl/specter")
              (= version "1.1.3"))
-        (t/is (= (filter-namespace expected-analysis "cljs" #{"com.rpl.specter.impl"})
-                 (filter-namespace actual-analysis "cljs" #{"com.rpl.specter.impl"})))
+        (t/is (= (-> expected-analysis
+                     (filter-namespace "clj" #{"com.rpl.specter.impl"})
+                     (filter-namespace "cljs" #{"com.rpl.specter.impl"}))
+                 (-> actual-analysis
+                     (filter-namespace "clj" #{"com.rpl.specter.impl"})
+                     (filter-namespace "cljs" #{"com.rpl.specter.impl"}))))
 
         :else
         (t/is (= expected-analysis
