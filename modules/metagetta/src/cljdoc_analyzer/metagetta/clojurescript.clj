@@ -81,9 +81,8 @@
          (map (partial read-var source-path file vars)))))
 
 (defn- fake-js-deps
-  "For each required namespace which is a string, generate a fake js module in
-  the compiler environment.
-  Return the updated compiler environment, 'state'.
+  "Generate a value for the analyzers :js-dependency-index that 'stubs out' all JS modules
+  listed in `js-dependencies`.
 
   Rational:
   Required namespaces that are strings correspond to JS library used by the namespace
@@ -93,10 +92,7 @@
   done in any actual code.
   https://github.com/cljdoc/cljdoc-analyzer/issues/18"
   [js-dependencies]
-  (zipmap js-dependencies (repeatedly #(gensym "fake$module")))
-  )
-
-(zipmap #{"react"} (repeatedly #(gensym "fake$module")))
+  (zipmap js-dependencies (repeatedly #(gensym "fake$module"))))
 
 (defn- analyze-file [js-dependencies file]
   (let [state (cljs.env/default-compiler-env)
