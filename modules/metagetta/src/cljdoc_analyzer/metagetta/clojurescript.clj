@@ -86,9 +86,11 @@
   Return the updated compiler environment, 'state'.
 
   Rational:
-  Required namespaces that are strings correspond to js library used by the package
-  currently parsed. The clojurescript package generally doesn't involved their js
-  libraries. The js dependencies are usually managed by npm/yarn package managed.
+  Required namespaces that are strings correspond to JS library used by the namespace
+  currently parsed. Analysis generally doesn't involved those JS libraries but will check
+  that they are present via `:js-dependency-index`. Note that also regular namespaces can
+  be required as strings, e.g. `\"clojure.string\"` isn't invalid in a `ns` form but it's very rarely
+  done in any actual code.
   https://github.com/cljdoc/cljdoc-analyzer/issues/18"
   [state js-dependencies]
   ;; fake all string requires since otherwise npm indexing is required
