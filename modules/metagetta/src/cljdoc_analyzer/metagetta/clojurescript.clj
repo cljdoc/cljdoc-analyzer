@@ -80,7 +80,7 @@
          (remove unreferenced-protocol?)
          (map (partial read-var source-path file vars)))))
 
-(defn- fakenize-namespace!
+(defn- fake-js-deps
   "For each required namespace which is a string, generate a fake js module in
   the compiler environment.
   Return the updated compiler environment, 'state'.
@@ -92,16 +92,16 @@
   be required as strings, e.g. `\"clojure.string\"` isn't invalid in a `ns` form but it's very rarely
   done in any actual code.
   https://github.com/cljdoc/cljdoc-analyzer/issues/18"
-  [state js-dependencies]
-  ;; fake all string requires since otherwise npm indexing is required
-  (doseq [dependency js-dependencies
-          :when (not (contains? (:js-dependency-index @state) dependency))]
-    (swap! state assoc-in [:js-dependency-index dependency] (gensym "fake$module")))
-  state)
+  [js-dependencies]
+  (zipmap js-dependencies (repeatedly #(gensym "fake$module")))
+  )
+
+(zipmap #{"react"} (repeatedly #(gensym "fake$module")))
 
 (defn- analyze-file [js-dependencies file]
-  (let [state
-        (fakenize-namespace! (cljs.env/default-compiler-env) js-dependencies)]
+  (let [state (cljs.env/default-compiler-env)
+        faked-js-deps (fake-js-deps js-dependencies)]
+    (swap! state update :js-dependency-index #(merge faked-js-deps %))
     (ana/no-warn
      ;; The 'with-core-cljs' wrapping function ensures the namespace 'cljs.core'
      ;; is available under the sub-call to 'analyze-file'.
@@ -127,8 +127,10 @@
 (defn- ns-merger [val-first val-next]
   (update val-first :publics #(seq (into (set %) (:publics val-next)))))
 
-(defn- get-js-package-dependencies
-  "Compute the set of all js dependencies used by a package from its root path.
+(defn- get-string-dependencies
+  "Compute the set of all dependencies expressed as string for a give  package path.
+  Usually, these strings required namespace refer to JS library not embedded in
+  ClojureScript package.
 
   Example: for the package 'lilactown-hx-0.5.2', #{\"react\"} is returned."
   [package-root-path]
@@ -171,7 +173,7 @@
   ([path {:keys [exception-handler]
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
    (let [path (io/file (utils/canonical-path path))
-         js-dependencies (get-js-package-dependencies path)
+         js-dependencies (get-string-dependencies path)
          file-reader #(read-file path js-dependencies % exception-handler)]
      (->> (find-files path)
           (map file-reader)
