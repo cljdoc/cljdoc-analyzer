@@ -58,6 +58,14 @@
     (println "Analyzing" project version)
     (test-helper/verify-analysis-result project version edn-out-filename (apply shell/sh args))))
 
+(t/deftest re-frame-remotely
+  ;; https://github.com/cljdoc/cljdoc-analyzer/issues/18
+  ;; https://github.com/cljdoc/cljdoc/issues/289
+  (run-analysis (remote->args
+                 ["re-frame"
+                  "0.12.0"
+                  "https://repo.clojars.org/re-frame/re-frame/0.12.0/re-frame-0.12.0"])))
+
 (t/deftest muuntaja-unpublished-locally
   ;; known to work
   (run-analysis (local->args
