@@ -84,6 +84,11 @@
   "Generate a value for the analyzers :js-dependency-index that 'stubs out' all JS modules
   listed in `js-dependencies`.
 
+  Additionally includes common dependencies like 'react'.
+  [[get-string-dependencies]] only detects requires from within the analyzed
+  package but not from requires in transitive dependencies. So we do our best
+  to cover common cases.
+
   Rational:
   Required namespaces that are strings correspond to JS library used by the namespace
   currently parsed. Analysis generally doesn't involved those JS libraries but will check
@@ -92,7 +97,9 @@
   done in any actual code.
   https://github.com/cljdoc/cljdoc-analyzer/issues/18"
   [js-dependencies]
-  (zipmap js-dependencies (repeatedly #(gensym "fake$module"))))
+  (-> js-dependencies
+      (conj "react" "react-dom")
+      (zipmap (repeatedly #(gensym "fake$module")))))
 
 (defn- analyze-file [js-dependencies file]
   (let [state (cljs.env/default-compiler-env)
