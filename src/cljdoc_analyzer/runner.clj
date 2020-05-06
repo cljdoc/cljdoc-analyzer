@@ -134,7 +134,10 @@
         (let [result (analysis-edn/read metadata-output-file)]
           (assert result "No data was saved in output file")
           result)
-        (throw (ex-info (str "Analysis failed with code " (:exit process)) {:code (:exit process)}))))))
+        (throw (ex-info (str "Analysis failed with code " (:exit process))
+                        {:code (:exit process)
+                         :stdout (:out process)
+                         :stderr (:err process)}))))))
 
 (defn- validate-result [ana-result]
   (spec/assert :cljdoc/cljdoc-edn ana-result)
@@ -220,7 +223,9 @@
        :analysis-result output-file})
     (catch Throwable t
       (let [msg (.getMessage t)]
-        (log/error t "Analysis failed")
+        (log/error msg)
+        (log/error "STDOUT\n" (-> t ex-data :stdout))
+        (log/error "STDERR\n" (-> t ex-data :stderr))
         ;; TODO: hmmm caller is not using this info... except for analysis-status
         {:analysis-status :fail
          :fail-reason msg
