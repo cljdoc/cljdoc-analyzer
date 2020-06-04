@@ -98,7 +98,7 @@
   https://github.com/cljdoc/cljdoc-analyzer/issues/18"
   [js-dependencies]
   (-> js-dependencies
-      (conj "react" "react-dom")
+      (conj "react" "react-dom" "cljsjs.react")
       (zipmap (repeatedly #(gensym "fake$module")))))
 
 (defn- analyze-file [js-dependencies file]
