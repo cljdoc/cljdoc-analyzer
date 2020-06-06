@@ -2,6 +2,7 @@
   "Read raw documentation information from ClojureScript source directory."
   (:require [clojure.java.io :as io]
             [cljs.analyzer.api :as ana]
+            [cljs.closure]
             [cljs.compiler.api :as comp]
             [cljs.env]
             [cljdoc-analyzer.metagetta.utils :as utils]))
@@ -84,10 +85,10 @@
   "Generate a value for the analyzers :js-dependency-index that 'stubs out' all JS modules
   listed in `js-dependencies`.
 
-  Additionally includes common dependencies like 'react'.
-  [[get-string-dependencies]] only detects requires from within the analyzed
-  package but not from requires in transitive dependencies. So we do our best
-  to cover common cases.
+  Additionally includes dependencies from deps.cljs, and also common
+  dependencies like 'react'.  [[get-string-dependencies]] only detects requires
+  from within the analyzed package but not from requires in transitive
+  dependencies.
 
   Rational:
   Required namespaces that are strings correspond to JS library used by the namespace
@@ -97,9 +98,14 @@
   done in any actual code.
   https://github.com/cljdoc/cljdoc-analyzer/issues/18"
   [js-dependencies]
-  (-> js-dependencies
-      (conj "react" "react-dom" "cljsjs.react")
-      (zipmap (repeatedly #(gensym "fake$module")))))
+  (let [deps (cljs.closure/get-upstream-deps)
+        npm-deps (when (map? (:npm-deps deps))
+                   (keys (:npm-deps deps)))
+        foreign-libs (mapcat :provides (:foreign-libs deps))]
+    (zipmap (concat js-dependencies
+                    npm-deps foreign-libs
+                    ["react" "react-dom" "cljsjs.react"])
+            (repeatedly #(gensym "fake$module")))))
 
 (defn- analyze-file [js-dependencies file]
   (let [state (cljs.env/default-compiler-env)

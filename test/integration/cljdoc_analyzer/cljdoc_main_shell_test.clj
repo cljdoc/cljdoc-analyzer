@@ -137,3 +137,10 @@
                  ["frozar/roughcljs"
                   "0.2.4"
                   "https://repo.clojars.org/frozar/roughcljs/0.2.4/roughcljs-0.2.4"])))
+
+(t/deftest cli-matic-remotely
+  ;; https://github.com/cljdoc/cljdoc-analyzer/issues/26
+  (run-analysis (remote->args
+                 ["cli-matic"
+                  "0.4.3"
+                  "http://repo.clojars.org/cli-matic/cli-matic/0.4.3/cli-matic-0.4.3"])))
