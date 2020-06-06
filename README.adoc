@@ -2,18 +2,16 @@
 :toc:
 :toclevels: 4
 
-WARNING: ALPHA work here.
-
 == Rationale
 
-A library to return public APIs for Clojure/ClojureScript projects. Recognizes that publics APIs can be altered at load
-time by tools such as import-vars.
+A library to return public APIs for Clojure/ClojureScript projects recognizing that publics APIs
+can be altered programmatically at load time.
 
 Cljdoc-analyzer's first use is for cljdoc but others might find value in this library.
 
 == History
 
-Some Clojure/ClojureScript projects alter their APIs and related metadata at load time through tools such as
+Some Clojure/ClojureScript projects alter their APIs and related metadata at load time through libraries such as
 https://github.com/ztellman/potemkin[potemkin import-vars].
 
 https://github.com/weavejester/codox[Codox] was coded to understand these alterations for the Clojure projects it
@@ -39,7 +37,7 @@ global `:aot` directives in your project; instead, place them in a specialized p
 Cljdoc analyzer will recognize the following special metadata.
 
 ==== :no-doc
-The `:no-doc` metadata key is a convention invented by codox to indicate that an element should not be included in api documentation.
+The `:no-doc` metadata key is a convention invented by codox to indicate that an element should not be included in API documentation.
 
 Examples:
 
@@ -142,8 +140,8 @@ On successful completion, you'll find the output in the current directory in `io
 
 When you are working on a local project, publish it to your local maven repo first, then run the cljdoc analyze command.
 
-If you only want to suppress items that have been marked to be excluded from documentation, use `--exclude-with`.
-To match what cljdoc uses, you would exclude namespaces and publics tagged with `:no-doc` and/or `:skip-wiki`, and also use the `--extra-repo` option:
+If you want to suppress items that have been marked to be excluded from documentation, use `--exclude-with`.
+To match cljdoc usage, you would exclude namespaces and publics tagged with `:no-doc` and/or `:skip-wiki`, and also use the `--extra-repo` option:
 
 [source,bash,no-wrap]
 ----
@@ -215,7 +213,7 @@ special metadata tags when present are included in publics:
 
 * `:dynamic` for dynamic defs
 
-special metadata tags when present are included on namespaces  publics:
+special metadata tags when present are included on namespaces and/or publics:
 
 * `:added` version an element was added
 * `:deprecated` version an element was deprecated
@@ -230,7 +228,7 @@ metadata collection time by splitting the work into two distinct phases.
 
 . Prepare for analysis - the source for this work can be found under link:src[src]. Here we do everything we can to prepare for
   metadata collection.
-. Collect metadata - the source for this work can be found under link:metagetta[metagetta]. A separate metagetta process
+. Collect metadata - the source for this work can be found under link:modules/metagetta[metagetta]. A separate metagetta process
   is launched to collect metadata on sources prepared in step 1.
 
 
