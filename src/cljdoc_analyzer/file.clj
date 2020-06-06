@@ -1,8 +1,7 @@
 (ns ^:no-doc cljdoc-analyzer.file
   (:require [clojure.java.io :as io]
             [clojure.string :as string])
-  (:import (java.nio.file Files Paths FileSystems SimpleFileVisitor FileVisitResult Paths CopyOption)
-           (java.util Collections)))
+  (:import (java.nio.file Files)))
 
 (defn copy [source target]
   (io/make-parents target)

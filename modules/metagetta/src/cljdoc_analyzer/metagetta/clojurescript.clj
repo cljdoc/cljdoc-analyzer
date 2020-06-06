@@ -4,6 +4,7 @@
             [cljs.analyzer.api :as ana]
             [cljs.compiler.api :as comp]
             [cljs.env]
+            [clojure.set]
             [cljdoc-analyzer.metagetta.utils :as utils]))
 
 (defn- cljs-filename? [filename]
@@ -34,7 +35,7 @@
 
 (defn- protocol-methods [protocol vars]
   (let [proto-name (name (:name protocol))]
-    (filter #(if-let [p (:protocol %)] (= proto-name (name p))) vars)))
+    (filter #(when-let [p (:protocol %)] (= proto-name (name p))) vars)))
 
 (defn- multimethod? [var]
   (= (:tag var) 'cljs.core/MultiFn))

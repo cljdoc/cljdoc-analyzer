@@ -19,9 +19,8 @@
             [cljdoc-analyzer.file :as file]
             [cljdoc-analyzer.proj :as proj]
             [cljdoc-analyzer.spec :as spec])
-  (:import (java.util.zip ZipFile GZIPInputStream)
-           (java.net URI)
-           (java.nio.file Files)))
+  (:import (java.util.zip ZipFile)
+           (java.net URI)))
 
 (defn- download-jar! [jar-uri target-dir]
   (let [jar-f (io/file target-dir "downloaded.jar")]

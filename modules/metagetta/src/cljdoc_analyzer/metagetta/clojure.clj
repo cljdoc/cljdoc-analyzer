@@ -44,7 +44,7 @@
          (:on-interface value))))
 
 (defn- protocol-method? [vars var]
-  (if-let [p (:protocol (meta var))]
+  (when-let [p (:protocol (meta var))]
     (some #{p} vars)))
 
 (defn- include-record-factory-as-defrecord [var-meta]

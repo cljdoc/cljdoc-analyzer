@@ -4,8 +4,7 @@
             [clojure.string :as string]
             [clojure.java.io :as io]
             [cljdoc-analyzer.test-helper :as test-helper])
-  (:import [java.nio.file Files]
-           [java.net URI]))
+  (:import [java.nio.file Files]))
 
 (def clean-temp
   "Disable for debugging"
