@@ -9,7 +9,7 @@
 
 (defn- ensure-recent-ish [deps-map]
   (let [min-versions {'org.clojure/clojure "1.9.0"
-                      'org.clojure/clojurescript "1.10.339"
+                      'org.clojure/clojurescript "1.10.773"
                       'org.clojure/java.classpath "0.2.2"
                       'org.clojure/core.async "0.4.474"}
         choose-version (fn choose-version [given-v min-v]
@@ -22,7 +22,7 @@
 
 (defn- ensure-required-deps [deps-map]
   (merge {'org.clojure/clojure {:mvn/version "1.10.1"}
-          'org.clojure/clojurescript {:mvn/version "1.10.520"}
+          'org.clojure/clojurescript {:mvn/version "1.10.773"}
           ;; many ring libraries implicitly depend on this and getting all
           ;; downstream libraries to properly declare it as a "provided"
           ;; dependency would be a major effort. since it's all java it also
