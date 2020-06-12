@@ -143,3 +143,11 @@
                  ["cli-matic"
                   "0.4.3"
                   "http://repo.clojars.org/cli-matic/cli-matic/0.4.3/cli-matic-0.4.3"])))
+
+(t/deftest gorilla-ui-remotely
+  ;; https://github.com/cljdoc/cljdoc-analyzer/pull/25
+  ;; https://github.com/cljdoc/cljdoc/issues/358
+  (run-analysis (remote->args
+                 ["org.pinkgorilla/gorilla-ui"
+                  "0.1.66"
+                  "http://repo.clojars.org/org/pinkgorilla/gorilla-ui/0.1.66/gorilla-ui-0.1.66"])))
