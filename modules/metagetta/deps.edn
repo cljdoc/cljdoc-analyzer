@@ -1,7 +1,7 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.10.1"}
         org.clojure/tools.namespace {:mvn/version "0.3.1"}
-        org.clojure/clojurescript {:mvn/version "1.10.520"}}
+        org.clojure/clojurescript {:mvn/version "1.10.773"}}
  :aliases {:test
             {:extra-paths ["test" "test-sources"]
              :extra-deps {lambdaisland/kaocha {:mvn/version "0.0-554"}

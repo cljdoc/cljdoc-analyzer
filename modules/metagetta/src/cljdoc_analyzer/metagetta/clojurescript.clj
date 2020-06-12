@@ -116,7 +116,7 @@
      ;; The 'with-core-cljs' wrapping function ensures the namespace 'cljs.core'
      ;; is available under the sub-call to 'analyze-file'.
      ;; https://github.com/cljdoc/cljdoc/issues/261
-     (comp/with-core-cljs state nil #(ana/analyze-file file)))
+     (comp/with-core-cljs state nil #(ana/analyze-file state file nil)))
     state))
 
 (defn- read-file [source-path js-dependencies file exception-handler]
