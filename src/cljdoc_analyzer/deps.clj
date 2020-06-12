@@ -10,6 +10,7 @@
 (defn- ensure-recent-ish [deps-map]
   (let [min-versions {'org.clojure/clojure "1.9.0"
                       'org.clojure/clojurescript "1.10.773"
+                      'org.clojure/tools.namespace "0.3.1"
                       'org.clojure/java.classpath "0.2.2"
                       'org.clojure/core.async "0.4.474"}
         choose-version (fn choose-version [given-v min-v]
