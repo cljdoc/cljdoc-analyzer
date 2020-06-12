@@ -123,6 +123,7 @@
                          :exclude-with exclude-with}
           process (sh/sh "java"
                          "-cp" classpath
+                         "-Dclojure.spec.skip-macros=true"
                          "clojure.main" "-m" "cljdoc-analyzer.metagetta.main"
                          (pr-str analysis-args)
                          ;; supplying :dir is necessary to avoid local deps.edn being included
