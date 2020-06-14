@@ -151,3 +151,10 @@
                  ["org.pinkgorilla/gorilla-ui"
                   "0.1.66"
                   "http://repo.clojars.org/org/pinkgorilla/gorilla-ui/0.1.66/gorilla-ui-0.1.66"])))
+
+ (t/deftest cheshire-remotely
+   ;; https://github.com/cljdoc/cljdoc/issues/360
+   (run-analysis (remote->args
+                  ["cheshire"
+                   "5.9.0"
+                   "https://repo.clojars.org/cheshire/cheshire/5.9.0/cheshire-5.9.0"])))
