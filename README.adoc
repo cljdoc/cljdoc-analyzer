@@ -238,7 +238,7 @@ We make use of https://github.com/lambdaisland/kaocha[kaocha] for testing.
 
 Metagetta is a separate sub-project with its own unit tests. To run metagetta unit tests:
 ----
-cd metagetta
+cd modules/metagetta
 clojure -A:test
 ----
 
