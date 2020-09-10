@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>cljdoc</groupId>
   <artifactId>cljdoc-analyzer</artifactId>
@@ -14,23 +13,23 @@
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
-      <artifactId>tools.deps.alpha</artifactId>
-      <version>0.7.541</version>
+      <artifactId>tools.logging</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>cli-matic</groupId>
+      <artifactId>cli-matic</artifactId>
+      <version>0.4.3</version>
     </dependency>
     <dependency>
       <groupId>org.clojure</groupId>
-      <artifactId>tools.logging</artifactId>
-      <version>0.5.0</version>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.3.0-alpha4</version>
+      <artifactId>tools.deps.alpha</artifactId>
+      <version>0.9.782</version>
     </dependency>
     <dependency>
       <groupId>org.jsoup</groupId>
       <artifactId>jsoup</artifactId>
-      <version>1.12.1</version>
+      <version>1.13.1</version>
     </dependency>
     <dependency>
       <groupId>version-clj</groupId>
@@ -38,16 +37,14 @@
       <version>0.1.2</version>
     </dependency>
     <dependency>
-      <groupId>cli-matic</groupId>
-      <artifactId>cli-matic</artifactId>
-      <version>0.3.8</version>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.3.0-alpha5</version>
     </dependency>
   </dependencies>
-
   <properties>
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-
   <build>
       <resources>
           <resource>
@@ -67,19 +64,16 @@
           </resource>
       </resources>
   </build>
-
   <scm>
-      <connection>scm:git:git@github.com:lread/cljdoc-analyzer.git</connection>
-      <developerConnection>scm:git:git@github.com:lread/cljdoc-analyzer.git</developerConnection>
-      <tag>aaeb5f52dd5f1f0c64496cfe040ba14712ea30c3</tag>
-      <url>git@github.com:lread/cljdoc-analyzer</url>
+    <connection>scm:git:git@github.com:cljdoc/cljdoc-analyzer.git</connection>
+    <developerConnection>scm:git:git@github.com:cljdoc/cljdoc-analyzer.git</developerConnection>
+    <tag>aaeb5f52dd5f1f0c64496cfe040ba14712ea30c3</tag>
+    <url>git@github.com:cljdoc/cljdoc-analyzer</url>
   </scm>
-
   <repositories>
     <repository>
       <id>clojars</id>
       <url>https://repo.clojars.org/</url>
     </repository>
   </repositories>
-
 </project>

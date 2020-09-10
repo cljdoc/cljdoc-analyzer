@@ -1,12 +1,12 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.10.1"}
-        org.clojure/tools.namespace {:mvn/version "0.3.1"}
+        org.clojure/tools.namespace {:mvn/version "1.0.0"}
         org.clojure/clojurescript {:mvn/version "1.10.773"}}
  :aliases {:test
             {:extra-paths ["test" "test-sources"]
-             :extra-deps {lambdaisland/kaocha {:mvn/version "0.0-554"}
-                          lambdaisland/kaocha-junit-xml {:mvn/version "0.0-70"}}
+             :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.681"}
+                          lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}}
              :main-opts ["-m" "kaocha.runner"]}
            :depstar
            {:extra-deps
-            {seancorfield/depstar {:mvn/version "0.3.3"}}}}}
+            {seancorfield/depstar {:mvn/version "1.1.104"}}}}}
