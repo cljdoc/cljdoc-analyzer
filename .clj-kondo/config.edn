@@ -1,2 +1,3 @@
-{:linters {:unresolved-symbol
+{:config-paths ^:replace []
+ :linters {:unresolved-symbol
            {:exclude [metagetta-test.test-ns1.altered]}}}
