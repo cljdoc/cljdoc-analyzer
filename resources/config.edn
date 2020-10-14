@@ -11,6 +11,7 @@
   "clj-time/clj-time" {:deps {org.clojure/java.jdbc {:mvn/version "0.7.7"}}}
   "com.taoensso/tufte" {:deps {com.taoensso/timbre {:mvn/version "4.10.0"}}}
   "dali/dali" {:languages #{"clj"}}
+  "io.replikativ/datahike" {:languages #{"clj"}}
   "io.aviso/pretty" {:deps {leiningen {:mvn/version "2.8.1"}}}
   "manifold/manifold" {:namespaces [manifold.deferred manifold.stream manifold.time manifold.bus manifold.executor]
                        :languages #{"clj"}}
