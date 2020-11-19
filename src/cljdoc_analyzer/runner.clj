@@ -83,9 +83,13 @@
       jar)))
 
 (defn- unpack-jar!
-  "Returns dir where jar contents has been unpacked under `target-dir`"
+  "Returns dir where jar contents has been unpacked under `target-dir`.  dir
+  will be relative to target-dir in a way suitable for use with a pom.xml as a
+  local root."
   [local-jar-path target-dir]
-  (let [jar-contents-dir (io/file target-dir "contents/")]
+  ;; If a pom is read from target-dir, src/main/clojure relative to that pom is
+  ;; added to the classpath by tdeps.
+  (let [jar-contents-dir (io/file target-dir "src/main/clojure")]
     (unzip! local-jar-path jar-contents-dir)
     (clean-jar-contents! jar-contents-dir)
     jar-contents-dir))
@@ -161,8 +165,12 @@
       (let [project (symbol project)
             local-jar-path (resolve-jar! jarpath work-dir)
             jar-contents-dir (unpack-jar! local-jar-path work-dir)
+            pom-str (slurp pompath)
+            ;; Utilize unpack-jar!'s deps.edn support, and create a path which
+            ;; tdeps can understand.
+            _ (spit (io/file work-dir "pom.xml") pom-str)
             resolved-deps (deps/resolved-deps work-dir
-                                              local-jar-path pompath
+                                              (str work-dir) pompath
                                               default-repos extra-repos
                                               (:deps overrides))
             classpath (deps/make-classpath resolved-deps)]
@@ -176,7 +184,7 @@
                                                 :languages (or (:languages overrides) :auto-detect)
                                                 :namespaces (or (:namespaces overrides) :all)
                                                 :classpath classpath))
-             :pom-str (slurp pompath)}
+             :pom-str pom-str}
             (validate-result)))
       (finally
         (file/delete-directory! work-dir)))))
