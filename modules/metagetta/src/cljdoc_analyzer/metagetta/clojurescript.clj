@@ -5,6 +5,8 @@
             [cljs.closure]
             [cljs.compiler.api :as comp]
             [cljs.env]
+            ;[cljs.tools.reader :as reader]
+            [clojure.tools.reader :as reader]
             [clojure.set]
             [cljdoc-analyzer.metagetta.utils :as utils]))
 
@@ -116,7 +118,8 @@
      ;; The 'with-core-cljs' wrapping function ensures the namespace 'cljs.core'
      ;; is available under the sub-call to 'analyze-file'.
      ;; https://github.com/cljdoc/cljdoc/issues/261
-     (comp/with-core-cljs state nil #(ana/analyze-file state file nil)))
+     (binding [reader/*default-data-reader-fn* tagged-literal]
+       (comp/with-core-cljs state nil #(ana/analyze-file state file nil))))
     state))
 
 (defn- read-file [source-path js-dependencies file exception-handler]
