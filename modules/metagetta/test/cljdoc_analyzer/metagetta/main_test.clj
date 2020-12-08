@@ -172,7 +172,9 @@
                  :file "metagetta_test/test_ns1/special_tags.cljc"
                  :line 21}])})))
 
-(defn- analyze-sources [opts]
+(defn- analyze-sources
+  "Analyze (by default all) sources from `test-sources`"
+  [opts]
   (main/get-metadata (merge opts {:root-path "test-sources"})))
 
 (t/deftest analyze-cljs-code-test
