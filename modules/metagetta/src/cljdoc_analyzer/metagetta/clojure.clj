@@ -104,8 +104,9 @@
     (typecheck-namespace namespace))
   (try
     (binding [*default-data-reader-fn* (fn [tag value]
+                                         ;; NOTE: It seems this must not return `nil`
                                          (warn-unknown-tagged-literal-once namespace tag)
-                                         nil)]
+                                         (tagged-literal tag value))]
       (require namespace)) ; FIXME warning logged yet still exc thrown at this line
     (-> (find-ns namespace)
         (meta)
