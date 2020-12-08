@@ -3,8 +3,9 @@
   (:import java.util.jar.JarFile
            java.io.FileNotFoundException)
   (:require [clojure.java.io :as io]
+            [clojure.tools.logging :as log]
             [clojure.tools.namespace.find :as ns]
-            [cljdoc-analyzer.metagetta.utils :as utils] ))
+            [cljdoc-analyzer.metagetta.utils :as utils]))
 
 (defn try-require [namespace]
   (try
@@ -92,12 +93,20 @@
          (remove (partial protocol-method? vars))
          (map (partial read-var source-path vars)))))
 
+(defn- warn-unknown-tagged-literal [namespace tag]
+  (log/info "Beware: ns " namespace " includes the unknown tagged literal `" tag "`, ignoring it and replacing the value with nil. This should not influence the analysis unless the value is a top-level public var."))
+
+(def warn-unknown-tagged-literal-once (memoize warn-unknown-tagged-literal))
+
 (defn- read-ns [namespace source-path exception-handler]
   (try-require 'clojure.core.typed.check)
   (when (core-typed?)
     (typecheck-namespace namespace))
   (try
-    (require namespace)
+    (binding [*default-data-reader-fn* (fn [tag value]
+                                         (warn-unknown-tagged-literal-once namespace tag)
+                                         nil)]
+      (require namespace)) ; FIXME warning logged yet still exc thrown at this line
     (-> (find-ns namespace)
         (meta)
         (select-keys [:doc :author :deprecated :added :no-doc :skip-wiki])
