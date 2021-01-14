@@ -1,4 +1,5 @@
 (ns cljdoc-analyzer.metagetta.main-test
+  "Load all `test-sources/*` namespaces and test various things about them."
   (:require [clojure.test :as t]
             [cljdoc-analyzer.metagetta.main :as main]))
 
