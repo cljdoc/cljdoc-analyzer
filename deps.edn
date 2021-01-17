@@ -4,8 +4,8 @@
         org.clojure/tools.logging {:mvn/version "1.1.0"}
         ch.qos.logback/logback-classic {:mvn/version "1.3.0-alpha5"}
         org.jsoup/jsoup {:mvn/version "1.13.1"}
-        version-clj {:mvn/version "0.1.2"}
-        cli-matic {:mvn/version "0.4.3"}}
+        version-clj/version-clj {:mvn/version "0.1.2"}
+        cli-matic/cli-matic {:mvn/version "0.4.3"}}
  :aliases {:test
            {:extra-paths ["test/unit" "test/integration" "test-resources"]
             :extra-deps {lambdaisland/kaocha {:mvn/version "1.0.681"}
@@ -13,5 +13,5 @@
             :main-opts ["-m" "kaocha.runner"]}
 
            :clj-kondo
-           {:extra-deps {clj-kondo {:mvn/version "2020.09.09"}}
+           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2020.09.09"}}
             :main-opts ["-m" "clj-kondo.main"]}}}
