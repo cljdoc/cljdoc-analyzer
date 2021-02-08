@@ -4,7 +4,7 @@
            java.io.FileNotFoundException)
   (:require [clojure.java.io :as io]
             [clojure.tools.namespace.find :as ns]
-            [cljdoc-analyzer.metagetta.utils :as utils] ))
+            [cljdoc-analyzer.metagetta.utils :as utils]))
 
 (defn try-require [namespace]
   (try
@@ -97,7 +97,8 @@
   (when (core-typed?)
     (typecheck-namespace namespace))
   (try
-    (require namespace)
+    (binding [*default-data-reader-fn* (utils/new-failsafe-data-reader-fn namespace)]
+      (require namespace))
     (-> (find-ns namespace)
         (meta)
         (select-keys [:doc :author :deprecated :added :no-doc :skip-wiki])

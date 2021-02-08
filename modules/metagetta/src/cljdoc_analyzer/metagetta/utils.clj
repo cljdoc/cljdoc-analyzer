@@ -125,3 +125,18 @@
                          (tagged-literal 'regex (str %))
                          %))
        (pr-str)))
+
+(defn new-failsafe-data-reader-fn
+  "Return a new failsafe data reader that replaces unknown tagged literals with data via
+  `clojure.core/tagged-literal` instead of failing the analysis."
+  [ns-or-file]
+  (let [warn-unknown-tagged-literal
+        (fn [tag]
+          (println "INFO [metagetta.utils] Beware: ns/file " ns-or-file " includes the unknown tagged literal `" tag "`, ignoring it and replacing the value with data. This should not influence the analysis unless the value is a top-level public var."))
+
+        warn-unknown-tagged-literal-once
+        (memoize warn-unknown-tagged-literal)]
+
+    (fn failsafe-data-reader-fn [tag value]
+      (warn-unknown-tagged-literal-once tag)
+      (tagged-literal tag value))))
