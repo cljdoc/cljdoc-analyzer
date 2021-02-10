@@ -139,4 +139,5 @@
 
     (fn failsafe-data-reader-fn [tag value]
       (warn-unknown-tagged-literal-once tag)
-      (tagged-literal tag value))))
+      ;(tagged-literal tag value) ; <-- OK for reading but breaks the Clojure Compiler's `emitValue` unless we define print-dup
+      [:cljdoc/unknown-tagged-literal (name tag) value])))
