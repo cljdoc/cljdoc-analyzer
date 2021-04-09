@@ -1,1 +1,4 @@
-{:config-paths ^:replace []}
+{:config-paths ^:replace []
+ :linters {:deprecated-var
+           {:exclude {clojure.tools.deps.alpha/make-classpath
+                      {:namespaces [cljdoc-analyzer.deps]}} }}}
