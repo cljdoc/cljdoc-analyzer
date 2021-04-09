@@ -2,7 +2,8 @@
   "Miscellaneous utility functions."
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.walk :as walk]))
+            [clojure.walk :as walk])
+  (:import [java.time Duration]))
 
 (defn- empty-seq?[x]
   (and (seqable? x) (not (seq x))))
@@ -141,3 +142,20 @@
       (warn-unknown-tagged-literal-once tag)
       ;(tagged-literal tag value) ; <-- OK for reading but breaks the Clojure Compiler's `emitValue` unless we define print-dup
       [:cljdoc/unknown-tagged-literal (name tag) value])))
+
+
+(defmacro time-op
+  "Evaluates expr and prints the time it took.  Returns the value of
+ expr."
+  {:added "1.0"}
+  [desc expr]
+  `(let [start# (System/currentTimeMillis)
+         ret# ~expr
+         end# (System/currentTimeMillis)]
+     (printf "⏱  %s took: %s\n" ~desc (-> (Duration/ofMillis (- end# start#))
+                                       str
+                                       (subs 2)
+                                       (str/replace #"\d[HMS](?!$)" "$1 ")
+                                       (str/lower-case)))
+     ret#))
+

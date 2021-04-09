@@ -106,11 +106,12 @@
    (let [root-path (utils/canonical-path root-path)
          actual-languages (determine-languages languages root-path)]
      (->> (map (fn [lang]
-                  (println "Analyzing for" lang)
-                 (read-namespaces {:namespaces namespaces
-                                    :root-path root-path
-                                    :language lang
-                                    :exclude-with exclude-with}))
+                 (println "Analyzing for" lang)
+                 (utils/time-op (str "Analysis for " lang)
+                                (read-namespaces {:namespaces namespaces
+                                                  :root-path root-path
+                                                  :language lang
+                                                  :exclude-with exclude-with})))
                actual-languages)
           (zipmap actual-languages)))))
 
