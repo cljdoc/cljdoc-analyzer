@@ -38,6 +38,7 @@ jobs:
           command: >
             clojure -Atest
             --reporter documentation
+            --plugin kaocha.plugin/profiling
             --plugin kaocha.plugin/junit-xml
             --junit-xml-file target/test-results/metagetta-unit/results.xml
           working_directory: ~/repo/modules/metagetta
@@ -47,6 +48,7 @@ jobs:
           command: >
             clojure -Atest
             --reporter documentation
+            --plugin kaocha.plugin/profiling
             --plugin kaocha.plugin/junit-xml
             --junit-xml-file target/test-results/cljdoc-analyzer-unit/results.xml
             unit
@@ -56,6 +58,7 @@ jobs:
           command: >
             clojure -Atest
             --reporter documentation
+            --plugin kaocha.plugin/profiling
             --plugin kaocha.plugin/junit-xml
             --junit-xml-file target/test-results/cljdoc-analyzer-integration/results.xml
             integration
