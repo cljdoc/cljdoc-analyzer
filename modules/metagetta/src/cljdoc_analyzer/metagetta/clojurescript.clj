@@ -1,6 +1,7 @@
 (ns ^:no-doc cljdoc-analyzer.metagetta.clojurescript
   "Read raw documentation information from ClojureScript source directory."
   (:require [clojure.java.io :as io]
+            [clojure.string :as str]
             [cljs.analyzer.api :as ana]
             [cljs.closure]
             [cljs.compiler.api :as comp]
@@ -29,11 +30,18 @@
         (when (>= (count child-name) len)
           (io/file (subs child-name len)))))))
 
+(defn- sort-so-cljs-files-first [files]
+  (sort-by #(let [f (str %)
+                  ext (subs f (str/last-index-of f "."))]
+              [(if (= ".cljs" ext) 0 1) %])
+           files))
+
 (defn- find-files [file]
   (when (.isDirectory file)
     (->> (file-seq file)
          (filter cljs-file?)
-         (keep (strip-parent file)))))
+         (keep (strip-parent file))
+         sort-so-cljs-files-first)))
 
 (defn- protocol-methods [protocol vars]
   (let [proto-name (name (:name protocol))]
