@@ -436,6 +436,11 @@
             :line 5,
             :name keyword->str,
             :type :var}
+           {:arglists ([tag form])
+            :file "hx/utils.clj"
+            :line 5
+            :name measure-perf
+            :type :macro}
            {:arglists ([props]),
             :file "hx/utils.cljs",
             :line 14,

@@ -109,23 +109,26 @@
                     ["react" "react-dom" "cljsjs.react"])
             (repeatedly #(gensym "fake$module")))))
 
-(defn- analyze-file [js-dependencies file]
+(defn- create-compiler-state [js-dependencies]
   (let [state (cljs.env/default-compiler-env)
         faked-js-deps (fake-js-deps js-dependencies)]
     (swap! state update :js-dependency-index #(merge faked-js-deps %))
-    (ana/no-warn
+    state))
+
+(defn- analyze-file [state file]
+  (ana/no-warn
+   (binding [reader/*default-data-reader-fn* (utils/new-failsafe-data-reader-fn file)]
      ;; The 'with-core-cljs' wrapping function ensures the namespace 'cljs.core'
      ;; is available under the sub-call to 'analyze-file'.
      ;; https://github.com/cljdoc/cljdoc/issues/261
-     (binding [reader/*default-data-reader-fn* (utils/new-failsafe-data-reader-fn file)]
-       (comp/with-core-cljs state nil #(ana/analyze-file state file nil))))
-    state))
+     (comp/with-core-cljs state nil #(ana/analyze-file state file nil))))
+  state)
 
-(defn- read-file [source-path js-dependencies file exception-handler]
+(defn- read-file [state source-path file exception-handler]
   (try
     (let [source  (io/file source-path file)
           ns-name (:ns (ana/parse-ns source))
-          state   (analyze-file js-dependencies source)]
+          state   (analyze-file state source)]
       (if-let [ns (ana/find-ns state ns-name)]
         {ns-name
          (-> ns
@@ -188,7 +191,8 @@
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
    (let [path (io/file (utils/canonical-path path))
          js-dependencies (get-string-dependencies path)
-         file-reader #(read-file path js-dependencies % exception-handler)]
+         compiler-state (create-compiler-state js-dependencies)
+         file-reader #(read-file compiler-state path % exception-handler)]
      (->> (find-files path)
           (map file-reader)
           (apply merge-with ns-merger)
