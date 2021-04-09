@@ -9,14 +9,14 @@ function lint() {
     if [ ! -d .clj-kondo/.cache ]; then
         echo "--[linting and building cache]--"
         # classpath with tests paths
-        local classpath;classpath="$(clojure -R:test -C:test -Spath)"
+        local classpath;classpath="$(clojure -A:test -Spath)"
         lint_args="$classpath"
     else
         echo "--[linting]--"
         lint_args="src test modules/metagetta"
     fi
     set +e
-    clojure -A:clj-kondo \
+    clojure -M:clj-kondo \
             --lint ${lint_args} \
             --config '{:output {:include-files ["^src" "^test" "^modules/metagetta"]}}'
     local exit_code=$?

@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/clojure:tools-deps-1.10.0.442
+      - image: circleci/clojure:openjdk-8-tools-deps-1.10.3.822
 
     working_directory: ~/repo
 
@@ -36,7 +36,7 @@ jobs:
       - run:
           name: Run metagetta unit tests
           command: >
-            clojure -Atest
+            clojure -M:test
             --reporter documentation
             --plugin kaocha.plugin/profiling
             --plugin kaocha.plugin/junit-xml
@@ -46,7 +46,7 @@ jobs:
       - run:
           name: Run cldoc-analyzer unit tests
           command: >
-            clojure -Atest
+            clojure -M:test
             --reporter documentation
             --plugin kaocha.plugin/profiling
             --plugin kaocha.plugin/junit-xml
@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Run cldoc-analyzer integration tests
           command: >
-            clojure -Atest
+            clojure -M:test
             --reporter documentation
             --plugin kaocha.plugin/profiling
             --plugin kaocha.plugin/junit-xml
