@@ -19,15 +19,19 @@ jobs:
             - v1-dependencies- # fallback if cache not found
 
       - run:
-          name: Dump tool versions
-          command: clojure -e '(println (System/getProperty "java.runtime.name") (System/getProperty "java.runtime.version") "\nClojure" (clojure-version))'
+          name: Dump tools versions
+          command: |
+            echo clojure -Sdescribe
+            clojure -Sdescribe
+            echo java -version
+            java -version
 
       - run:
-          name: Bring down the deps
-          command: >
-            clojure -Spath
+          name: Bring down Clojure dependencies
+          command: |
+            clojure -P -M:test:clj-kondo
             cd modules/metagetta
-            clojure -Spath
+            clojure -P -M:test
 
       - run:
           name: Lint
