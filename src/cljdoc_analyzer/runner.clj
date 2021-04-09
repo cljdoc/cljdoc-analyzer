@@ -101,10 +101,10 @@
                                     (string/trim)
                                     (string/replace #"\n" "\n "))
                  (when (seq (:err proc))
-                   "\nstderr:\n " (-> proc
-                                      :err
-                                      (string/trim)
-                                      (string/replace #"\n" "\n "))))))
+                   (str "\nstderr:\n " (-> proc
+                                           :err
+                                           (string/trim)
+                                           (string/replace #"\n" "\n ")))))))
 
 (defn- log-dependencies [resolved-deps]
   (log/info (str "dependencies for analysis:\n"
