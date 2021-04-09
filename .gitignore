@@ -11,3 +11,5 @@ checkouts/
 .clj-kondo/.cache
 .rebl
 .DS_Store
+.calva
+.lsp
