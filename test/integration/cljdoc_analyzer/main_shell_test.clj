@@ -1,4 +1,6 @@
 (ns ^:integration cljdoc-analyzer.main-shell-test
+  "These tests do not represent the way cljdoc calls cljdoc-analyzer.
+   They are here to ensure our command-line friendly adhoc interface works."
   (:require [clojure.test :as t]
             [clojure.java.shell :as shell]
             [cljdoc-analyzer.test-helper :as test-helper]))
@@ -22,8 +24,5 @@
                                                   "--output-filename" edn-out-filename))))
 
 ;; main testing is done in cljdoc-main-test, this is a sanity run that this main path works as well.
-(t/deftest orchestra
-  (run-analysis "orchestra" "2018.11.07-1"))
-
 (t/deftest bidi
   (run-analysis "bidi" "2.1.3"))

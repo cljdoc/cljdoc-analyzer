@@ -1,4 +1,5 @@
 (ns ^:integration cljdoc-analyzer.cljdoc-main-shell-test
+  "These tests mimic the way cljdoc calls cljdoc-analyzer."
   (:require [clojure.test :as t]
             [clojure.java.shell :as shell]
             [clojure.string :as string]
