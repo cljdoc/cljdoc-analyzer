@@ -65,6 +65,7 @@ jobs:
             --plugin kaocha.plugin/profiling
             --plugin kaocha.plugin/junit-xml
             --junit-xml-file target/test-results/cljdoc-analyzer-integration/results.xml
+            --no-capture-output
             integration
 
       - save_cache:
