@@ -146,4 +146,5 @@
       (println "Done"))
 
     (finally
-      (flush))))
+      (flush)
+      (shutdown-agents))))
