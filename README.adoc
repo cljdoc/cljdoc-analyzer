@@ -4,8 +4,14 @@
 
 == Rationale
 
-A library to return public APIs for Clojure/ClojureScript projects recognizing that publics APIs
-can be altered programmatically at load time.
+A library to analyze then return public APIs for Clojure/ClojureScript projects recognizing that publics APIs can be altered programmatically at load time.
+
+Cljdoc-analyzer takes care to:
+
+* Provide an isolated analysis environment to ensure that only project dependencies are included
+* Work around common issues with project dependencies that would otherwise prevent a project from being analyzed
+
+The link:#internal-workings[Internal Workings section] provides more details.
 
 Cljdoc-analyzer's first use is for cljdoc but others might find value in this library.
 
@@ -22,7 +28,7 @@ ClojureScript import-vars type metadata manipulation.
 Cljdoc-analyzer picks up from the cljdoc codox unmerged PR in the internal metagetta sub-project and adds what was the
 cljdoc analysis-runner module under the main src.
 
-See link:doc/design/01-migration-from-analysis-runner.adoc[migration from analisys runner] for more details.
+See link:doc/design/01-migration-from-analysis-runner.adoc[migration from analysis runner] for more details.
 
 == Tips for library authors
 
@@ -220,6 +226,7 @@ special metadata tags when present are included on namespaces and/or publics:
 * `:no-doc` author requests that this item be excluded from docs
 * `:skip-wiki` legacy synonym for `:no-doc`, please use `:no-doc`.
 
+[#internal-workings]
 == Internal Workings
 
 We use `clojure.tools.namespace` and `cljs.analyzer.api` to load source and collect metadata. This requires the loading
@@ -231,6 +238,10 @@ metadata collection time by splitting the work into two distinct phases.
 . Collect metadata - the source for this work can be found under link:modules/metagetta[metagetta]. A separate metagetta process
   is launched to collect metadata on sources prepared in step 1.
 
+Here's an overview diagram:
+image:doc/cljdoc-analyzer-overview.png[cldoc-analyzer overview]
+
+To understand how this fits in the bigger cljdoc picture see the https://github.com/cljdoc/cljdoc/blob/master/doc/cljdoc-developer-technical-guide.adoc#system-overview[the system overview in the cljdoc project].
 
 == Testing
 
