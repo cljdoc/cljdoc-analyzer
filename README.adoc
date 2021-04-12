@@ -243,6 +243,14 @@ image:doc/cljdoc-analyzer-overview.png[cldoc-analyzer overview]
 
 To understand how this fits in the bigger cljdoc picture see the https://github.com/cljdoc/cljdoc/blob/master/doc/cljdoc-developer-technical-guide.adoc#system-overview[the system overview in the cljdoc project].
 
+=== Integration with cljdoc
+
+Cljdoc passes the cljdoc-analyzer dependency to https://github.com/cljdoc/builder[the CircleCI cljdoc analysis job].
+
+This dependency is currently a `:git/url` dependency.
+To bring a new version of cljdoc-analyzer into production, we update the `analyzer-version` to the git `:sha` we'd like to use.
+At the time of this writing, https://github.com/cljdoc/cljdoc/blob/5171e7924579b9144e5729da92a4454e32c03b23/src/cljdoc/analysis/service.clj#L37-L42[this is specified in `cljdoc.analysis.service`].
+
 == Testing
 
 We make use of https://github.com/lambdaisland/kaocha[kaocha] for testing.
