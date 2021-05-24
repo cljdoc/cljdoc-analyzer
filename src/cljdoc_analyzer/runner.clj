@@ -48,6 +48,12 @@
   (when (.exists (io/file unpacked-jar-dir "public"))
     (log/info "Deleting public/ dir")
     (file/delete-directory! (io/file unpacked-jar-dir "public")))
+  ;; Delete the clj-kondo exports directory, which includes clj files
+  ;; with namespaces that don't match their directory location.
+  ;; This fixes the issue https://github.com/cljdoc/cljdoc/issues/455
+  (when (.exists (io/file unpacked-jar-dir "clj-kondo.exports"))
+    (log/info "Deleting clj-kondo.exports/ dir")
+    (file/delete-directory! (io/file unpacked-jar-dir "clj-kondo.exports")))
   ;; Delete .class files that have a corresponding .clj or .cljc file
   ;; to circle around https://dev.clojure.org/jira/browse/CLJ-130
   ;; This only affects Jars with AOT compiled namespaces where the
