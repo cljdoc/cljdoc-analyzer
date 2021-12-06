@@ -101,13 +101,6 @@
                   "2018.11.07-1"
                   "http://repo.clojars.org/orchestra/orchestra/2018.11.07-1/orchestra-2018.11.07-1"])))
 
-(t/deftest manifold-remotely
-  ;; might have had some issues related to old versions of core.async in the past
-  (run-analysis (remote->args
-                 ["manifold"
-                  "0.1.8"
-                  "http://repo.clojars.org/manifold/manifold/0.1.8/manifold-0.1.8"])))
-
 (t/deftest aviso-pretty-remotely
   ;; https://github.com/cljdoc/cljdoc/issues/247
   (run-analysis (remote->args
