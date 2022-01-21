@@ -116,7 +116,9 @@
 (defn make-classpath
   "Build a classpath for `resolved-deps`."
   [resolved-deps]
-  (tdeps/make-classpath resolved-deps [] nil))
+  (-> (tdeps/make-classpath-map {:paths []} resolved-deps nil)
+      :classpath-roots
+      tdeps/join-classpath))
 
 (defn print-tree [resolved-deps]
   (tdeps/print-tree resolved-deps))
