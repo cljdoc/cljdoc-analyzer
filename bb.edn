@@ -1,0 +1,68 @@
+{:paths ["script"]
+ :deps {lread/status-line {:git/url "https://github.com/lread/status-line.git"
+                           :sha "35ed39645038e81b42cb15ed6753b8462e60a06d"}}
+ :tasks {;; setup
+         :requires ([babashka.fs :as fs]
+                    [clojure.string :as string]
+                    [lread.status-line :as status])
+         :enter (let [{:keys [name]} (current-task)] (status/line :head "TASK %s %s" name (string/join " " *command-line-args*)))
+         :leave (let [{:keys [name]} (current-task)] (status/line :detail "\nTASK %s done." name))
+
+         ;; commands
+         lint
+         {:doc "lint source code using clj-kondo"
+          :task (do
+                  (when (not (fs/exists? ".clj-kondo/.cache"))
+                    (status/line :head "Building clj-kondo cache")
+                    (let [cp (-> (shell {:out :string} "clojure -Spath -M:test")
+                                 :out)]
+                      (shell "clojure -M:clj-kondo --dependencies --copy-configs --lint" cp)))
+                  (status/line :head "Linting")
+                  (let [{:keys [exit]}
+                          (shell {:continue true}
+                                 "clojure -M:clj-kondo --lint src test bb.edn deps.edn"
+                                 "modules/metagetta/src"
+                                 "modules/metagetta/test"
+                                 "modules/metagetta/deps.edn")]
+                      (cond
+                        (= 2 exit) (status/die exit "clj-kondo found one or more lint errors")
+                        (= 3 exit) (status/die exit "clj-kondo found one or more lint warnings")
+                        (> exit 0) (status/die exit "clj-kondo returned unexpected exit code"))))}
+
+         test-metagetta
+         {:doc "metagetta unit tests"
+          :task (shell {:dir "modules/metagetta"}
+                       "clojure -M:test"
+                       "--reporter" "documentation"
+                       "--plugin" "kaocha.plugin/profiling"
+                       "--plugin" "kaocha.plugin/junit-xml"
+                       "--junit-xml-file" "target/test-results/metagetta-unit/results.xml")}
+
+         test-cljdoc-analyzer
+         {:doc "cljdoc-analyzer unit tests"
+          :task (shell "clojure -M:test"
+                       "--reporter" "documentation"
+                       "--plugin" "kaocha.plugin/profiling"
+                       "--plugin" "kaocha.plugin/junit-xml"
+                       "--junit-xml-file" "target/test-results/cljdoc-analyzer-unit/results.xml"
+                       "unit")}
+
+         test-cljdoc-analyzer-integration
+         {:doc "cljdoc-analyzier integration tests"
+          :task (shell "clojure -M:test"
+                       "--reporter" "documentation"
+                       "--plugin" "kaocha.plugin/profiling"
+                       "--plugin" "kaocha.plugin/junit-xml"
+                       "--junit-xml-file" "target/test-results/cljdoc-analyzer-integration/results.xml"
+                       "--no-capture-output"
+                       "integration")}
+
+         test
+         {:doc "Run all tests"
+          :depends [test-metagetta test-cljdoc-analyzer test-cljdoc-analyzer-integration]}
+
+         outdated
+         {:doc "report on outdated dependencies"
+          :task (do
+                  (status/line :head "Checking Clojure deps")
+                  (shell {:continue true} "clojure -M:outdated" "--directory=.:modules/metagetta"))}}}

@@ -6,7 +6,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/clojure:openjdk-8-tools-deps-1.10.3.822
+      - image: circleci/clojure:openjdk-11-tools-deps-1.10.3.1058-buster
 
     working_directory: ~/repo
 
@@ -19,8 +19,15 @@ jobs:
             - v1-dependencies- # fallback if cache not found
 
       - run:
+          name: Install babashka
+          command: |
+            sudo bash < <(curl -s https://raw.githubusercontent.com/babashka/babashka/master/install)
+
+      - run:
           name: Dump tools versions
           command: |
+            echo bb --version
+            bb --version
             echo clojure -Sdescribe
             clojure -Sdescribe
             echo java -version
@@ -35,38 +42,13 @@ jobs:
 
       - run:
           name: Lint
-          command: ./script/lint
+          command: |
+            bb lint
 
       - run:
-          name: Run metagetta unit tests
-          command: >
-            clojure -M:test
-            --reporter documentation
-            --plugin kaocha.plugin/profiling
-            --plugin kaocha.plugin/junit-xml
-            --junit-xml-file target/test-results/metagetta-unit/results.xml
-          working_directory: ~/repo/modules/metagetta
-
-      - run:
-          name: Run cldoc-analyzer unit tests
-          command: >
-            clojure -M:test
-            --reporter documentation
-            --plugin kaocha.plugin/profiling
-            --plugin kaocha.plugin/junit-xml
-            --junit-xml-file target/test-results/cljdoc-analyzer-unit/results.xml
-            unit
-
-      - run:
-          name: Run cldoc-analyzer integration tests
-          command: >
-            clojure -M:test
-            --reporter documentation
-            --plugin kaocha.plugin/profiling
-            --plugin kaocha.plugin/junit-xml
-            --junit-xml-file target/test-results/cljdoc-analyzer-integration/results.xml
-            --no-capture-output
-            integration
+          name: Test
+          command: |
+            bb test
 
       - save_cache:
           paths:

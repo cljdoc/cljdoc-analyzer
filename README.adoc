@@ -115,7 +115,7 @@ conventional command line arguments but then switched to edn because it made mor
 Example of analyzing cljfmt v0.6.4:
 [source,bash,options="nowrap"]
 ----
-clojure -m cljdoc-analyzer.cljdoc-main \
+clojure -M -m cljdoc-analyzer.cljdoc-main \
   '{:project "cljfmt/cljfmt"
     :version "0.6.4"
     :jarpath "http://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.jar"
@@ -138,7 +138,7 @@ You can use cljdoc-analyzer ad hoc to get data for a project published to a mave
 
 [source,bash,no-wrap]
 ----
-clojure -m cljdoc-analyzer.main analyze \
+clojure -M -m cljdoc-analyzer.main analyze \
   --project io.aviso/pretty --version "0.1.29" \
   --output-filename "io-aviso-pretty-0.1.29.edn"
 ----
@@ -151,7 +151,7 @@ To match cljdoc usage, you would exclude namespaces and publics tagged with `:no
 
 [source,bash,no-wrap]
 ----
-clojure -m cljdoc-analyzer.main analyze \
+clojure -M -m cljdoc-analyzer.main analyze \
   --project io.aviso/pretty --version "0.1.29" \
   --output-filename "io-aviso-pretty-0.1.29.edn" \
   --exclude-with :no-doc \
@@ -251,38 +251,47 @@ This dependency is currently a `:git/url` dependency.
 To bring a new version of cljdoc-analyzer into production, we update the `analyzer-version` to the git `:sha` we'd like to use.
 At the time of this writing, https://github.com/cljdoc/cljdoc/blob/5171e7924579b9144e5729da92a4454e32c03b23/src/cljdoc/analysis/service.clj#L37-L42[this is specified in `cljdoc.analysis.service`].
 
+== Babashka tasks
+
+We use babashka tasks as our dev scripting tool.
+
+To see available tasks run:
+
+[source,shell]
+----
+bb tasks
+----
+
 == Testing
 
-We make use of https://github.com/lambdaisland/kaocha[kaocha] for testing.
+We use of https://github.com/lambdaisland/kaocha[kaocha] for testing.
 
-Metagetta is a separate sub-project with its own unit tests. To run metagetta unit tests:
-----
-cd modules/metagetta
-clojure -A:test
-----
+To run all tests:
 
-Cljdoc-analyzer has integration and unit tests, to run them all, ensure you are in cljdoc-analyzer root dir and:
+[source,shell]
 ----
-clojure -A:test
+bb test
 ----
 
-The integration tests can take a while to run, to run unit tests only:
-----
-clojure -A:test unit
-----
-
-To run integration tests only:
-----
-clojure -A:test integration
-----
-
-To automatically rerun tests on any changes, tack on a `--watch` to any of the above commands. See kaocha docs for other options.
+To run a subset of tests, run `bb tasks` to see what's available.
 
 == Linting
 
-We make use of https://github.com/borkdude/clj-kondo[clj-kondo] for linting.
+We use of https://github.com/borkdude/clj-kondo[clj-kondo] for linting.
 
-Our build server validates the code is lint free with `script/lint` and so can you.
+[source,shell]
+----
+bb lint
+----
+
+== Check for outdated dependencies
+
+We use https://github.com/liquidz/antq[antq] to check for outdated dependencies.
+
+[source,shell]
+----
+bb outdated
+----
 
 == Licenses
 

@@ -15,7 +15,7 @@
   (println "Analyzing" project version)
   (let [edn-out-filename (temp-edn-filename)]
     (test-helper/verify-analysis-result project version edn-out-filename
-                                        (shell/sh "clojure" "--report" "stderr" "-m" "cljdoc-analyzer.main"
+                                        (shell/sh "clojure" "-M" "--report" "stderr" "-m" "cljdoc-analyzer.main"
                                                   "analyze"
                                                   "--project" project
                                                   "--version" version

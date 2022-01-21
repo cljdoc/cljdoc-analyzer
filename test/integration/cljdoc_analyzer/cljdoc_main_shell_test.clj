@@ -53,7 +53,7 @@
         edn-out-filename (test-helper/edn-filename "/tmp/cljdoc/analysis-out/cljdoc-edn" project version)
         ;; wipe out any file from previous analysis
         _  (io/delete-file edn-out-filename true)
-        args ["clojure" "--report" "stderr" "-m" "cljdoc-analyzer.cljdoc-main" (pr-str args)]]
+        args ["clojure" "-M" "--report" "stderr" "-m" "cljdoc-analyzer.cljdoc-main" (pr-str args)]]
     (println (string/join " " args))
     (println "Analyzing" project version)
     (test-helper/verify-analysis-result project version edn-out-filename (apply shell/sh args))))
