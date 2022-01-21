@@ -2,5 +2,4 @@
 {:tests [{:id :unit
           :source-paths ["src" "test-sources"]
           :test-paths  ["test"]}]
- :reporter kaocha.report.progress/report
- :plugins [:kaocha.plugin/notifier]}
+ :reporter kaocha.report.progress/report}
