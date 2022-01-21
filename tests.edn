@@ -5,5 +5,4 @@
          {:id :integration
           :source-paths ["src" "test-resources"]
           :test-paths ["test/integration"]}]
- :reporter kaocha.report.progress/report
- :plugins [:kaocha.plugin/notifier]}
+ :reporter kaocha.report.progress/report}
