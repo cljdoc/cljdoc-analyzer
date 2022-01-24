@@ -2,6 +2,7 @@
   "Read raw documentation information from ClojureScript source directory."
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
+            [clojure.tools.namespace.file :as ns-file]
             [cljs.analyzer.api :as ana]
             [cljs.closure]
             [cljs.compiler.api :as comp]
@@ -42,6 +43,16 @@
          (filter cljs-file?)
          (keep (strip-parent file))
          sort-so-cljs-files-first)))
+
+(defn- exclude-files-with-ns-meta [exclude-with path files]
+  (if exclude-with
+    (remove (fn [f]
+              (let [nsd (ns-file/read-file-ns-decl (io/file path f)
+                                                   {:read-cond :allow :features #{:cljs}})
+                    ns-meta (meta (utils/parse-ns-name-with-meta nsd))]
+                (-> ns-meta (select-keys exclude-with) seq)))
+            files)
+    files))
 
 (defn- protocol-methods [protocol vars]
   (let [proto-name (name (:name protocol))]
@@ -175,7 +186,9 @@
 
   Supported options using the second argument:
     :exception-handler - function (fn [ex file]) to handle exceptions
-    while reading a namespace
+                         while reading a namespace
+    :exclude-with - coll of metadata keywords to exlcude, applied
+                    first to namespaces, then to vars
 
   The keys in the maps are:
     :name      - the name of the namespace
@@ -195,13 +208,17 @@
       :no-doc     - request for var not to be documented
       :skip-wiki    - legacy synonym for :no-doc"
   ([path] (read-namespaces path {}))
-  ([path {:keys [exception-handler]
+  ([path {:keys [exception-handler exclude-with]
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
    (let [path (io/file (utils/canonical-path path))
          js-dependencies (get-string-dependencies path)
          compiler-state (create-compiler-state js-dependencies)
          file-reader #(read-file compiler-state path % exception-handler)]
      (->> (find-files path)
+          ;; shot at excluding namespaces before analysis/load
+          (exclude-files-with-ns-meta exclude-with path)
           (map file-reader)
           (apply merge-with ns-merger)
-          (vals)))))
+          vals
+          ;; final exclude of namespaces and vars after analysis
+          (utils/remove-analyzed-with-meta exclude-with)))))

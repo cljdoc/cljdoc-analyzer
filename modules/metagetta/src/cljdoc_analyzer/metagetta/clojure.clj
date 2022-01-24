@@ -3,7 +3,7 @@
   (:import java.util.jar.JarFile
            java.io.FileNotFoundException)
   (:require [clojure.java.io :as io]
-            [clojure.tools.namespace.find :as ns]
+            [clojure.tools.namespace.find :as ns-find]
             [cljdoc-analyzer.metagetta.utils :as utils]))
 
 (defn try-require [namespace]
@@ -113,10 +113,20 @@
   (and (.isFile file)
        (-> file .getName (.endsWith ".jar"))))
 
-(defn- find-namespaces [file]
-  (cond
-    (.isDirectory file) (set (ns/find-namespaces-in-dir file))
-    (jar-file? file)    (set (ns/find-namespaces-in-jarfile (JarFile. file)))))
+(defn- find-namespaces
+  "Return found namespaces in dir or jar `file`.
+   Each namespace will be adorned with any static metadata specified on ns name or via attr-map. "
+  [file]
+  (let [ns-decls (cond
+                   (.isDirectory file) (ns-find/find-ns-decls-in-dir file)
+                   (jar-file? file)    (ns-find/find-ns-decls-in-jarfile (JarFile. file)))]
+    (map utils/parse-ns-name-with-meta ns-decls)))
+
+(defn remove-with-meta [exclude-with coll]
+  (if exclude-with
+    (remove #(-> % meta (select-keys exclude-with) seq)
+            coll)
+    coll))
 
 (defn read-namespaces
   "Read Clojure namespaces from a source directory and return a list
@@ -124,7 +134,9 @@
 
   Supported options using the second argument:
     :exception-handler - function (fn [ex ns]) to handle exceptions
-    while reading a namespace
+                         while reading a namespace
+    :exclude-with - coll of metadata keywords to exclude, applied
+                    first to namespaces, then to vars
 
   The keys in the maps are:
     :name      - the name of the namespace
@@ -145,9 +157,13 @@
       :skip-wiki    - legacy synonym for :no-doc"
 
   ([path] (read-namespaces path {}))
-  ([path {:keys [exception-handler]
+  ([path {:keys [exception-handler exclude-with]
            :or {exception-handler (partial utils/default-exception-handler "Clojure")}}]
    (let [path (utils/canonical-path path)]
      (->> (io/file path)
           (find-namespaces)
-          (mapcat #(read-ns % path exception-handler))))))
+          ;; shot at excluding namespaces before analysis/load
+          (remove-with-meta exclude-with)
+          (mapcat #(read-ns % path exception-handler))
+          ;; final exclude of namespaces and vars after analysis
+          (utils/remove-analyzed-with-meta exclude-with)))))
