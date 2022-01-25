@@ -2,7 +2,6 @@
   "Read raw documentation information from ClojureScript source directory."
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [clojure.tools.namespace.file :as ns-file]
             [cljs.analyzer.api :as ana]
             [cljs.closure]
             [cljs.compiler.api :as comp]
@@ -47,10 +46,8 @@
 (defn- exclude-files-with-ns-meta [exclude-with path files]
   (if exclude-with
     (remove (fn [f]
-              (let [nsd (ns-file/read-file-ns-decl (io/file path f)
-                                                   {:read-cond :allow :features #{:cljs}})
-                    ns-meta (meta (utils/parse-ns-name-with-meta nsd))]
-                (-> ns-meta (select-keys exclude-with) seq)))
+              (when-let [ns (ana/parse-ns (io/file path f))]
+                (some-> ns :name meta (select-keys exclude-with) seq)))
             files)
     files))
 
