@@ -149,13 +149,15 @@
           ns-name (:ns (ana/parse-ns source))
           state   (analyze-file state source)]
       (if-let [ns (ana/find-ns state ns-name)]
-        {ns-name
-         (-> ns
-             (select-keys [:name :doc])
-             (utils/update-some :doc utils/correct-indent)
-             (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki :author :deprecated :added])))
-             (utils/remove-empties)
-             (assoc :publics (read-publics state ns-name source-path file)))}
+        ;; use the ns name from the found ns because it may have load-time overrides
+        (let [ns-name (:name ns)]
+          {ns-name
+           (-> ns
+               (select-keys [:name :doc])
+               (utils/update-some :doc utils/correct-indent)
+               (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki :author :deprecated :added])))
+               (utils/remove-empties)
+               (assoc :publics (read-publics state ns-name source-path file)))})
         (println "Dropping" file "because" ns-name "was not present in state. Is it missing an (ns) declaration?")))
     (catch Exception e
       (exception-handler e file))))
