@@ -1,7 +1,6 @@
 (ns cljdoc-analyzer.metagetta.main-test
   "Load all `test-sources/*` namespaces and test various things about them."
-  (:require [babashka.fs :as fs]
-            [clojure.test :as t]
+  (:require [clojure.test :as t]
             [cljdoc-analyzer.metagetta.main :as main]))
 
 (defn- in? [coll elem]
