@@ -212,18 +212,13 @@
 (t/deftest ^:no-doc-test analyze-no-doc-test
   ;; this test is special in that it includes
   ;; namespaces marked with no-doc would fail if an attempt was made to load them
-  (let [sources-dir "target/no-doc-sources-test"]
-    (when (fs/exists? sources-dir)
-      (fs/delete-tree sources-dir))
-    (fs/create-dirs sources-dir)
-    (fs/copy-tree "test-sources" sources-dir)
-    (fs/copy-tree "test-sources-bad-code" sources-dir {:replace-existing true})
-    (let [actual (analyze-sources {:root-path sources-dir
-                                   :languages #{"clj" "cljs"}
-                                   :exclude-with [:no-doc :skip-wiki]})
-          expected {"clj" (expected-result :clj :no-doc :skip-wiki)
-                    "cljs" (expected-result :cljs :no-doc :skip-wiki)}]
-      (t/is (= expected actual)))))
+  ;; requires special setup, see test task in bb.edn
+  (let [actual (analyze-sources {:root-path "target/no-doc-sources-test"
+                                 :languages #{"clj" "cljs"}
+                                 :exclude-with [:no-doc :skip-wiki]})
+        expected {"clj" (expected-result :clj :no-doc :skip-wiki)
+                  "cljs" (expected-result :cljs :no-doc :skip-wiki)}]
+    (t/is (= expected actual))))
 
 (t/deftest analyze-select-namespace-no-matches-test
   (let [actual (analyze-sources {:languages #{"clj" "cljs"}

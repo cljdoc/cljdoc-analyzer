@@ -31,14 +31,8 @@
 
          test-metagetta
          {:doc "metagetta unit tests"
-          :task (doseq [variant ["test-sources" "test-sources-no-doc-meta"]]
-                  (status/line :detail ">> Testing variant: %s" variant)
-                  (shell {:dir "modules/metagetta"}
-                         (str "clojure -M:test-base:" variant)
-                         "--reporter" "documentation"
-                         "--plugin" "kaocha.plugin/profiling"
-                         "--plugin" "kaocha.plugin/junit-xml"
-                         "--junit-xml-file" (str "target/test-results/metagetta-unit/" variant "/results.xml")))}
+          :task (shell {:dir "modules/metagetta"}
+                       "bb test")}
 
          test-cljdoc-analyzer
          {:doc "cljdoc-analyzer unit tests"
