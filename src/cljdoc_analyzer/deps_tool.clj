@@ -1,7 +1,6 @@
 (ns ^:no-doc cljdoc-analyzer.deps-tool
   "Entry point for running as a Clojure CLI tool"
   (:require [babashka.fs :as fs]
-            [clojure.set :as set]
             [clojure.string :as string]
             [clojure.pprint :as pp]
             [clojure.tools.logging :as log]
