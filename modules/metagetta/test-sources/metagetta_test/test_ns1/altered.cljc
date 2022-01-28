@@ -11,7 +11,7 @@
   '(println "it's good day to lie"))
 (alter-the-meta-data! metagetta-test.test-ns1.altered/altered-macro-with-root-relative-file
                       {:doc "added doc"
-                       :file "test-sources/metagetta_test/test_ns1/multimethod.cljc"
+                       :file "{metagetta.test.sources.root}/metagetta_test/test_ns1/multimethod.cljc"
                        :line 3})
 
 
@@ -25,8 +25,8 @@
 
 (def altered-def-with-absolute-file 42)
 (alter-the-meta-data-abs! metagetta-test.test-ns1.altered/altered-def-with-absolute-file
-                      {:file "test-sources/metagetta_test/test_ns1/record.cljc"
-                       :line 7})
+                          {:file "{metagetta.test.sources.root}/metagetta_test/test_ns1/record.cljc"
+                           :line 7})
 
 (def fn-pointing-to-protocol-fn metagetta-test.test-ns1.protocols/operation-one)
 (copy-the-meta-data! metagetta-test.test-ns1.altered/fn-pointing-to-protocol-fn metagetta-test.test-ns1.protocols/operation-one)

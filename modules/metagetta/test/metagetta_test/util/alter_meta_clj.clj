@@ -1,16 +1,23 @@
 (ns metagetta-test.util.alter-meta-clj
   "Hacky little utilities to support simulating import-vars type operations in clj for test-sources"
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io]
+            [metagetta-test.util.common :as common]))
+
+(defmacro alter-the-ns-meta-data! [target-ns meta-changes]
+  (let [meta-changes (common/tweak meta-changes)]
+    (alter-meta! (find-ns target-ns) merge meta-changes))
+  nil)
 
 (defmacro alter-the-meta-data![target-sym meta-changes]
-(let [target-ns (symbol (namespace target-sym))
-      target-name (symbol (name target-sym))]
-  (alter-meta! (ns-resolve target-ns target-name) merge meta-changes)
-  nil))
+  (let [target-ns (symbol (namespace target-sym))
+        target-name (symbol (name target-sym))
+        meta-changes (common/tweak meta-changes)]
+    (alter-meta! (ns-resolve target-ns target-name) merge meta-changes)
+    nil))
 
-(defmacro alter-the-meta-data-abs![target-sym meta-changes]
-  `(alter-the-meta-data! ~target-sym ~(update meta-changes :file #(str (.getAbsolutePath (io/file %))))))
-
+(defmacro alter-the-meta-data-abs! [target-sym meta-changes]
+  (let [meta-changes (common/tweak meta-changes)]
+    `(alter-the-meta-data! ~target-sym ~(update meta-changes :file #(str (.getAbsolutePath (io/file %)))))))
 
 (defn resolve-fn-location[var-meta]
   (if-let [p (:protocol var-meta)]

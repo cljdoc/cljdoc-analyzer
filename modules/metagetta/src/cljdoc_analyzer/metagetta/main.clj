@@ -27,16 +27,6 @@
 (defn- remove-excluded-vars [namespaces exclude-vars]
   (map #(update-in % [:publics] remove-matching-vars exclude-vars %) namespaces))
 
-(defn- contains-any-key? [m ks]
-  (seq (select-keys m ks)))
-
-(defn- remove-excluded-keys [namespaces exclude-with]
-  (->> (remove #(contains-any-key? % exclude-with) namespaces)
-       (map (fn [ns]
-              (update ns :publics
-                      (fn [vars]
-                        (remove #(contains-any-key? % exclude-with) vars)))))))
-
 (defn- assert-no-dupes-in-publics [namespaces]
   (let [dupes (for [ns namespaces
                     :let [dupes (->> (:publics ns)
@@ -76,13 +66,12 @@
     namespaces))
 
 (defn- read-namespaces
-  [{:keys [language root-path namespaces exclude-with] :as opts}]
+  [{:keys [language root-path namespaces] :as opts}]
   (let [record-constructor-function-vars #"^(map)?->\p{Upper}"
         reader (namespace-readers language)]
-    (-> (reader root-path (select-keys opts [:exception-handler]))
+    (-> (reader root-path (select-keys opts [:exception-handler :exclude-with]))
         (filter-namespaces namespaces)
         (remove-excluded-vars record-constructor-function-vars)
-        (remove-excluded-keys exclude-with)
         (assert-no-dupes-in-publics)
         (sort-by-name))))
 
@@ -90,7 +79,6 @@
   (if (= :auto-detect lang-opt)
     (utils/infer-platforms-from-src-dir (io/file src-dir))
     lang-opt))
-
 
 (defn get-metadata
   "Get metadata from source files."

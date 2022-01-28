@@ -132,22 +132,25 @@
      (comp/with-core-cljs state nil #(ana/analyze-file state file nil))))
   state)
 
-(defn- read-file [state source-path file exception-handler]
-  (try
-    (let [source  (io/file source-path file)
-          ns-name (:ns (ana/parse-ns source))
-          state   (analyze-file state source)]
-      (if-let [ns (ana/find-ns state ns-name)]
-        {ns-name
-         (-> ns
-             (select-keys [:name :doc])
-             (utils/update-some :doc utils/correct-indent)
-             (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki :author :deprecated :added])))
-             (utils/remove-empties)
-             (assoc :publics (read-publics state ns-name source-path file)))}
-        (println "Dropping" file "because" ns-name "was not present in state. Is it missing an (ns) declaration?")))
-    (catch Exception e
-      (exception-handler e file))))
+(defn- load-source [state source-path ns-info exception-handler]
+  (let [file (::source-rel-path ns-info)
+        ns-name (:ns ns-info)
+        source (:source-file ns-info)]
+    (try
+      (let [state (analyze-file state source)]
+        (if-let [ns (ana/find-ns state ns-name)]
+          ;; use the ns name from the found ns because it may have load-time overrides
+          (let [ns-name (:name ns)]
+            {ns-name
+             (-> ns
+                 (select-keys [:name :doc])
+                 (utils/update-some :doc utils/correct-indent)
+                 (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki :author :deprecated :added])))
+                 (utils/remove-empties)
+                 (assoc :publics (read-publics state ns-name source-path file)))})
+          (println "Dropping" file "because" ns-name "was not present in state. Is it missing an (ns) declaration?")))
+      (catch Exception e
+        (exception-handler e file)))))
 
 (defn- ns-merger [val-first val-next]
   (update val-first :publics #(seq (into (set %) (:publics val-next)))))
@@ -158,13 +161,9 @@
   ClojureScript package.
 
   Example: for the package 'lilactown-hx-0.5.2', #{\"react\"} is returned."
-  [package-root-path]
-  (->> (find-files package-root-path)
-       (map (fn [file]
-              (->> file
-                   (io/file package-root-path)
-                   (ana/parse-ns)
-                   :requires)))
+  [ns-infos]
+  (->> ns-infos
+       (map :requires)
        (reduce clojure.set/union)
        (filter string?)
        (into #{})))
@@ -175,7 +174,9 @@
 
   Supported options using the second argument:
     :exception-handler - function (fn [ex file]) to handle exceptions
-    while reading a namespace
+                         while reading a namespace
+    :exclude-with - coll of metadata keywords to exlcude, applied
+                    first to namespaces, then to vars
 
   The keys in the maps are:
     :name      - the name of the namespace
@@ -195,13 +196,20 @@
       :no-doc     - request for var not to be documented
       :skip-wiki    - legacy synonym for :no-doc"
   ([path] (read-namespaces path {}))
-  ([path {:keys [exception-handler]
+  ([path {:keys [exception-handler exclude-with]
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
    (let [path (io/file (utils/canonical-path path))
-         js-dependencies (get-string-dependencies path)
+         ns-infos (->> (find-files path)
+                       (map #(assoc (ana/parse-ns (io/file path %))
+                                    ::source-rel-path %)))
+         js-dependencies (get-string-dependencies ns-infos)
          compiler-state (create-compiler-state js-dependencies)
-         file-reader #(read-file compiler-state path % exception-handler)]
-     (->> (find-files path)
-          (map file-reader)
+         source-loader #(load-source compiler-state path % exception-handler)]
+     (->> ns-infos
+          ;; shot at excluding namespaces before analysis/load
+          (remove #(some-> % :ns meta (select-keys exclude-with) seq))
+          (map source-loader)
           (apply merge-with ns-merger)
-          (vals)))))
+          vals
+          ;; final exclude of namespaces and vars after analysis
+          (utils/remove-analyzed-with-meta exclude-with)))))

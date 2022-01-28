@@ -1,5 +1,5 @@
 #kaocha/v1
 {:tests [{:id :unit
-          :source-paths ["src" "test-sources"]
+          :source-paths ["src"]
           :test-paths  ["test"]}]
  :reporter kaocha.report.progress/report}

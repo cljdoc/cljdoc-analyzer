@@ -159,3 +159,26 @@
                                        (str/lower-case)))
      ret#))
 
+(defn parse-ns-name-with-meta
+  "Return namespace name adorned with its metadata from unevaluated `ns-decl` form."
+  [ns-decl]
+  (when ns-decl
+    (let [ns-name (second ns-decl)
+          attr-map (->> ns-decl
+                        (drop 2)
+                        (take 2)
+                        (filter map?)
+                        first)]
+      (vary-meta ns-name merge attr-map))))
+
+(defn- contains-any-key? [m ks]
+  (seq (select-keys m ks)))
+
+(defn remove-analyzed-with-meta [exclude-with namespaces]
+  (if exclude-with
+    (->> (remove #(contains-any-key? % exclude-with) namespaces)
+         (map (fn [ns]
+                (update ns :publics
+                        (fn [vars]
+                          (remove #(contains-any-key? % exclude-with) vars))))))
+    namespaces))

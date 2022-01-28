@@ -19,24 +19,20 @@
                       (shell "clojure -M:clj-kondo --dependencies --copy-configs --lint" cp)))
                   (status/line :head "Linting")
                   (let [{:keys [exit]}
-                          (shell {:continue true}
-                                 "clojure -M:clj-kondo --lint src test bb.edn deps.edn"
-                                 "modules/metagetta/src"
-                                 "modules/metagetta/test"
-                                 "modules/metagetta/deps.edn")]
-                      (cond
-                        (= 2 exit) (status/die exit "clj-kondo found one or more lint errors")
-                        (= 3 exit) (status/die exit "clj-kondo found one or more lint warnings")
-                        (> exit 0) (status/die exit "clj-kondo returned unexpected exit code"))))}
+                        (shell {:continue true}
+                               "clojure -M:clj-kondo --lint src test bb.edn deps.edn"
+                               "modules/metagetta/src"
+                               "modules/metagetta/test"
+                               "modules/metagetta/deps.edn")]
+                    (cond
+                      (= 2 exit) (status/die exit "clj-kondo found one or more lint errors")
+                      (= 3 exit) (status/die exit "clj-kondo found one or more lint warnings")
+                      (> exit 0) (status/die exit "clj-kondo returned unexpected exit code"))))}
 
          test-metagetta
          {:doc "metagetta unit tests"
           :task (shell {:dir "modules/metagetta"}
-                       "clojure -M:test"
-                       "--reporter" "documentation"
-                       "--plugin" "kaocha.plugin/profiling"
-                       "--plugin" "kaocha.plugin/junit-xml"
-                       "--junit-xml-file" "target/test-results/metagetta-unit/results.xml")}
+                       "bb test")}
 
          test-cljdoc-analyzer
          {:doc "cljdoc-analyzer unit tests"

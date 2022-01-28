@@ -2,13 +2,20 @@
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}
         org.clojure/tools.namespace {:mvn/version "1.2.0"}
         org.clojure/clojurescript {:mvn/version "1.10.914"}}
- :aliases {:test
-            {:extra-paths ["test"                  ;; test code
-                           "test-sources"          ;; test namespaces to load (loading all of them at once)
-                           "test-sources-special"] ;; special test cases; only ever loads a single ns, specific for the test
-             :extra-deps {lambdaisland/kaocha {:mvn/version "1.60.977"}
-                          lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}}
-             :main-opts ["-m" "kaocha.runner"]}
+ :aliases {:test-base
+           {:extra-paths ["test"]
+            :extra-deps {lambdaisland/kaocha {:mvn/version "1.60.977"}
+                         lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}}}
+
+           :test-sources
+           {:extra-paths ["test-sources"
+                          "test-sources-special"]
+            :main-opts ["-m" "kaocha.runner" "--skip-meta" ":no-doc-test"]}
+
+           :test-sources-no-doc-meta
+           {:extra-paths ["target/no-doc-sources-test"]
+            :jvm-opts ["-Dmetagetta.test.sources.root=target/no-doc-sources-test/"]
+            :main-opts ["-m" "kaocha.runner" "--focus-meta" ":no-doc-test"]}
 
            :depstar
            {:extra-deps

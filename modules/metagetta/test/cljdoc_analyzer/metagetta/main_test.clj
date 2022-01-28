@@ -86,13 +86,21 @@
                      :line 6}]})
    (when (not (in? opts :no-doc))
      (list
-        {:name 'metagetta-test.test-ns1.no-doc-ns
-         :no-doc true
-         :publics [{:name 'not-documented
-                    :arglists '([a])
-                    :type :var
-                    :file "metagetta_test/test_ns1/no_doc_ns.cljc"
-                    :line 6}]}))
+       {:doc "This namespace will be marked with no-doc at load-time\n"
+        :name 'metagetta-test.test-ns1.no-doc-me-later
+        :no-doc true
+        :publics [{:name 'some-var
+                   :arglists '([x])
+                   :file "metagetta_test/test_ns1/no_doc_me_later.cljc",
+                   :line 9
+                   :type :var}]}
+       {:name 'metagetta-test.test-ns1.no-doc-ns
+        :no-doc true
+        :publics [{:name 'not-documented
+                   :arglists '([a])
+                   :type :var
+                   :file "metagetta_test/test_ns1/no_doc_ns.cljc"
+                   :line 6}]}))
    (list
     {:name 'metagetta-test.test-ns1.protocols
      :publics [{:name 'ProtoTest
@@ -176,7 +184,7 @@
 (defn- analyze-sources
   "Analyze (by default all) sources from `test-sources`"
   [opts]
-  (main/get-metadata (merge opts {:root-path "test-sources"})))
+  (main/get-metadata (merge {:root-path "test-sources"} opts)))
 
 (t/deftest analyze-cljs-code-test
   (let [actual (analyze-sources {:languages #{"cljs"}})
@@ -200,8 +208,12 @@
                   "cljs" (expected-result :cljs)}]
     (t/is (= expected actual))))
 
-(t/deftest analyze-no-doc-test
-  (let [actual (analyze-sources {:languages #{"clj" "cljs"}
+(t/deftest ^:no-doc-test analyze-no-doc-test
+  ;; this test is special in that it includes
+  ;; namespaces marked with no-doc would fail if an attempt was made to load them
+  ;; requires special setup, see test task in bb.edn
+  (let [actual (analyze-sources {:root-path "target/no-doc-sources-test"
+                                 :languages #{"clj" "cljs"}
                                  :exclude-with [:no-doc :skip-wiki]})
         expected {"clj" (expected-result :clj :no-doc :skip-wiki)
                   "cljs" (expected-result :cljs :no-doc :skip-wiki)}]

@@ -1,0 +1,35 @@
+{:tasks {;; setup
+         :requires ([babashka.fs :as fs]
+                    [clojure.string :as string])
+         :enter (let [{:keys [name]} (current-task)] (println (format "TASK %s %s" name (string/join " " *command-line-args*))))
+         :leave (let [{:keys [name]} (current-task)] (println (format "TASK %s done." name)))
+         :init (do
+                 (defn run-tests [variant]
+                   (println ">> Testing variant:" variant)
+                   (shell (str "clojure -M:test-base:" variant)
+                          "--reporter" "documentation"
+                          "--plugin" "kaocha.plugin/profiling"
+                          "--plugin" "kaocha.plugin/junit-xml"
+                          "--junit-xml-file" (str "target/test-results/metagetta-unit/" variant "/results.xml"))))
+         ;; commands
+         test-no-doc-setup
+         {:doc "setup for no-doc test"
+          :task (let [sources-dir "target/no-doc-sources-test"]
+                  (when (fs/exists? sources-dir)
+                    (fs/delete-tree sources-dir))
+                  (fs/create-dirs sources-dir)
+                  (fs/copy-tree "test-sources" sources-dir)
+                  (fs/copy-tree "test-sources-bad-code" sources-dir {:replace-existing true}))}
+
+         test-no-doc
+         {:doc "test special case no-doc meta"
+          :depends [test-no-doc-setup]
+          :task (run-tests "test-sources-no-doc-meta")}
+
+         test-regular
+         {:doc "regular tests"
+          :task (run-tests "test-sources")}
+
+         test
+         {:doc "run all tests"
+          :depends [test-regular test-no-doc]}}}
