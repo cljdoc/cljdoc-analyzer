@@ -18,7 +18,9 @@
   (let [config (config/load)
         extra-repos (extra-repo-arg-to-option extra-repo)
         {:keys [jar pom]} (deps/resolve-dep (symbol project) version (:repos config) extra-repos)]
-    (runner/analyze! (-> (select-keys args [:project :version :exclude-with :output-filename])
+    (runner/analyze! (-> (merge 
+                           {:exclude-with [:no-doc :skip-wiki]} 
+                           (select-keys args [:project :version :exclude-with :output-filename]))
                          (assoc :jarpath jar :pompath pom :extra-repos extra-repos)))))
 
 (spec/def ::extra-repo

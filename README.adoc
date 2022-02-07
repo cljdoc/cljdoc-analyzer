@@ -162,6 +162,41 @@ clojure -M -m cljdoc-analyzer.main analyze \
 
 We can look at other features as we get a feel for what folks are interested in.
 
+=== use as a Clojure CLI tool
+
+You can also install and use cljdoc-analyzer as a https://clojure.org/reference/deps_and_cli#tool_install[Clojure CLI Tool]. First you need to install it:
+
+[source,bash,no-wrap]
+----
+clojure -Ttools install io.github.cljdoc/cljdoc-analyzer '{:git/tag "0.10.3"}' :as cljdoc
+----
+
+and then you can invoke it in one of the supported ways.
+
+.Analyze a library from a (local) Maven repo
+[source,bash,no-wrap]
+----
+clojure -Tcljdoc analyze \
+  :project '"io.aviso/pretty"' :version '"0.1.29"' \
+  # Alt.1.: Download the jar, pom from a maven repo and derive the paths: \
+  :download true \
+  # Alt.2.: Provide paths to the project artifacts manually: \
+  #:jarpath "/path/to/project.jar" \
+  #:pompath "/path/to/project.pom" \
+  :extra-repo '["clojars https://repo.clojars.org/"]'
+----
+
+See `cljdoc-analyzer.main/analyze` for accepted configuration.
+
+.Analyze a deps-based library in the current directory
+[source,bash,no-wrap]
+----
+cd git clone git@github.com:fulcrologic/fulcro.git
+cd fulcro
+clojure -Tcljdoc analyze-local
+# provided ./pom.xml and ./target/*.jar exist
+----
+
 === logging
 
 If using cljdoc-analyzer as a library, provide your own logging config as appropriate for your app.
