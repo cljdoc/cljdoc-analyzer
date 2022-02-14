@@ -9,19 +9,7 @@
               out (io/output-stream target)]
     (io/copy in out)))
 
-(defn delete-directory! [dir]
-  (let [{:keys [files dirs]} (group-by (fn [f]
-                                         (cond (.isDirectory f) :dirs
-                                               (.isFile f) :files))
-                                       (file-seq dir))]
-    (doseq [f files] (.delete f))
-    (doseq [d (reverse dirs)] (.delete d))))
-
-(defn system-temp-dir [prefix]
-  (.toFile (Files/createTempDirectory
-            (clojure.string/replace prefix #"/" "-")
-            (into-array java.nio.file.attribute.FileAttribute []))))
-
+;; move to babashka fs when available: https://github.com/babashka/fs/issues/31
 (defn system-temp-file [prefix suffix]
   (.toFile (Files/createTempFile
             (clojure.string/replace prefix #"/" "-")
