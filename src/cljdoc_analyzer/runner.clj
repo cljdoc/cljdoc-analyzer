@@ -8,17 +8,18 @@
 
   By shelling out a separate process we create an isolated environment which
   does not have the dependencies of cljdoc-analyzer."
-  (:require [clojure.java.io :as io]
+  (:require [babashka.fs :as fs]
+            [clojure.java.io :as io]
             [clojure.java.shell :as sh]
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [clojure.pprint :as pprint]
-            [cljdoc-analyzer.analysis-edn :as analysis-edn]
             [cljdoc-analyzer.config :as config]
             [cljdoc-analyzer.deps :as deps]
             [cljdoc-analyzer.file :as file]
-            [cljdoc-analyzer.proj :as proj]
-            [cljdoc-analyzer.spec :as spec])
+            [cljdoc-shared.proj :as proj]
+            [cljdoc-shared.spec.analyzer :as analyzer-spec]
+            [cljdoc-shared.analysis-edn :as analysis-edn])
   (:import (java.util.zip ZipFile)
            (java.net URI)))
 
@@ -47,13 +48,13 @@
   [unpacked-jar-dir]
   (when (.exists (io/file unpacked-jar-dir "public"))
     (log/info "Deleting public/ dir")
-    (file/delete-directory! (io/file unpacked-jar-dir "public")))
+    (fs/delete-tree (io/file unpacked-jar-dir "public")))
   ;; Delete the clj-kondo exports directory, which includes clj files
   ;; with namespaces that don't match their directory location.
   ;; This fixes the issue https://github.com/cljdoc/cljdoc/issues/455
   (when (.exists (io/file unpacked-jar-dir "clj-kondo.exports"))
     (log/info "Deleting clj-kondo.exports/ dir")
-    (file/delete-directory! (io/file unpacked-jar-dir "clj-kondo.exports")))
+    (fs/delete-tree (io/file unpacked-jar-dir "clj-kondo.exports")))
   ;; Delete .class files that have a corresponding .clj or .cljc file
   ;; to circle around https://dev.clojure.org/jira/browse/CLJ-130
   ;; This only affects Jars with AOT compiled namespaces where the
@@ -152,7 +153,7 @@
                          :stderr (:err process)}))))))
 
 (defn- validate-result [ana-result]
-  (spec/assert :cljdoc/cljdoc-edn ana-result)
+  (analyzer-spec/assert-result-full ana-result)
   (if (every? some? (vals ana-result))
     ana-result
     (throw (Exception. "Analysis failed"))))
@@ -166,7 +167,9 @@
   "Return metadata for project"
   [{:keys [project version jarpath pompath default-repos extra-repos overrides] :as opts}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
-  (let [work-dir (file/system-temp-dir (str "cljdoc-" project "-" version))]
+  (let [work-dir (-> {:prefix (str "cljdoc-" (string/escape project {\/ \-}) "-" version)}
+                     fs/create-temp-dir
+                     fs/file)]
     (try
       (let [project (symbol project)
             local-jar-path (resolve-jar! jarpath work-dir)
@@ -193,7 +196,7 @@
              :pom-str pom-str}
             (validate-result)))
       (finally
-        (file/delete-directory! work-dir)))))
+        (fs/delete-tree work-dir)))))
 
 (defn get-metadata
   "Return analysis result map for:

@@ -1,11 +1,11 @@
 (ns ^:no-doc cljdoc-analyzer.deps
-  (:require [clojure.java.io :as io]
+  (:require [babashka.fs :as fs]
+            [clojure.java.io :as io]
             [clojure.tools.deps.alpha :as tdeps]
             [clojure.string :as string]
             [version-clj.core :as v]
-            [cljdoc-analyzer.file :as file]
-            [cljdoc-analyzer.pom :as pom]
-            [cljdoc-analyzer.proj :as proj]))
+            [cljdoc-shared.pom :as pom]
+            [cljdoc-shared.proj :as proj]))
 
 (defn- ensure-recent-ish [deps-map]
   (let [min-versions {'org.clojure/clojure "1.9.0"
@@ -36,7 +36,7 @@
   {'cljdoc-analyzer/metagetta
    {:local/root (if-let [metagetta-jar-resource (io/resource "metagetta.jar")]
                   (let [target-jar (str (io/file target-dir "metagetta.jar"))]
-                    (file/copy metagetta-jar-resource target-jar)
+                    (fs/copy-tree metagetta-jar-resource target-jar)
                     target-jar)
                   (clojure.java.io/resource "metagetta"))}})
 

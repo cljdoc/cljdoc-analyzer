@@ -34,15 +34,6 @@
           :task (shell {:dir "modules/metagetta"}
                        "bb test")}
 
-         test-cljdoc-analyzer
-         {:doc "cljdoc-analyzer unit tests"
-          :task (shell "clojure -M:test"
-                       "--reporter" "documentation"
-                       "--plugin" "kaocha.plugin/profiling"
-                       "--plugin" "kaocha.plugin/junit-xml"
-                       "--junit-xml-file" "target/test-results/cljdoc-analyzer-unit/results.xml"
-                       "unit")}
-
          test-cljdoc-analyzer-integration
          {:doc "cljdoc-analyzier integration tests"
           :task (shell "clojure -M:test"
@@ -55,7 +46,7 @@
 
          test
          {:doc "Run all tests"
-          :depends [test-metagetta test-cljdoc-analyzer test-cljdoc-analyzer-integration]}
+          :depends [test-metagetta test-cljdoc-analyzer-integration]}
 
          outdated
          {:doc "report on outdated dependencies"
