@@ -14,6 +14,7 @@
             [clojure.string :as string]
             [clojure.tools.logging :as log]
             [clojure.pprint :as pprint]
+            [clojure.spec.alpha :as s]
             [cljdoc-analyzer.config :as config]
             [cljdoc-analyzer.deps :as deps]
             [cljdoc-analyzer.file :as file]
@@ -22,6 +23,9 @@
             [cljdoc-shared.analysis-edn :as analysis-edn])
   (:import (java.util.zip ZipFile)
            (java.net URI)))
+
+;; enable spec asserts for cljdoc-analyzer
+(s/check-asserts true)
 
 (defn- download-jar! [jar-uri target-dir]
   (let [jar-f (io/file target-dir "downloaded.jar")]
