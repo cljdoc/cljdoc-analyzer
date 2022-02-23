@@ -129,7 +129,7 @@
       (println "Clojure version" (clojure-version))
       (println "ClojureScript version" (cljs-util/clojurescript-version))
       (->> (get-metadata (assoc args :namespaces (or namespaces :all)))
-           (utils/serialize-cljdoc-edn)
+           (utils/serialize-cljdoc-analysis-edn)
            (spit output-filename))
       (println "Done"))
 

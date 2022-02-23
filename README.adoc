@@ -130,7 +130,7 @@ reflect current cljdoc usage.
 This will log to stdout and, if successful, write to a file in a predefined known spot, as indicated in the output logs:
 [source,options="nowrap"]
 ----
-2019-08-26 14:22:28,061 INFO  cljdoc-analyzer.runner - results file: /tmp/cljdoc/analysis-out/cljdoc-edn/cljfmt/cljfmt/0.6.4/cljdoc.edn
+2022-02-22 19:20:17,877 INFO  cljdoc-analyzer.runner - results file: /tmp/cljdoc/analysis-out/cljdoc-analysis-edn/cljfmt/cljfmt/0.6.4/cljdoc-analysis.edn
 ----
 
 === general use

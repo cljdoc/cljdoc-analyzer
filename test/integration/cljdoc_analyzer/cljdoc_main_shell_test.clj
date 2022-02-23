@@ -50,7 +50,7 @@
 
 (defn- run-analysis [{:keys [project version] :as args}]
   (let [;; convention for metadata output file
-        edn-out-filename (test-helper/edn-filename "/tmp/cljdoc/analysis-out/cljdoc-edn" project version)
+        edn-out-filename (test-helper/edn-filename "/tmp/cljdoc/analysis-out/cljdoc-analysis-edn" project version)
         ;; wipe out any file from previous analysis
         _  (io/delete-file edn-out-filename true)
         args ["clojure" "-M" "--report" "stderr" "-m" "cljdoc-analyzer.cljdoc-main" (pr-str args)]]
