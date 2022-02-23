@@ -8,7 +8,7 @@
   (let [project (if (string/index-of project "/")
                   project
                   (str project "/" project))]
-    (str prefix "/" project "/" version "/cljdoc.edn")))
+    (str prefix "/" project "/" version "/cljdoc-analysis.edn")))
 
 (defn- filter-namespace
   "Filter undesired namespace in a analysis map.

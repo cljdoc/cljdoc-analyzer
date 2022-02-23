@@ -235,8 +235,8 @@ a| info on scm, files and docs keys from map:
 
 * `:jar`
 * `:scm` - version control info including list of all files
-* `:doc` - cljdoc.edn hydrated including file content
-* `:config` - cljdoc.edn in original format
+* `:doc` - cljdoc edn analysis result hydrated including file content
+* `:config` - cljdoc edn analysis result in original format
 
 | nope we are good. no api information
 

@@ -7,7 +7,7 @@
 
 (defn- temp-edn-filename []
   (str
-   (doto (java.io.File/createTempFile "cljdoc-edn" ".edn")
+   (doto (java.io.File/createTempFile "cljdoc-analysis-edn" ".edn")
      (.deleteOnExit)
      (.getAbsolutePath))))
 

@@ -117,7 +117,10 @@
 (defn default-exception-handler [lang e file]
   (throw (ex-info (format "Could not generate %s documentation for %s" lang file) {} e)))
 
-(defn serialize-cljdoc-edn [analyze-result]
+;; WARNING: this little fn is currently duped in cljdoc-shared/analysis-edn/serialize
+;; We currently dupe instead of bringing the shared dep to minimize
+;; metagetta deps...
+(defn serialize-cljdoc-analysis-edn [analyze-result]
   ;; the analyzed structure can contain regex #"..." (e.g. in :arglists)
   ;; and they can't be read in again using edn/read-string
   ;; so there are changed to #regex"..." and read in with a custom reader

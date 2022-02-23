@@ -8,7 +8,7 @@
         babashka/fs {:mvn/version "0.1.2"}
         ;; cljoc and cljdoc-analyzer should reference same version of cljdoc-shared
         cljdoc/cljdoc-shared {:git/url "https://github.com/cljdoc/cljdoc-shared.git"
-                              :git/sha "834006d527ac00b58194ff752eb0b5db3653e4b0"}}
+                              :git/sha "30bcba1bf6ad0ff9f3496a46949dd590f87dcd7e" }}
  :tools/usage {:ns-default cljdoc-analyzer.deps-tool}
  :aliases {:test
            {:extra-paths ["test/integration" "test-resources"]

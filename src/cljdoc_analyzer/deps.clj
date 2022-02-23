@@ -43,7 +43,7 @@
 (defn- extra-pom-deps
   "Some projects require additional depenencies that have either been specified with
   scope 'provided', 'system', 'test', are marked 'optional' or are specified via documentation, e.g. a README.
-  Maybe should be able to configure this via their cljdoc.edn configuration
+  Maybe should be able to configure this via their git repo user cljdoc.edn configuration
   file but this situation being an edge case this is a sufficient fix for now."
   [pom]
   (->> (:dependencies pom)
