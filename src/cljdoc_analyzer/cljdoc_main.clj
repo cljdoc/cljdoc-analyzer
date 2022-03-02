@@ -8,13 +8,14 @@
 
 (defn -main
   [edn-arg]
-  (let [{:keys [project version jarpath pompath extra-repos] :as args} (edn/read-string edn-arg)
+  (let [{:keys [project version jarpath pompath extra-repos languages] :as args} (edn/read-string edn-arg)
         _  (log/info (str "args:\n" (with-out-str (pp/pprint args))))
         {:keys [analysis-status]} (runner/analyze! {:project project
                                                     :version version
                                                     :jarpath jarpath
                                                     :pompath pompath
                                                     :extra-repos extra-repos
+                                                    :languages languages
                                                     :namespaces :all
                                                     :exclude-with [:no-doc :skip-wiki]
                                                     :output-filename (analysis/result-path project version)})]

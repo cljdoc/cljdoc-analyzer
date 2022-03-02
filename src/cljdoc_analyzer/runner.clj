@@ -169,7 +169,7 @@
 
 (defn- get-metadata*
   "Return metadata for project"
-  [{:keys [project version jarpath pompath default-repos extra-repos overrides] :as opts}]
+  [{:keys [project version jarpath pompath default-repos extra-repos overrides languages] :as opts}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (let [work-dir (-> {:prefix (str "cljdoc-" (string/escape project {\/ \-}) "-" version)}
                      fs/create-temp-dir
@@ -194,7 +194,7 @@
              :version version
              :analysis (launch-metagetta (assoc opts
                                                 :src-dir (.getPath jar-contents-dir)
-                                                :languages (or (:languages overrides) :auto-detect)
+                                                :languages (or (:languages overrides) languages :auto-detect)
                                                 :namespaces (or (:namespaces overrides) :all)
                                                 :classpath classpath))
              :pom-str pom-str}
@@ -209,6 +209,7 @@
   - `:jarpath` - path to jar file
   - `:pompath` - path to pom file
   - `:extra-repos` - optional map of additional maven repos.
+  - `:languages` - languages to analyze
 
   To serialize/deserialize result see [[cljdoc-analyzer.analysis-edn]]."
   [{:keys [project] :as opts}]
@@ -228,6 +229,7 @@
   - `:jarpath` - path to jar file
   - `:pompath` - path to pom file
   - `:extra-repos` - optional additional extra maven repositories in map format: `{repo-id-here {:url \"http://repo.url.here\"}}`
+  - `:languages` - languages to analyze
   - `:output-filename` - where to write output
 
   This function wraps [[get-metadata]]. It does some logging and serializes result appropriately. If you want to do
