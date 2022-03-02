@@ -229,8 +229,8 @@ The edn output is a map of:
 * `:artifact-id` project artifact-id
 * `:version` project version
 * `:analysis` analysis for languages which can consist of a map with none, one or both of:
-** `clj` list of namespaces (see below)
-** `cljs` list of namespaces (see below)
+** `"clj"` list of namespaces (see below)
+** `"cljs"` list of namespaces (see below)
 * `:pom-str` slurp of maven pom file
 
 list of namespaces is a list of maps of:
