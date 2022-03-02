@@ -76,9 +76,12 @@
         (sort-by-name))))
 
 (defn- determine-languages [lang-opt src-dir]
-  (if (= :auto-detect lang-opt)
-    (utils/infer-platforms-from-src-dir (io/file src-dir))
-    lang-opt))
+  (->> (if (= :auto-detect lang-opt)
+         (utils/infer-platforms-from-src-dir (io/file src-dir))
+         lang-opt)
+       (into [])
+       distinct
+       sort))
 
 (defn get-metadata
   "Get metadata from source files."
@@ -89,18 +92,18 @@
    (assert (.exists (io/as-file root-path))
            ":root-path must exist")
    (assert (or (= :auto-detect languages)
-               (and (set? languages) (>= (count languages) 1) (every? #{"clj" "cljs"} languages)))
-           ":languages must be either :auto-detect or a set of set of one or both of: \"clj\", \"cljs\"")
+               (and (coll? languages) (>= (count languages) 1) (every? #{"clj" "cljs"} languages)))
+           ":languages must be either :auto-detect or a collection of one or both of: \"clj\", \"cljs\"")
    (let [root-path (utils/canonical-path root-path)
          actual-languages (determine-languages languages root-path)]
-     (->> (map (fn [lang]
-                 (println "Analyzing for" lang)
-                 (utils/time-op (str "Analysis for " lang)
-                                (read-namespaces {:namespaces namespaces
-                                                  :root-path root-path
-                                                  :language lang
-                                                  :exclude-with exclude-with})))
-               actual-languages)
+     (->> actual-languages
+          (mapv (fn [lang]
+                  (println "Analyzing for" lang)
+                  (utils/time-op (str "Analysis for " lang)
+                                 (read-namespaces {:namespaces namespaces
+                                                   :root-path root-path
+                                                   :language lang
+                                                   :exclude-with exclude-with}))))
           (zipmap actual-languages)))))
 
 (defn -main

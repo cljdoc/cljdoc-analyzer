@@ -14,17 +14,20 @@
           {}
           extra-repo))
 
-(defn analyze [{:keys [project version extra-repo] :as args}]
+(defn analyze [{:keys [project version extra-repo language] :as args}]
   (let [config (config/load)
         extra-repos (extra-repo-arg-to-option extra-repo)
+        languages (when (seq language) (into #{} language))
         {:keys [jar pom]} (deps/resolve-dep (symbol project) version (:repos config) extra-repos)]
-    (runner/analyze! (-> (merge 
-                           {:exclude-with [:no-doc :skip-wiki]} 
-                           (select-keys args [:project :version :exclude-with :output-filename]))
-                         (assoc :jarpath jar :pompath pom :extra-repos extra-repos)))))
+    (runner/analyze! (-> (merge
+                          {:exclude-with [:no-doc :skip-wiki]}
+                          (select-keys args [:project :version :exclude-with :output-filename]))
+                         (assoc :jarpath jar :pompath pom :extra-repos extra-repos :languages languages)))))
 
 (spec/def ::extra-repo
   (fn [vals] (every? #(= 2 (count (string/split % #" "))) vals)))
+
+(spec/def ::language (spec/* #{"clj" "cljs"}))
 
 (expound/defmsg ::extra-repo "each extra-repo must be a quoted 'id url' pair")
 
@@ -55,7 +58,12 @@
 
                    {:option "output-filename" :short "o"
                     :as "Where to write edn output"
-                    :type :string :default :present}]
+                    :type :string :default :present}
+
+                   {:option "language" :short "l"
+                    :as "Language to analyze, repeat for multiple, omit for auto detection"
+                    :spec ::language
+                    :type :string :multiple true }]
      :runs        analyze}]})
 
 (defn -main[& args]
