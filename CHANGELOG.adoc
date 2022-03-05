@@ -10,5 +10,9 @@
 
 == Unreleased
 
+*
+
+== v1.0.695
+
 * Add release workflow with tagging and versioning https://github.com/cljdoc/cljdoc-analyzer/issues/47[#47]
 * Start to track changes in changelog
