@@ -1,4 +1,5 @@
 = cljdoc-analyzer
+:library-version: v0.0.0
 :toc:
 :toclevels: 4
 
@@ -166,9 +167,11 @@ We can look at other features as we get a feel for what folks are interested in.
 
 You can also install and use cljdoc-analyzer as a https://clojure.org/reference/deps_and_cli#tool_install[Clojure CLI Tool]. First you need to install it:
 
+Specify `{library-version}` or `RELEASE` for the current release.
+
 [source,bash,no-wrap]
 ----
-clojure -Ttools install io.github.cljdoc/cljdoc-analyzer '{:git/tag "0.10.3"}' :as cljdoc
+clojure -Ttools install io.github.cljdoc/cljdoc-analyzer '{:git/tag "RELEASE"}' :as cljdoc
 ----
 
 and then you can invoke it in one of the supported ways.
@@ -286,7 +289,10 @@ This dependency is currently a `:git/url` dependency.
 To bring a new version of cljdoc-analyzer into production, we update the `analyzer-version` to the git `:sha` we'd like to use.
 At the time of this writing, https://github.com/cljdoc/cljdoc/blob/5171e7924579b9144e5729da92a4454e32c03b23/src/cljdoc/analysis/service.clj#L37-L42[this is specified in `cljdoc.analysis.service`].
 
-== Babashka tasks
+== Development
+
+
+=== Babashka tasks
 
 We use babashka tasks as our dev scripting tool.
 
@@ -297,7 +303,7 @@ To see available tasks run:
 bb tasks
 ----
 
-== Testing
+=== Testing
 
 We use of https://github.com/lambdaisland/kaocha[kaocha] for testing.
 
@@ -310,7 +316,7 @@ bb test
 
 To run a subset of tests, run `bb tasks` to see what's available.
 
-== Linting
+=== Linting
 
 We use of https://github.com/borkdude/clj-kondo[clj-kondo] for linting.
 
@@ -319,13 +325,35 @@ We use of https://github.com/borkdude/clj-kondo[clj-kondo] for linting.
 bb lint
 ----
 
-== Check for outdated dependencies
+=== Check for outdated dependencies
 
 We use https://github.com/liquidz/antq[antq] to check for outdated dependencies.
 
 [source,shell]
 ----
 bb outdated
+----
+
+=== Releasing
+After you have have dotted all your i's and crossed all your t's, you may want to cut a release.
+
+A release is currently known to immediately impact:
+
+* cljdoc
+* cljdoc-analyzer when run as a Clojure Tool
+
+A release must be cut from the main branch. It:
+
+. performs some pre-checks
+. runs all tests
+. updates appropriate files with the new `v1.0.<commit count>` version
+. tags the git repo with `RELEASE` and the `v1.0.<commit count>` version
+. pushes tags and changes (this will incidentally trigger a test run on CI, but the release is live regardless)
+
+To cut a release, run:
+[source,shell]
+----
+bb release
 ----
 
 == Licenses

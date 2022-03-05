@@ -1,0 +1,14 @@
+// Note: release workflow automatically updates "unreleased" headers in this file
+= Changelog
+
+// Release workflow will:
+// - Fail when:
+//   - there is no "== Unreleased" section header
+//   - or the section contains no descriptive text
+// - Replace the Unreleased section header with actual release version
+// - Prepend a new Unreleased section header
+
+== Unreleased
+
+* Add release workflow with tagging and versioning https://github.com/cljdoc/cljdoc-analyzer/issues/47[#47]
+* Start to track changes in changelog

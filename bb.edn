@@ -4,7 +4,8 @@
  :tasks {;; setup
          :requires ([babashka.fs :as fs]
                     [clojure.string :as string]
-                    [lread.status-line :as status])
+                    [lread.status-line :as status]
+                    [release])
          :enter (let [{:keys [name]} (current-task)] (status/line :head "TASK %s %s" name (string/join " " *command-line-args*)))
          :leave (let [{:keys [name]} (current-task)] (status/line :detail "\nTASK %s done." name))
 
@@ -47,6 +48,19 @@
          test
          {:doc "Run all tests"
           :depends [test-metagetta test-cljdoc-analyzer-integration]}
+
+         change-log-check
+         {:doc "Checks that change log is ready for a release"
+          :task (release/change-log-check)}
+
+         release-checks
+         {:doc "Performs all release checks"
+          :task (release/release-checks)}
+
+         release
+         {:depends [release-checks test]
+          :doc "Cut a new release"
+          :task (release/release)}
 
          outdated
          {:doc "report on outdated dependencies"

@@ -9,6 +9,7 @@
   By shelling out a separate process we create an isolated environment which
   does not have the dependencies of cljdoc-analyzer."
   (:require [babashka.fs :as fs]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.java.shell :as sh]
             [clojure.string :as string]
@@ -237,6 +238,11 @@
   [{:keys [project version jarpath pompath output-filename] :as args}]
   {:pre [(seq project) (seq version) (seq jarpath) (seq pompath)]}
   (try
+    (log/info "cljdoc-analyzer-version" (-> "cljdoc-analyzer-version.edn"
+                                            io/resource
+                                            slurp
+                                            edn/read-string
+                                            :version))
     (log/info (str "args:\n" (with-out-str (pprint/pprint args))))
     (let [output-file  (io/file output-filename)]
       (-> (get-metadata args)
