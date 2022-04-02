@@ -72,7 +72,8 @@ For example:
 (ns ^:no-doc hidden-ns)
 ----
 
-For autodoc legacy reasons, codox considers `:skip-wiki` to be equivalent to `:no-doc` and cljdoc-analyzer does the same.
+The Clojure core team still uses https://tomfaulhaber.github.io/autodoc[autodoc] to generate their API docs.
+Autodoc's `:skip-wiki` metadata is equivalent to `:no-doc`.
 
 ==== :added
 
@@ -262,7 +263,7 @@ special metadata tags when present are included on namespaces and/or publics:
 * `:added` version an element was added
 * `:deprecated` version an element was deprecated
 * `:no-doc` author requests that this item be excluded from docs
-* `:skip-wiki` legacy synonym for `:no-doc`, please use `:no-doc`.
+* `:skip-wiki` autodoc's equivalent to `:no-doc`
 
 [#internal-workings]
 == Internal Workings
