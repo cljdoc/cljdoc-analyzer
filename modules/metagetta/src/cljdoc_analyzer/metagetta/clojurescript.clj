@@ -6,9 +6,16 @@
             [cljs.closure]
             [cljs.compiler.api :as comp]
             [cljs.env]
-            [clojure.tools.reader :as reader]
             [clojure.set]
             [cljdoc-analyzer.metagetta.utils :as utils]))
+
+(defn- default-data-reader-fn-var
+  "Starting with ClojureScript 1.11.51 tools reader is vendorized to cljs.vendor.clojure.tools.reader"
+  []
+  (or (try
+        (ns-resolve 'cljs.vendor.clojure.tools.reader '*default-data-reader-fn*)
+        (catch Throwable _e))
+      (ns-resolve 'clojure.tools.reader '*default-data-reader-fn*)))
 
 (defn- cljs-filename? [filename]
   (or (.endsWith filename ".cljs")
@@ -125,7 +132,7 @@
 
 (defn- analyze-file [state file]
   (ana/no-warn
-   (binding [reader/*default-data-reader-fn* (utils/new-failsafe-data-reader-fn file)]
+   (with-bindings {(default-data-reader-fn-var) (utils/new-failsafe-data-reader-fn file)}
      ;; The 'with-core-cljs' wrapping function ensures the namespace 'cljs.core'
      ;; is available under the sub-call to 'analyze-file'.
      ;; https://github.com/cljdoc/cljdoc/issues/261
