@@ -1,5 +1,5 @@
 = cljdoc-analyzer
-:library-version: v1.0.695
+:library-version: v1.0.699
 :toc:
 :toclevels: 4
 

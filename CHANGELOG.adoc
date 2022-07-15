@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.699
+
 * Add support for ClojureScript 1.11 https://github.com/cljdoc/cljdoc-analyzer/issues/54[#54]
 * Bump deps
 
