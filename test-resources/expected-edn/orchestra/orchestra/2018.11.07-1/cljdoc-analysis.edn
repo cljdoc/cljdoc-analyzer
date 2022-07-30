@@ -1,1 +1,294 @@
-{:group-id "orchestra", :artifact-id "orchestra", :version "2018.11.07-1", :analysis {"clj" ({:name orchestra-cljs.spec.test, :publics ({:name instrument, :file "orchestra_cljs/spec/test.cljc", :line 81, :arglists ([] [xs] [sym-or-syms opts]), :doc "Instruments the vars named by sym-or-syms, a symbol or collection\nof symbols, or all instrumentable vars if sym-or-syms is not\nspecified. If a symbol identifies a namespace then all symbols in that\nnamespace will be enumerated.\n\nIf a var has an :args fn-spec, sets the var's root binding to a\nfn that checks arg conformance (throwing an exception on failure)\nbefore delegating to the original fn.\n\nThe opts map can be used to override registered specs, and/or to\nreplace fn implementations entirely. Opts for symbols not included\nin sym-or-syms are ignored. This facilitates sharing a common\noptions map across many different calls to instrument.\n\nThe opts map may have the following keys:\n\n:spec     a map from var-name symbols to override specs\n:stub     a set of var-name symbols to be replaced by stubs\n:gen      a map from spec names to generator overrides\n:replace  a map from var-name symbols to replacement fns\n\n:spec overrides registered fn-specs with specs your provide. Use\n:spec overrides to provide specs for libraries that do not have\nthem, or to constrain your own use of a fn to a subset of its\nspec'ed contract.\n\n:stub replaces a fn with a stub that checks :args, then uses the\n:ret spec to generate a return value.\n\n:gen overrides are used only for :stub generation.\n\n:replace replaces a fn with a fn that checks args conformance, then\ninvokes the fn you provide, enabling arbitrary stubbing and mocking.\n\n:spec can be used in combination with :stub or :replace.\n\nReturns a collection of syms naming the vars instrumented.", :type :macro} {:name instrument-1, :file "orchestra_cljs/spec/test.cljc", :line 48, :arglists ([[quote s] opts]), :type :macro} {:name unstrument, :file "orchestra_cljs/spec/test.cljc", :line 141, :arglists ([] [sym-or-syms]), :doc "Undoes instrument on the vars named by sym-or-syms, specified\nas in instrument. With no args, unstruments all instrumented vars.\nReturns a collection of syms naming the vars unstrumented.", :type :macro} {:name unstrument-1, :file "orchestra_cljs/spec/test.cljc", :line 57, :arglists ([[quote s]]), :type :macro} {:name with-instrument-disabled, :file "orchestra_cljs/spec/test.cljc", :line 42, :arglists ([& body]), :doc "Disables instrument's checking of calls, within a scope.\n", :type :macro})} {:name orchestra.core, :publics ({:name defn-spec, :file "orchestra/core.cljc", :line 4, :arglists ([& args]), :doc "Defines a function and the associated spec.\n\nExample usage:\n(defn-spec str->kw keyword?\n  [s string?]\n   (keyword s))\n\nMultiple arities are also supported:\n(defn-spec inc' number?\n  ([a number?]\n   (inc' a 1))\n  ([a number?, n number?]\n   (+ a n)))", :type :macro})} {:name orchestra.detail, :publics ({:name *cljs?*, :file "orchestra/detail.cljc", :line 64, :dynamic true, :type :var} {:name arg->kw, :file "orchestra/detail.cljc", :line 125, :arglists ([idx arg]), :doc "Converts are argument to a keyword. Arguments may use destructuring, so they\nmay not be a symbol. In that case, just fill in something helpful.", :type :var} {:name build-args-spec, :file "orchestra/detail.cljc", :line 141, :arglists ([conformed-arities exploded-arities]), :type :var} {:name build-cat, :file "orchestra/detail.cljc", :line 133, :arglists ([arity-arg-names arity-specs]), :type :var} {:name defn-spec-helper, :file "orchestra/detail.cljc", :line 178, :arglists ([& args]), :type :var} {:name explode-arity, :file "orchestra/detail.cljc", :line 92, :arglists ([arity]), :doc "Strips the specs from the arity's args and gets it ready for consumption.\nDoes the job of s/unform, since s/unform doesn't do its job well.", :type :var} {:name explode-def, :file "orchestra/detail.cljc", :line 158, :arglists ([& args]), :doc "Takes in the variadic values of a defn-spec and returns a map of the\nvarious parts. Handles multiple arities and optional doc strings.", :type :var} {:name extract-arg-specs, :file "orchestra/detail.cljc", :line 109, :arglists ([arity]), :doc "Returns a sequence of specs, based on the arity's args.\n", :type :var} {:name get-global-defn, :file "orchestra/detail.cljc", :line 66, :arglists ([]), :type :var} {:name name-arity, :file "orchestra/detail.cljc", :line 137, :arglists ([arg-count]), :type :var} {:name render-arity, :file "orchestra/detail.cljc", :line 104, :arglists ([{:keys [:orchestra.detail/exploded-args :orchestra.detail/exploded-body]}]), :doc "Turns an exploded arity into something which defn can consume.\n", :type :var} {:name render-binding, :file "orchestra/detail.cljc", :line 83, :arglists ([[kind value]]), :doc "Doing the job of unform, since it turns destructured sequences into lists.\n'cause it's silly.", :type :var} {:name spec-fn, :file "orchestra/detail.cljc", :line 69, :arglists ([fn-name]), :type :var})} {:name orchestra.spec.test, :publics ({:name ->sym, :file "orchestra/spec/test.clj", :line 17, :arglists ([x]), :type :var} {:name instrument, :file "orchestra/spec/test.clj", :line 189, :arglists ([] [sym-or-syms] [sym-or-syms opts]), :doc "Instruments the vars named by sym-or-syms, a symbol or collection\nof symbols, or all instrumentable vars if sym-or-syms is not\nspecified.\n\nIf a var has an :args fn-spec, sets the var's root binding to a\nfn that checks arg conformance (throwing an exception on failure)\nbefore delegating to the original fn.\n\nThe opts map can be used to override registered specs, and/or to\nreplace fn implementations entirely. Opts for symbols not included\nin sym-or-syms are ignored. This facilitates sharing a common\noptions map across many different calls to instrument.\n\nThe opts map may have the following keys:\n\n  :spec     a map from var-name symbols to override specs\n  :stub     a set of var-name symbols to be replaced by stubs\n  :gen      a map from spec names to generator overrides\n  :replace  a map from var-name symbols to replacement fns\n\n:spec overrides registered fn-specs with specs your provide. Use\n:spec overrides to provide specs for libraries that do not have\nthem, or to constrain your own use of a fn to a subset of its\nspec'ed contract.\n\n:stub replaces a fn with a stub that checks :args, then uses the\n:ret spec to generate a return value.\n\n:gen overrides are used only for :stub generation.\n\n:replace replaces a fn with a fn that checks args conformance, then\ninvokes the fn you provide, enabling arbitrary stubbing and mocking.\n\n:spec can be used in combination with :stub or :replace.\n\nReturns a collection of syms naming the vars instrumented.", :type :var} {:name instrumentable-syms, :file "orchestra/spec/test.clj", :line 178, :arglists ([] [opts]), :doc "Given an opts map as per instrument, returns the set of syms\nthat can be instrumented.", :type :var} {:name unstrument, :file "orchestra/spec/test.clj", :line 238, :arglists ([] [sym-or-syms]), :doc "Undoes instrument on the vars named by sym-or-syms, specified\nas in instrument. With no args, unstruments all instrumented vars.\nReturns a collection of syms naming the vars unstrumented.", :type :var} {:name with-instrument-disabled, :file "orchestra/spec/test.clj", :line 43, :arglists ([& body]), :doc "Disables instrument's checking of calls, within a scope.\n", :type :macro})}), "cljs" ({:name orchestra-cljs.spec.test, :publics ({:name distinct-by, :file "orchestra_cljs/spec/test.cljs", :line 21, :arglists ([f coll]), :type :var} {:name get-env, :file "orchestra_cljs/spec/test.cljs", :line 65, :arglists ([]), :type :var} {:name get-host-port, :file "orchestra_cljs/spec/test.cljs", :line 50, :arglists ([]), :type :var} {:name get-ua-product, :file "orchestra_cljs/spec/test.cljs", :line 56, :arglists ([]), :type :var} {:name instrument, :file "orchestra_cljs/spec/test.cljc", :line 81, :arglists ([] [xs] [sym-or-syms opts]), :doc "Instruments the vars named by sym-or-syms, a symbol or collection\nof symbols, or all instrumentable vars if sym-or-syms is not\nspecified. If a symbol identifies a namespace then all symbols in that\nnamespace will be enumerated.\n\nIf a var has an :args fn-spec, sets the var's root binding to a\nfn that checks arg conformance (throwing an exception on failure)\nbefore delegating to the original fn.\n\nThe opts map can be used to override registered specs, and/or to\nreplace fn implementations entirely. Opts for symbols not included\nin sym-or-syms are ignored. This facilitates sharing a common\noptions map across many different calls to instrument.\n\nThe opts map may have the following keys:\n\n:spec     a map from var-name symbols to override specs\n:stub     a set of var-name symbols to be replaced by stubs\n:gen      a map from spec names to generator overrides\n:replace  a map from var-name symbols to replacement fns\n\n:spec overrides registered fn-specs with specs your provide. Use\n:spec overrides to provide specs for libraries that do not have\nthem, or to constrain your own use of a fn to a subset of its\nspec'ed contract.\n\n:stub replaces a fn with a stub that checks :args, then uses the\n:ret spec to generate a return value.\n\n:gen overrides are used only for :stub generation.\n\n:replace replaces a fn with a fn that checks args conformance, then\ninvokes the fn you provide, enabling arbitrary stubbing and mocking.\n\n:spec can be used in combination with :stub or :replace.\n\nReturns a collection of syms naming the vars instrumented.", :type :macro} {:name instrument-1, :file "orchestra_cljs/spec/test.cljc", :line 48, :arglists ([[quote s] opts]), :type :macro} {:name instrument-1*, :file "orchestra_cljs/spec/test.cljs", :line 141, :arglists ([s v opts]), :type :var} {:name instrumentable-syms, :file "orchestra_cljs/spec/test.cljs", :line 167, :arglists ([] [opts]), :doc "Given an opts map as per instrument, returns the set of syms\nthat can be instrumented.", :type :var} {:name unstrument, :file "orchestra_cljs/spec/test.cljc", :line 141, :arglists ([] [sym-or-syms]), :doc "Undoes instrument on the vars named by sym-or-syms, specified\nas in instrument. With no args, unstruments all instrumented vars.\nReturns a collection of syms naming the vars unstrumented.", :type :macro} {:name unstrument-1, :file "orchestra_cljs/spec/test.cljc", :line 57, :arglists ([[quote s]]), :type :macro} {:name unstrument-1*, :file "orchestra_cljs/spec/test.cljs", :line 154, :arglists ([s v]), :type :var} {:name with-instrument-disabled, :file "orchestra_cljs/spec/test.cljc", :line 42, :arglists ([& body]), :doc "Disables instrument's checking of calls, within a scope.\n", :type :macro})} {:name orchestra.core, :publics ({:name defn-spec, :file "orchestra/core.cljc", :line 4, :arglists ([& args]), :doc "Defines a function and the associated spec.\n\nExample usage:\n(defn-spec str->kw keyword?\n  [s string?]\n   (keyword s))\n\nMultiple arities are also supported:\n(defn-spec inc' number?\n  ([a number?]\n   (inc' a 1))\n  ([a number?, n number?]\n   (+ a n)))", :type :macro})} {:name orchestra.detail, :publics ({:name *cljs?*, :file "orchestra/detail.cljc", :line 64, :dynamic true, :type :var} {:name arg->kw, :file "orchestra/detail.cljc", :line 125, :arglists ([idx arg]), :doc "Converts are argument to a keyword. Arguments may use destructuring, so they\nmay not be a symbol. In that case, just fill in something helpful.", :type :var} {:name build-args-spec, :file "orchestra/detail.cljc", :line 141, :arglists ([conformed-arities exploded-arities]), :type :var} {:name build-cat, :file "orchestra/detail.cljc", :line 133, :arglists ([arity-arg-names arity-specs]), :type :var} {:name defn-spec-helper, :file "orchestra/detail.cljc", :line 178, :arglists ([& args]), :type :var} {:name explode-arity, :file "orchestra/detail.cljc", :line 92, :arglists ([arity]), :doc "Strips the specs from the arity's args and gets it ready for consumption.\nDoes the job of s/unform, since s/unform doesn't do its job well.", :type :var} {:name explode-def, :file "orchestra/detail.cljc", :line 158, :arglists ([& args]), :doc "Takes in the variadic values of a defn-spec and returns a map of the\nvarious parts. Handles multiple arities and optional doc strings.", :type :var} {:name extract-arg-specs, :file "orchestra/detail.cljc", :line 109, :arglists ([arity]), :doc "Returns a sequence of specs, based on the arity's args.\n", :type :var} {:name get-global-defn, :file "orchestra/detail.cljc", :line 66, :arglists ([]), :type :var} {:name name-arity, :file "orchestra/detail.cljc", :line 137, :arglists ([arg-count]), :type :var} {:name render-arity, :file "orchestra/detail.cljc", :line 104, :arglists ([{:keys [:orchestra.detail/exploded-args :orchestra.detail/exploded-body]}]), :doc "Turns an exploded arity into something which defn can consume.\n", :type :var} {:name render-binding, :file "orchestra/detail.cljc", :line 83, :arglists ([[kind value]]), :doc "Doing the job of unform, since it turns destructured sequences into lists.\n'cause it's silly.", :type :var} {:name spec-fn, :file "orchestra/detail.cljc", :line 69, :arglists ([fn-name]), :type :var})})}, :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>orchestra</groupId>\n  <artifactId>orchestra</artifactId>\n  <packaging>jar</packaging>\n  <version>2018.11.07-1</version>\n  <name>orchestra</name>\n  <description>Complete instrumentation for clojure.spec</description>\n  <url>https://github.com/jeaye/orchestra</url>\n  <licenses>\n    <license>\n      <name>Eclipse Public License</name>\n      <url>http://www.eclipse.org/legal/epl-v10.html</url>\n    </license>\n  </licenses>\n  <scm>\n    <url>https://github.com/jeaye/orchestra</url>\n    <connection>scm:git:git://github.com/jeaye/orchestra.git</connection>\n    <developerConnection>scm:git:ssh://git@github.com/jeaye/orchestra.git</developerConnection>\n    <tag>bd51ccac3e56c88cd4f516076df5ef1f2a500671</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src/clj</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins>\n      <plugin>\n        <groupId>org.codehaus.mojo</groupId>\n        <artifactId>build-helper-maven-plugin</artifactId>\n        <version>1.7</version>\n        <executions>\n          <execution>\n            <id>add-source</id>\n            <phase>generate-sources</phase>\n            <goals>\n              <goal>add-source</goal>\n            </goals>\n            <configuration>\n              <sources>\n                <source>src/cljc</source>\n                <source>src/cljs</source>\n              </sources>\n            </configuration>\n          </execution>\n        </executions>\n      </plugin>\n    </plugins>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.9.0</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojurescript</artifactId>\n      <version>1.10.439</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>spec.alpha</artifactId>\n      <version>0.2.176</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>lein-doo</groupId>\n      <artifactId>lein-doo</artifactId>\n      <version>0.1.10</version>\n      <scope>test</scope>\n    </dependency>\n  </dependencies>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n"}
+{:group-id "orchestra",
+ :artifact-id "orchestra",
+ :version "2018.11.07-1",
+ :analysis {"clj" ({:name orchestra-cljs.spec.test,
+                    :publics ({:name instrument,
+                               :file "orchestra_cljs/spec/test.cljc",
+                               :line 81,
+                               :arglists ([] [xs] [sym-or-syms opts]),
+                               :doc "Instruments the vars named by sym-or-syms, a symbol or collection\nof symbols, or all instrumentable vars if sym-or-syms is not\nspecified. If a symbol identifies a namespace then all symbols in that\nnamespace will be enumerated.\n\nIf a var has an :args fn-spec, sets the var's root binding to a\nfn that checks arg conformance (throwing an exception on failure)\nbefore delegating to the original fn.\n\nThe opts map can be used to override registered specs, and/or to\nreplace fn implementations entirely. Opts for symbols not included\nin sym-or-syms are ignored. This facilitates sharing a common\noptions map across many different calls to instrument.\n\nThe opts map may have the following keys:\n\n:spec     a map from var-name symbols to override specs\n:stub     a set of var-name symbols to be replaced by stubs\n:gen      a map from spec names to generator overrides\n:replace  a map from var-name symbols to replacement fns\n\n:spec overrides registered fn-specs with specs your provide. Use\n:spec overrides to provide specs for libraries that do not have\nthem, or to constrain your own use of a fn to a subset of its\nspec'ed contract.\n\n:stub replaces a fn with a stub that checks :args, then uses the\n:ret spec to generate a return value.\n\n:gen overrides are used only for :stub generation.\n\n:replace replaces a fn with a fn that checks args conformance, then\ninvokes the fn you provide, enabling arbitrary stubbing and mocking.\n\n:spec can be used in combination with :stub or :replace.\n\nReturns a collection of syms naming the vars instrumented.",
+                               :type :macro}
+                              {:name instrument-1,
+                               :file "orchestra_cljs/spec/test.cljc",
+                               :line 48,
+                               :arglists ([[quote s] opts]),
+                               :type :macro}
+                              {:name unstrument,
+                               :file "orchestra_cljs/spec/test.cljc",
+                               :line 141,
+                               :arglists ([] [sym-or-syms]),
+                               :doc "Undoes instrument on the vars named by sym-or-syms, specified\nas in instrument. With no args, unstruments all instrumented vars.\nReturns a collection of syms naming the vars unstrumented.",
+                               :type :macro}
+                              {:name unstrument-1,
+                               :file "orchestra_cljs/spec/test.cljc",
+                               :line 57,
+                               :arglists ([[quote s]]),
+                               :type :macro}
+                              {:name with-instrument-disabled,
+                               :file "orchestra_cljs/spec/test.cljc",
+                               :line 42,
+                               :arglists ([& body]),
+                               :doc "Disables instrument's checking of calls, within a scope.\n",
+                               :type :macro})}
+                   {:name orchestra.core,
+                    :publics ({:name defn-spec,
+                               :file "orchestra/core.cljc",
+                               :line 4,
+                               :arglists ([& args]),
+                               :doc "Defines a function and the associated spec.\n\nExample usage:\n(defn-spec str->kw keyword?\n  [s string?]\n   (keyword s))\n\nMultiple arities are also supported:\n(defn-spec inc' number?\n  ([a number?]\n   (inc' a 1))\n  ([a number?, n number?]\n   (+ a n)))",
+                               :type :macro})}
+                   {:name orchestra.detail,
+                    :publics ({:name *cljs?*,
+                               :file "orchestra/detail.cljc",
+                               :line 64,
+                               :dynamic true,
+                               :type :var}
+                              {:name arg->kw,
+                               :file "orchestra/detail.cljc",
+                               :line 125,
+                               :arglists ([idx arg]),
+                               :doc "Converts are argument to a keyword. Arguments may use destructuring, so they\nmay not be a symbol. In that case, just fill in something helpful.",
+                               :type :var}
+                              {:name build-args-spec,
+                               :file "orchestra/detail.cljc",
+                               :line 141,
+                               :arglists ([conformed-arities
+                                           exploded-arities]),
+                               :type :var}
+                              {:name build-cat,
+                               :file "orchestra/detail.cljc",
+                               :line 133,
+                               :arglists ([arity-arg-names
+                                           arity-specs]),
+                               :type :var}
+                              {:name defn-spec-helper,
+                               :file "orchestra/detail.cljc",
+                               :line 178,
+                               :arglists ([& args]),
+                               :type :var}
+                              {:name explode-arity,
+                               :file "orchestra/detail.cljc",
+                               :line 92,
+                               :arglists ([arity]),
+                               :doc "Strips the specs from the arity's args and gets it ready for consumption.\nDoes the job of s/unform, since s/unform doesn't do its job well.",
+                               :type :var}
+                              {:name explode-def,
+                               :file "orchestra/detail.cljc",
+                               :line 158,
+                               :arglists ([& args]),
+                               :doc "Takes in the variadic values of a defn-spec and returns a map of the\nvarious parts. Handles multiple arities and optional doc strings.",
+                               :type :var}
+                              {:name extract-arg-specs,
+                               :file "orchestra/detail.cljc",
+                               :line 109,
+                               :arglists ([arity]),
+                               :doc "Returns a sequence of specs, based on the arity's args.\n",
+                               :type :var}
+                              {:name get-global-defn,
+                               :file "orchestra/detail.cljc",
+                               :line 66,
+                               :arglists ([]),
+                               :type :var}
+                              {:name name-arity,
+                               :file "orchestra/detail.cljc",
+                               :line 137,
+                               :arglists ([arg-count]),
+                               :type :var}
+                              {:name render-arity,
+                               :file "orchestra/detail.cljc",
+                               :line 104,
+                               :arglists ([{:keys [:orchestra.detail/exploded-args
+                                                   :orchestra.detail/exploded-body]}]),
+                               :doc "Turns an exploded arity into something which defn can consume.\n",
+                               :type :var}
+                              {:name render-binding,
+                               :file "orchestra/detail.cljc",
+                               :line 83,
+                               :arglists ([[kind value]]),
+                               :doc "Doing the job of unform, since it turns destructured sequences into lists.\n'cause it's silly.",
+                               :type :var}
+                              {:name spec-fn,
+                               :file "orchestra/detail.cljc",
+                               :line 69,
+                               :arglists ([fn-name]),
+                               :type :var})}
+                   {:name orchestra.spec.test,
+                    :publics ({:name ->sym,
+                               :file "orchestra/spec/test.clj",
+                               :line 17,
+                               :arglists ([x]),
+                               :type :var}
+                              {:name instrument,
+                               :file "orchestra/spec/test.clj",
+                               :line 189,
+                               :arglists ([]
+                                          [sym-or-syms]
+                                          [sym-or-syms opts]),
+                               :doc "Instruments the vars named by sym-or-syms, a symbol or collection\nof symbols, or all instrumentable vars if sym-or-syms is not\nspecified.\n\nIf a var has an :args fn-spec, sets the var's root binding to a\nfn that checks arg conformance (throwing an exception on failure)\nbefore delegating to the original fn.\n\nThe opts map can be used to override registered specs, and/or to\nreplace fn implementations entirely. Opts for symbols not included\nin sym-or-syms are ignored. This facilitates sharing a common\noptions map across many different calls to instrument.\n\nThe opts map may have the following keys:\n\n  :spec     a map from var-name symbols to override specs\n  :stub     a set of var-name symbols to be replaced by stubs\n  :gen      a map from spec names to generator overrides\n  :replace  a map from var-name symbols to replacement fns\n\n:spec overrides registered fn-specs with specs your provide. Use\n:spec overrides to provide specs for libraries that do not have\nthem, or to constrain your own use of a fn to a subset of its\nspec'ed contract.\n\n:stub replaces a fn with a stub that checks :args, then uses the\n:ret spec to generate a return value.\n\n:gen overrides are used only for :stub generation.\n\n:replace replaces a fn with a fn that checks args conformance, then\ninvokes the fn you provide, enabling arbitrary stubbing and mocking.\n\n:spec can be used in combination with :stub or :replace.\n\nReturns a collection of syms naming the vars instrumented.",
+                               :type :var}
+                              {:name instrumentable-syms,
+                               :file "orchestra/spec/test.clj",
+                               :line 178,
+                               :arglists ([] [opts]),
+                               :doc "Given an opts map as per instrument, returns the set of syms\nthat can be instrumented.",
+                               :type :var}
+                              {:name unstrument,
+                               :file "orchestra/spec/test.clj",
+                               :line 238,
+                               :arglists ([] [sym-or-syms]),
+                               :doc "Undoes instrument on the vars named by sym-or-syms, specified\nas in instrument. With no args, unstruments all instrumented vars.\nReturns a collection of syms naming the vars unstrumented.",
+                               :type :var}
+                              {:name with-instrument-disabled,
+                               :file "orchestra/spec/test.clj",
+                               :line 43,
+                               :arglists ([& body]),
+                               :doc "Disables instrument's checking of calls, within a scope.\n",
+                               :type :macro})}),
+            "cljs" ({:name orchestra-cljs.spec.test,
+                     :publics ({:name distinct-by,
+                                :file "orchestra_cljs/spec/test.cljs",
+                                :line 21,
+                                :arglists ([f coll]),
+                                :type :var}
+                               {:name get-env,
+                                :file "orchestra_cljs/spec/test.cljs",
+                                :line 65,
+                                :arglists ([]),
+                                :type :var}
+                               {:name get-host-port,
+                                :file "orchestra_cljs/spec/test.cljs",
+                                :line 50,
+                                :arglists ([]),
+                                :type :var}
+                               {:name get-ua-product,
+                                :file "orchestra_cljs/spec/test.cljs",
+                                :line 56,
+                                :arglists ([]),
+                                :type :var}
+                               {:name instrument,
+                                :file "orchestra_cljs/spec/test.cljc",
+                                :line 81,
+                                :arglists ([] [xs] [sym-or-syms opts]),
+                                :doc "Instruments the vars named by sym-or-syms, a symbol or collection\nof symbols, or all instrumentable vars if sym-or-syms is not\nspecified. If a symbol identifies a namespace then all symbols in that\nnamespace will be enumerated.\n\nIf a var has an :args fn-spec, sets the var's root binding to a\nfn that checks arg conformance (throwing an exception on failure)\nbefore delegating to the original fn.\n\nThe opts map can be used to override registered specs, and/or to\nreplace fn implementations entirely. Opts for symbols not included\nin sym-or-syms are ignored. This facilitates sharing a common\noptions map across many different calls to instrument.\n\nThe opts map may have the following keys:\n\n:spec     a map from var-name symbols to override specs\n:stub     a set of var-name symbols to be replaced by stubs\n:gen      a map from spec names to generator overrides\n:replace  a map from var-name symbols to replacement fns\n\n:spec overrides registered fn-specs with specs your provide. Use\n:spec overrides to provide specs for libraries that do not have\nthem, or to constrain your own use of a fn to a subset of its\nspec'ed contract.\n\n:stub replaces a fn with a stub that checks :args, then uses the\n:ret spec to generate a return value.\n\n:gen overrides are used only for :stub generation.\n\n:replace replaces a fn with a fn that checks args conformance, then\ninvokes the fn you provide, enabling arbitrary stubbing and mocking.\n\n:spec can be used in combination with :stub or :replace.\n\nReturns a collection of syms naming the vars instrumented.",
+                                :type :macro}
+                               {:name instrument-1,
+                                :file "orchestra_cljs/spec/test.cljc",
+                                :line 48,
+                                :arglists ([[quote s] opts]),
+                                :type :macro}
+                               {:name instrument-1*,
+                                :file "orchestra_cljs/spec/test.cljs",
+                                :line 141,
+                                :arglists ([s v opts]),
+                                :type :var}
+                               {:name instrumentable-syms,
+                                :file "orchestra_cljs/spec/test.cljs",
+                                :line 167,
+                                :arglists ([] [opts]),
+                                :doc "Given an opts map as per instrument, returns the set of syms\nthat can be instrumented.",
+                                :type :var}
+                               {:name unstrument,
+                                :file "orchestra_cljs/spec/test.cljc",
+                                :line 141,
+                                :arglists ([] [sym-or-syms]),
+                                :doc "Undoes instrument on the vars named by sym-or-syms, specified\nas in instrument. With no args, unstruments all instrumented vars.\nReturns a collection of syms naming the vars unstrumented.",
+                                :type :macro}
+                               {:name unstrument-1,
+                                :file "orchestra_cljs/spec/test.cljc",
+                                :line 57,
+                                :arglists ([[quote s]]),
+                                :type :macro}
+                               {:name unstrument-1*,
+                                :file "orchestra_cljs/spec/test.cljs",
+                                :line 154,
+                                :arglists ([s v]),
+                                :type :var}
+                               {:name with-instrument-disabled,
+                                :file "orchestra_cljs/spec/test.cljc",
+                                :line 42,
+                                :arglists ([& body]),
+                                :doc "Disables instrument's checking of calls, within a scope.\n",
+                                :type :macro})}
+                    {:name orchestra.core,
+                     :publics ({:name defn-spec,
+                                :file "orchestra/core.cljc",
+                                :line 4,
+                                :arglists ([& args]),
+                                :doc "Defines a function and the associated spec.\n\nExample usage:\n(defn-spec str->kw keyword?\n  [s string?]\n   (keyword s))\n\nMultiple arities are also supported:\n(defn-spec inc' number?\n  ([a number?]\n   (inc' a 1))\n  ([a number?, n number?]\n   (+ a n)))",
+                                :type :macro})}
+                    {:name orchestra.detail,
+                     :publics ({:name *cljs?*,
+                                :file "orchestra/detail.cljc",
+                                :line 64,
+                                :dynamic true,
+                                :type :var}
+                               {:name arg->kw,
+                                :file "orchestra/detail.cljc",
+                                :line 125,
+                                :arglists ([idx arg]),
+                                :doc "Converts are argument to a keyword. Arguments may use destructuring, so they\nmay not be a symbol. In that case, just fill in something helpful.",
+                                :type :var}
+                               {:name build-args-spec,
+                                :file "orchestra/detail.cljc",
+                                :line 141,
+                                :arglists ([conformed-arities
+                                            exploded-arities]),
+                                :type :var}
+                               {:name build-cat,
+                                :file "orchestra/detail.cljc",
+                                :line 133,
+                                :arglists ([arity-arg-names
+                                            arity-specs]),
+                                :type :var}
+                               {:name defn-spec-helper,
+                                :file "orchestra/detail.cljc",
+                                :line 178,
+                                :arglists ([& args]),
+                                :type :var}
+                               {:name explode-arity,
+                                :file "orchestra/detail.cljc",
+                                :line 92,
+                                :arglists ([arity]),
+                                :doc "Strips the specs from the arity's args and gets it ready for consumption.\nDoes the job of s/unform, since s/unform doesn't do its job well.",
+                                :type :var}
+                               {:name explode-def,
+                                :file "orchestra/detail.cljc",
+                                :line 158,
+                                :arglists ([& args]),
+                                :doc "Takes in the variadic values of a defn-spec and returns a map of the\nvarious parts. Handles multiple arities and optional doc strings.",
+                                :type :var}
+                               {:name extract-arg-specs,
+                                :file "orchestra/detail.cljc",
+                                :line 109,
+                                :arglists ([arity]),
+                                :doc "Returns a sequence of specs, based on the arity's args.\n",
+                                :type :var}
+                               {:name get-global-defn,
+                                :file "orchestra/detail.cljc",
+                                :line 66,
+                                :arglists ([]),
+                                :type :var}
+                               {:name name-arity,
+                                :file "orchestra/detail.cljc",
+                                :line 137,
+                                :arglists ([arg-count]),
+                                :type :var}
+                               {:name render-arity,
+                                :file "orchestra/detail.cljc",
+                                :line 104,
+                                :arglists ([{:keys [:orchestra.detail/exploded-args
+                                                    :orchestra.detail/exploded-body]}]),
+                                :doc "Turns an exploded arity into something which defn can consume.\n",
+                                :type :var}
+                               {:name render-binding,
+                                :file "orchestra/detail.cljc",
+                                :line 83,
+                                :arglists ([[kind value]]),
+                                :doc "Doing the job of unform, since it turns destructured sequences into lists.\n'cause it's silly.",
+                                :type :var}
+                               {:name spec-fn,
+                                :file "orchestra/detail.cljc",
+                                :line 69,
+                                :arglists ([fn-name]),
+                                :type :var})})},
+ :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>orchestra</groupId>\n  <artifactId>orchestra</artifactId>\n  <packaging>jar</packaging>\n  <version>2018.11.07-1</version>\n  <name>orchestra</name>\n  <description>Complete instrumentation for clojure.spec</description>\n  <url>https://github.com/jeaye/orchestra</url>\n  <licenses>\n    <license>\n      <name>Eclipse Public License</name>\n      <url>http://www.eclipse.org/legal/epl-v10.html</url>\n    </license>\n  </licenses>\n  <scm>\n    <url>https://github.com/jeaye/orchestra</url>\n    <connection>scm:git:git://github.com/jeaye/orchestra.git</connection>\n    <developerConnection>scm:git:ssh://git@github.com/jeaye/orchestra.git</developerConnection>\n    <tag>bd51ccac3e56c88cd4f516076df5ef1f2a500671</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src/clj</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins>\n      <plugin>\n        <groupId>org.codehaus.mojo</groupId>\n        <artifactId>build-helper-maven-plugin</artifactId>\n        <version>1.7</version>\n        <executions>\n          <execution>\n            <id>add-source</id>\n            <phase>generate-sources</phase>\n            <goals>\n              <goal>add-source</goal>\n            </goals>\n            <configuration>\n              <sources>\n                <source>src/cljc</source>\n                <source>src/cljs</source>\n              </sources>\n            </configuration>\n          </execution>\n        </executions>\n      </plugin>\n    </plugins>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.9.0</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojurescript</artifactId>\n      <version>1.10.439</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>spec.alpha</artifactId>\n      <version>0.2.176</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>lein-doo</groupId>\n      <artifactId>lein-doo</artifactId>\n      <version>0.1.10</version>\n      <scope>test</scope>\n    </dependency>\n  </dependencies>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n"}

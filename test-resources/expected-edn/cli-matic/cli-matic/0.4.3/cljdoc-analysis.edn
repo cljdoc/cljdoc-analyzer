@@ -1,1 +1,1403 @@
-{:group-id "cli-matic", :artifact-id "cli-matic", :version "0.4.3", :analysis {"clj" ({:doc "\n### ATTENTION\n\nCLI-matic has one main entry-point: [[run-cmd]].\n\nAs an end-user, you need nothing else,  but the documentation\nthat explains how parameters are to be run.\n\nSee `examples/` to get started quickly.\n\n*Developers*\n\nMost of the logic will be run in [[run-cmd*]] to make testing easier,\nas [[run-cmd]] calls `System/exit`.\n\n", :name cli-matic.core, :publics ({:name assert-cfg-sanity, :file "cli_matic/core.cljc", :line 443, :arglists ([_]), :type :var} {:name assert-unique-values, :file "cli_matic/core.cljc", :line 414, :arglists ([name vec-opts option]), :doc "Check that all values are unique.\nname is the area of the configuration\nvec-opts are the options to check\noption is the keyword to check.\n", :type :var} {:name check-one-spec, :file "cli_matic/core.cljc", :line 195, :arglists ([name type spec value]), :doc "Checks one spec.\n\n  - If spec passes, returns nil; if not, returns the failure.\n  - If there is an error raised, creates a fake spec result.\n  - If spec is nil, we consider it a pass.\n  - if the value is nil, we consider it missing and don't need to check.\n\n  `explain-data` return nil if everything okay.\n\n  `expound-string` returns 'Success!\n' if all goes well.\n\n\n  ", :type :var} {:name check-specs-on-parameters, :file "cli_matic/core.cljc", :line 240, :arglists ([options parsed-results type]), :doc "Given a set of option (so, global options, or a subcommand's options)\nand the fully parsed results, we assert that any defined specs pass.\n\nThis we do only if the parameter is not nil, that is, is present or\nhas a default value.\n\nIf the parameter should be present but it's not, it's not a spec issue\nbut a ':default :present' issue.\n", :type :var} {:name errors-for-missing-mandatory-args, :file "cli_matic/core.cljc", :line 57, :arglists ([climatic-options parsed-opts other-options]), :doc "Gets us a sequence of errors if mandatory options are missing.\nOptions read by cli module are merged with other options, e.g.\npositional parameters.\n", :type :var} {:name getReturnValue, :file "cli_matic/core.cljc", :line 506, :arglists ([rv]), :doc "Evaluates the result of the CLI-matic subcommand.\nA result can be nil, or int?, or a  deferred value,\nin which case we wait in a platform-specific way.\n", :type :var} {:name invoke-subcmd, :file "cli_matic/core.cljc", :line 525, :arglists ([subcommand-def options]), :doc "Invokes a subcommand, and produces a Return Value.\n\nThe subcommand may:\n\n* return an integer (to specify exit code)\n* return nil\n* throw a Throwable object\n\n\nIf there is a shutdown hook defined, we also add the shutdown hook\nbefore the command is run. If there is a shutdown hook,\nit is called anyway when the JVM terminates - if you only want this\ncalled on early shutdowns, it's up to you to keep some state\nin a shared atom and decide whether to do something or not.\n\n", :type :var} {:name mk-fake-args, :file "cli_matic/core.cljc", :line 88, :arglists ([parms]), :doc "Builds the set of fake arguments that we append to our\nsubcommands' own CLI items\nwhen we have positional parameters.\nIf value is nil, option is not added.\n\nWe receive a map of options and output a vector of strings.\n", :type :var} {:name mkError, :file "cli_matic/core.cljc", :line 30, :arglists ([config subcommand error text]), :doc "Builds an error condition.\n", :type :var} {:name parse-cmds-with-defaults, :file "cli_matic/core.cljc", :line 110, :arglists ([opts argv in-order? fn-env]), :doc "Parses a command line with environment defaults.\n\nWe want environment defaults to be PARSED, so they will go through\nthe same validation/check cycle as other elements.\nSo - if any of them - we first run parsing disabling defaults,\nthen go check if they are available in parsed elements;\nif they are not, we inject them as options to the left of argv\nand parse again.\n\n(As a side effect, if you have a wrong value for your option, and a\ndefault, the default will be used - YMMV).\n\n", :type :var} {:name parse-cmds-with-positions, :file "cli_matic/core.cljc", :line 155, :arglists ([opts argv fn-env]), :doc "To process positional parameters, first we run some parsing; if\nall goes well, we capture the values of positional\narguments and run parsing again with a command line that has those\nitems as if they were expressed.\n\nThis means that type casting and validation just happen in one place\n(CLI parsing) and  we don't have to do them separately.\n\nThis function is used both for global and subcmd parsing,\nbut when doing global parsing, positional parameters are\nnot allowed, so they never come in.\n", :type :var} {:name parse-command-line, :file "cli_matic/core.cljc", :line 266, :arglists ([argv config]), :doc "\nThis is where the magic happens.\n\nWhereas in version 1 we had one 'global' level and one\nsub-command, now we have many. From the point of view of\nsub-commands, all intermediate levels but actual executable\nsub-commands are global levels; each of them may capture\nits own variables and have them validated via specs.\n\nSo we first try walking to the current level through the\nconfiguration, capture and verify what is needed at this level\nand then terminate only if we are on a leaf (executable subcommand)\nor there is any error.\n\nSpec checking:\n\n- If parsing goes well, parameter specs are checked on each parameter\n- If all of them go well, general spec is checked on the current result\n  of all parsing; that is, including results form all earlier\n  general settings\n\n\nTODO:\n - candidates\n - help\n\n", :type :var} {:name run-cmd, :file "cli_matic/core.cljc", :line 591, :arglists ([args supplied-config]), :doc "This is the actual function that is executed.\nIt wraps [[run-cmd*]] and then does the printing\nof any errors, of help pages and  `System.exit`.\n\nAs it invokes `System.exit` you cannot use it from\na REPL (well, you technically can, but...).\n", :type :var} {:name run-cmd*, :file "cli_matic/core.cljc", :line 560, :arglists ([setup args]), :doc "\nExecutes our code.\n\nIt will try and parse the arguments via `clojure.tools.cli` and detect our subcommand.\n\nIf no subcommand was found, it will print the error reminder.\n\nOn exceptions, it will raise an exception message.\n\n", :type :var})} {:doc "\n## Generate help texts.\n\n", :name cli-matic.help-gen, :publics ({:name arg-list-with-positional-entries, :file "cli_matic/help_gen.cljc", :line 175, :arglists ([cfg cmd]), :doc "Creates the `[arguments...]`\n", :type :var} {:name generate-a-command, :file "cli_matic/help_gen.cljc", :line 110, :arglists ([{:keys [command short description]}]), :doc "Maybe we should use a way to format commands\n\nE.g.\n(pp/cl-format true \"~{ ~vA  ~vA  ~vA ~}\" v)\n\n\n(clojure.pprint/cl-format true \"~3a ~a\" \"pippo\" \"pluto\")\n", :type :var} {:name generate-global-command-list, :file "cli_matic/help_gen.cljc", :line 128, :arglists ([commands]), :doc "Creates a list of commands and descriptions.\nCommands are of kind ::S/commands\n", :type :var} {:name generate-global-help, :file "cli_matic/help_gen.cljc", :line 140, :arglists ([cfg path]), :doc "This is where we generate global help, so\nglobal attributes and subcommands.\n\nThis is called for all branch nodes (not just the root),\nand not leaves, therefore we had to add the path as\na parameter to tell who is who.\n\n", :type :var} {:name generate-help-possible-mistypes, :file "cli_matic/help_gen.cljc", :line 242, :arglists ([cfg wrong-subcmd]), :doc "If we have a wrong subcommand, can we guess what the correct\none could have been?\n\n\n", :type :var} {:name generate-possible-mistypes, :file "cli_matic/help_gen.cljc", :line 221, :arglists ([wrong-subcmd commands aliases]), :doc "We go searching if we have any candidates\nto be considered mistypes.\n\nWe require a miss ratio of [[MISTYPE-ERR-RATIO]]\nand we return them by similarity.\n\n", :type :var} {:name generate-section, :file "cli_matic/help_gen.cljc", :line 16, :arglists ([title lines]), :doc "Generates a section (as a collection of strings,\npossibly nested, but we'll flatten it out).\nIf a section has no content, we return [].\n", :type :var} {:name generate-sections, :file "cli_matic/help_gen.cljc", :line 29, :arglists ([name version usage commands opts-title opts examples]), :doc "Generates all sections.\nAll those positional parameters are not that nice.\n", :type :var} {:name generate-subcmd-help, :file "cli_matic/help_gen.cljc", :line 183, :arglists ([cfg cmd]), :doc "This is where we generate help for a specific subcommand.\n", :type :var} {:name get-first-rest-description-rows, :file "cli_matic/help_gen.cljc", :line 97, :arglists ([row-or-rows]), :doc "get title and description of description rows\n", :type :var} {:name get-options-summary, :file "cli_matic/help_gen.cljc", :line 79, :arglists ([cfg subcmd]), :doc "To get the summary of options, we pass options to\ntools.cli parse-opts and an empty set of arguments.\nParsing will fail but we get the :summary.\nWe then split it into a collection of lines.\n", :type :var} {:name getGlobalHelperFn, :file "cli_matic/help_gen.cljc", :line 273, :arglists ([cfg path]), :type :var} {:name getSubcommandHelperFn, :file "cli_matic/help_gen.cljc", :line 277, :arglists ([cfg path]), :type :var} {:name MISTYPE-ERR-RATIO, :file "cli_matic/help_gen.cljc", :line 219, :type :var})} {:doc "### This namespace contains optional dependencies for CLJ.\n\nCLI-matic is supposed to work whether they are present or not.\n\n* JSON (Cheshire)\n* YAML (io.forward/yaml)\n* Orchestra\n\nDetection is taken from `core.clj` in https://github.com/dakrone/clj-http\n\n", :name cli-matic.optionals, :publics ({:name is-core-async-channel?, :file "cli_matic/optionals.clj", :line 106, :arglists ([c]), :doc "Is this entity a core.async channel?\n", :type :var} {:name json-decode, :file "cli_matic/optionals.clj", :line 31, :arglists ([json]), :doc "Decodes a JSON string, without keywordizing.\n", :type :var} {:name json-decode-cheshire, :file "cli_matic/optionals.clj", :line 25, :arglists ([& args]), :doc "Resolve and apply Cheshire's json decoding dynamically.\n", :dynamic true, :type :var} {:name orchestra-instrument, :file "cli_matic/optionals.clj", :line 61, :arglists ([]), :doc "If Orchestra is present, runs instrumentation.\nIf absent, do nothing.\n\nWhile we are at it, we set up Expound to\nprint meaningful errors.\n\nExpound is a mandatory dependency,  so\nwe take for granted it's there.\n\n\nThe `*explain-out*` binding will NOT be there in a compiled\nuberjar, unless we call `with-bindings`,\nso we just go check. It will succeed from the REPL.\n\nRef: https://github.com/clojure/clojure/blob/clojure-1.9.0/src/clj/clojure/main.clj#L85\n\n", :dynamic true, :type :var} {:name read-value-from-core-async-channel, :file "cli_matic/optionals.clj", :line 98, :arglists ([& args]), :doc "Reads a value from a core.async channel, blocking.\n", :dynamic true, :type :var} {:name with-cheshire?, :file "cli_matic/optionals.clj", :line 19, :type :var} {:name with-core-async?, :file "cli_matic/optionals.clj", :line 92, :type :var} {:name with-orchestra?, :file "cli_matic/optionals.clj", :line 55, :type :var} {:name with-yaml?, :file "cli_matic/optionals.clj", :line 38, :type :var} {:name yaml-decode, :file "cli_matic/optionals.clj", :line 44, :arglists ([& args]), :doc "Resolve and apply io.forward/yaml's yaml decoding dynamically.\n", :dynamic true, :type :var})} {:doc "\n## Platform-specific functions for the JVM.\n\nIf running on ClojureScript, we can have a different file for JS.\n\nBTW, in this NS, we avoid using Spec / Orchestra.\n\n**DO NOT** define macros in this namespace - see [[cli-matic.platform-macros]]\n\n", :name cli-matic.platform, :publics ({:name add-shutdown-hook, :file "cli_matic/platform.clj", :line 28, :arglists ([fnToCallOnShutdown]), :doc "Add a shutdown hook. If `nil`, simply ignores it.\n\nThe shutdown hook is run in a new thread.\n\n", :type :var} {:name asDate, :file "cli_matic/platform.clj", :line 61, :arglists ([s]), :doc "Converts a string in format yyyy-mm-dd to a\nDate object; if conversion\nfails, returns nil.", :type :var} {:name exit-script, :file "cli_matic/platform.clj", :line 23, :arglists ([retval]), :doc "Terminates execution with a return value.\n", :type :var} {:name isDeferredValue?, :file "cli_matic/platform.clj", :line 82, :arglists ([v]), :doc "Is this a deferred value for this platform?\n", :type :var} {:name parseEdn, :file "cli_matic/platform.clj", :line 72, :arglists ([edn-in]), :doc " Decodes EDN through clojure.edn.      \n", :type :var} {:name parseFloat, :file "cli_matic/platform.clj", :line 56, :arglists ([s]), :doc "Converts a string to a float.\n", :type :var} {:name parseInt, :file "cli_matic/platform.clj", :line 51, :arglists ([s]), :doc "Converts a string to an integer. \n", :type :var} {:name printError, :file "cli_matic/platform.clj", :line 112, :arglists ([o]), :doc "On ClojureScript, STDERR is not *err* but it's platform dependent.\nOn JVM, standard approach.", :type :var} {:name read-env, :file "cli_matic/platform.clj", :line 17, :arglists ([var]), :doc "Reads an environment variable.\nIf undefined, returns nil.", :type :var} {:name slurp-file, :file "cli_matic/platform.clj", :line 41, :arglists ([f]), :doc "No slurping in JavaScript. So we have to move this to\nplatform.", :type :var} {:name waitForDeferredValue, :file "cli_matic/platform.clj", :line 91, :arglists ([v]), :doc "Given that value is a deferred  value for this platform,\nblock termination until it's realized.\n\nOn the JVM, we support:\n\n- promises\n- futures\n- core.async channels (if they exist)\n\n", :type :var})} {:doc "## Macros shared between CLJ and CLJS.\n\nUnfortunately:\n\n- Macros must be in a separate file (for CLJS)\n- Macros have a different import syntax (CLJS)\n- Macros defined in .clj  will STILL be loaded by CLJS and will fail big time.\n\nSo we have to use a separate namespace and hide everything behind reader conditionals.\n\nUsage is:\n\n#?(:clj [cli-matic.platform-macros :refer [try-catch-all]]\n\n   :cljs [cli-matic.platform-macros :refer-macros [try-catch-all]]\n             )\n\nThis was a real PITA, man.\n\n", :name cli-matic.platform-macros, :publics ({:name try-catch-all, :file "cli_matic/platform_macros.cljc", :line 23, :arglists ([f onErr]), :doc "\nThis creates a try-catch block that either traps\nThrowable on the JVM or :default on Node.\n\nUse:\n\n`(try-catch-all (/ 1 0) (fn [x] 0))`\n\nSo both expressions must be surrounded by round parentheses.", :type :macro})} {:doc "\n### Known presets\n\n\n", :name cli-matic.presets, :publics ({:name asDecodedEdnFile, :file "cli_matic/presets.cljc", :line 41, :arglists ([filename]), :doc "Decodes the contents of a file as a JSON object.\n", :type :var} {:name asDecodedEdnValue, :file "cli_matic/presets.cljc", :line 35, :arglists ([s]), :doc "Decodes the value as an EDN structure.\n", :type :var} {:name asDecodedJsonFile, :file "cli_matic/presets.cljc", :line 51, :arglists ([filename]), :doc "Decodes the contents of a file as a JSON object.\n", :type :var} {:name asDecodedJsonValue, :file "cli_matic/presets.cljc", :line 46, :arglists ([s]), :doc "Decodes the value as a JSON object.\n", :type :var} {:name asDecodedYamlFile, :file "cli_matic/presets.cljc", :line 61, :arglists ([filename]), :doc "Decodes the contents of a file as a JSON object.\n", :type :var} {:name asDecodedYamlValue, :file "cli_matic/presets.cljc", :line 56, :arglists ([s]), :doc "Decodes the value as a YAML object.\n", :type :var} {:name asKeyword, :file "cli_matic/presets.cljc", :line 72, :arglists ([s]), :type :var} {:name asLinesString, :file "cli_matic/presets.cljc", :line 30, :arglists ([filename]), :doc "Reads a text file and returns it as a collection of lines.\n", :type :var} {:name asSet, :file "cli_matic/presets.cljc", :line 155, :arglists ([st v]), :doc "Sets of options are dark black magic.\nThey are also darn useful.\n\nA set can be composed of all-keywords or all-strings.\n\nValues are matched ignoring case, and the correct one\nis returned in the case and type it appears in the set.\nThe default value, if present, is returned as-is, even if\nnot a member of the set.\n\nKeywords are accepted with our without trailing `:`.\n\nOn missing values, the closest matches are searched and printed.\n\nFor example, on a set #{:a :b :c}, `A` `a` `:A` and `:a` all match `:a`.\n\nDefaults for a set are all values, with no colons, separated by a pipe.\n\n", :type :var} {:name asSingleString, :file "cli_matic/presets.cljc", :line 16, :arglists ([filename]), :doc "Turns a filename into a single string.\n\nIf argument is a String, it tries to resolve it first as a URI, then\nas a local file name.  URIs with a 'file' protocol are converted to\nlocal file names.\n\n", :type :var} {:name known-presets, :file "cli_matic/presets.cljc", :line 215, :type :var} {:name parseFlag, :file "cli_matic/presets.cljc", :line 197, :arglists ([flagStr]), :doc "Converts a flag string to a boolean.\nComparison is case-insensitive.\n", :type :var} {:name set-find-didyoumean, :file "cli_matic/presets.cljc", :line 126, :arglists ([st v]), :doc "Finds candidates after normalization.\nReturn original candidates.", :type :var} {:name set-find-didyoumean-str, :file "cli_matic/presets.cljc", :line 140, :arglists ([st v]), :doc "Returns ' Did you mean A or B?' or '' if no candidates. \n", :type :var} {:name set-find-value, :file "cli_matic/presets.cljc", :line 111, :arglists ([st v]), :doc "Finds a string value in a set of options.\nTo do this, we first create a map of\n{normalized original}\nReturns valFound or nil.\n", :type :var} {:name set-help-values, :file "cli_matic/presets.cljc", :line 82, :arglists ([st]), :doc "Given a set, return allowed options as string\n", :type :var} {:name set-normalize-map, :file "cli_matic/presets.cljc", :line 101, :arglists ([st]), :doc "Builds a normalized map that\nhas as key the normalized value, and value the\noriginal one.", :type :var} {:name set-normalized-entry, :file "cli_matic/presets.cljc", :line 92, :arglists ([v]), :doc "A normalized set entry is a lowercase string\nwithout trailing `:`.", :type :var} {:name SET-OF-FALSE-FLAGS, :file "cli_matic/presets.cljc", :line 195, :type :var} {:name SET-OF-TRUE-FLAGS, :file "cli_matic/presets.cljc", :line 194, :type :var})} {:name cli-matic.specs, :publics ({:name has-elements?, :file "cli_matic/specs.cljc", :line 4, :arglists ([s]), :type :var} {:name no-positional-opts, :file "cli_matic/specs.cljc", :line 140, :arglists ([any-subcmd]), :doc "Makes sure that this subcommand does not have\nany positional argument in its opts", :type :var})} {:doc "\n### Utilities used in the project\n\n* the *general* section contains low-level\n  stuff that could be anywhere\n* the *cli-matic* section contain low-level functions\n  used by the parser and the help generators.\n\n\n", :name cli-matic.utils, :publics ({:name a-positional-parm, :file "cli_matic/utils.cljc", :line 295, :arglists ([args option]), :doc "Reads one positional parameter from the arguments.\nReturns a vector [parm value]\nThe value is NOT solved, so it's always a string.", :type :var} {:name all-subcommands, :file "cli_matic/utils.cljc", :line 233, :arglists ([climatic-args]), :doc "Returns all subcommands, as strings.\nWe get all versions of all subcommands.\n", :type :var} {:name all-subcommands-aliases, :file "cli_matic/utils.cljc", :line 200, :arglists ([climatic-args]), :doc "Maps all subcommands and subcommand aliases\nto their canonical name.\nE.g. {'add': 'add', 'a': 'add'}.\n\nWe basically add them all, then remove\nnil keys.\n\n", :type :var} {:name assoc-new-multivalue, :file "cli_matic/utils.cljc", :line 104, :arglists ([parameter-map option v]), :doc "Associates a new multiple value to the\ncurrent parameter map.\nIf the current value is not a vector, creates\na new vector with the new value.", :type :var} {:name asString, :file "cli_matic/utils.cljc", :line 24, :arglists ([s]), :doc "Turns a collection of strings into one string,\nor the string itself.\n\nIf the collection includes multiple sub-arrays,\nthose are flattened into lines as well.\n", :type :var} {:name asStrVec, :file "cli_matic/utils.cljc", :line 50, :arglists ([s]), :doc "Whatever we get in, we want a vector of strings out.\n", :type :var} {:name canonicalize-subcommand, :file "cli_matic/utils.cljc", :line 244, :arglists ([commands subcmd]), :doc "Returns the 'canonical' name of a subcommand,\ni.e. the one that appears in :command, even\nif we pass an alias or short version.", :type :var} {:name capture-positional-parms, :file "cli_matic/utils.cljc", :line 311, :arglists ([opts remaining-args]), :doc "Captures positional parameters in the remaining-args of\na subcommand.", :type :var} {:name cm-opts->cli-opts, :file "cli_matic/utils.cljc", :line 260, :arglists ([climatic-opts]), :doc "\nOut of a cli-matic arg list, generates a set of\noptions for tools.cli.\nIt also adds in the -? and --help options\nto trigger display of helpness.\n", :type :var} {:name deep-merge, :file "cli_matic/utils.cljc", :line 84, :arglists ([& maps]), :doc "\nMerges a number of maps, considering values in inner maps.\n\nSee https://gist.github.com/danielpcox/c70a8aa2c36766200a95#gistcomment-2308595\n", :type :var} {:name exception-info, :file "cli_matic/utils.cljc", :line 339, :arglists ([e]), :doc "Checks the exception; if it was created using [[exit!]]\nwe get that data out; if not, standard exception.\n\nReturns [message exit-code].\n\nTo understand whether it was created by [[exit!]] we\ncheck for a *top-secret* key with a secret value - pls don't tell\nanyone, man. You might immanentize the eschaton.\n", :type :var} {:name exit!, :file "cli_matic/utils.cljc", :line 325, :arglists ([message errorcode]), :doc "Raises an exception that will print a message\nwithout the stack trace. Can specify an optional\nexit code; if not specified, zero.\n\nSee [[exception-info]].\n", :type :var} {:name get-cli-option, :file "cli_matic/utils.cljc", :line 140, :arglists ([type]), :type :var} {:name indent, :file "cli_matic/utils.cljc", :line 67, :arglists ([s]), :doc "Indents a single string, or each string\nin a collection of strings.", :type :var} {:name indent-string, :file "cli_matic/utils.cljc", :line 58, :arglists ([s]), :doc "Indents a single string by one space.\n", :type :var} {:name mk-cli-option, :file "cli_matic/utils.cljc", :line 162, :arglists ([{:keys [option short as type default multiple env]}]), :doc "Builds a tools.cli option out of our own format.\n\nIf for-parsing is true, the option will be used for parsing;\nif false, for generating help messages.\n\n", :type :var} {:name mk-env-name, :file "cli_matic/utils.cljc", :line 132, :arglists ([description env for-parsing?]), :doc "Writes a description with the env name by the end.\n", :type :var} {:name mk-long-opt, :file "cli_matic/utils.cljc", :line 123, :arglists ([option placeholder type]), :doc "Converts long climatic option to long tools.cli option\n", :type :var} {:name mk-short-opt, :file "cli_matic/utils.cljc", :line 116, :arglists ([short]), :doc "Converts short climatic option to short tools.cli option\n", :type :var} {:name pad, :file "cli_matic/utils.cljc", :line 75, :arglists ([s s1 len]), :doc "Pads 's[, s1]' to so many characters\n", :type :var} {:name positional-parms-from-opts, :file "cli_matic/utils.cljc", :line 283, :arglists ([opts]), :doc "\nReturns a list of positional parameters from a subcommand option.\n", :type :var} {:name printErr, :file "cli_matic/utils.cljc", :line 43, :arglists ([s]), :doc "Like [[printString]] but writes on stderr\n", :type :var} {:name printString, :file "cli_matic/utils.cljc", :line 36, :arglists ([s]), :doc "Prints a string (either single, or a nested vector of it).\n", :type :var})} {:doc "\n  ### String candidates tools.\n\nThis namespace contains utilities to compute string candidates.\n\n  ", :name cli-matic.utils-candidates, :publics ({:name candidate-suggestions, :file "cli_matic/utils_candidates.cljc", :line 66, :arglists ([candidates cmd max-str-distance]), :doc "Returns candidate suggestions, in order of\nreliability.", :type :var} {:name str-distance, :file "cli_matic/utils_candidates.cljc", :line 57, :arglists ([a b]), :doc "Distance between two strings, as expressed in percentage\nof changes to the length of the longest string.\n\n", :type :var})} {:doc "\n#  Convert old configuration (v1) to the new format (v2), in a printable way.\n\nThis comes in handy when evolving existing scripts.\n\nATM it only works for Clojure, and not so well, as symbol\nde-munging is not 100% deterministic (minuses and underscores are mixed).\n\nThis namespace is not referenced from anywhere else in CLI-matic.\n\n", :name cli-matic.utils-convert-config, :publics ({:name convert-and-print, :file "cli_matic/utils_convert_config.clj", :line 79, :arglists ([cfg-v1]), :doc "Given a configuration v1, pretty-prints the corresponding\nconfiguration v2 that you can copy-and-paste it into\nyour scripts.\n", :type :var} {:name fn->className, :file "cli_matic/utils_convert_config.clj", :line 45, :arglists ([a-fn]), :doc "Extracts the class name for a given function.\n", :type :var} {:name fn-name, :file "cli_matic/utils_convert_config.clj", :line 60, :arglists ([f]), :doc "This works, but only as a macro.\n", :type :macro} {:name replace-runs-entries, :file "cli_matic/utils_convert_config.clj", :line 65, :arglists ([v]), :doc "Whenever we find an entry [:runs fnxxxx] we  replace the\nfunction with its symbol.", :type :var} {:name unmangle-fn, :file "cli_matic/utils_convert_config.clj", :line 52, :arglists ([a-fn]), :doc "Given a non-anonymous function, returns its Clojure name as a symbol.\n", :type :var} {:name unmangle-fn-name, :file "cli_matic/utils_convert_config.clj", :line 25, :arglists ([a-fn-name]), :doc "Given the name of a class that implements a Clojure function, returns the function's name in Clojure. Note: If the true Clojure function name\n contains any underscores (a rare occurrence), the unmangled name will\n contain hyphens at those locations instead.\n\nInspired by https://www.mail-archive.com/clojure@googlegroups.com/msg13018.html\n\nThere is a similar function in 'clojure.repl/demunge' that screws up\nin a very similar way for symbols  that have a '_' or a '-' in their name,\n\n ", :type :var})} {:doc "\n#  Utils to work with nested configuration trees (cfg v2)\n\n- Convert commands v1 to v2 (fully nested).\n- Accessors for data in a nested structure\n\n", :name cli-matic.utils-v2, :publics ({:name add-setup-defaults-v1, :file "cli_matic/utils_v2.cljc", :line 52, :arglists ([supplied-setup]), :doc "Adds all elements that need to be in the setup spec\nbut we allow the caller not specify explicitly.", :type :var} {:name as-canonical-path, :file "cli_matic/utils_v2.cljc", :line 165, :arglists ([subcommands]), :doc "\nGets the canonical path from an executable-sequence\nof subcommands, as obtained from [[walk]].\n", :type :var} {:name can-walk?, :file "cli_matic/utils_v2.cljc", :line 146, :arglists ([cfg path]), :doc "Check that you can walk up to a point.\nIt basically traps the exception.", :type :var} {:name canonical-path-to-string, :file "cli_matic/utils_v2.cljc", :line 185, :arglists ([path]), :type :var} {:name cfg-v2, :file "cli_matic/utils_v2.cljc", :line 58, :arglists ([cfg]), :doc " Converts a config object into v2, if not already v2.\n\n", :type :var} {:name convert-config-v1->v2, :file "cli_matic/utils_v2.cljc", :line 17, :arglists ([cmd_v1]), :doc "Converts a command version 1 to v2.\n\nA command v1 has always an outer `::S/climatic-cfg`\nwhile a v2 is fully nested.\n\nNote that even in the case where there is only one\ncommand to be run, we still retain the same invocation\nformat as it originally was - no surprises.\n\n", :type :var} {:name get-most-specific-value, :file "cli_matic/utils_v2.cljc", :line 235, :arglists ([cfg path a-key default] [cfg path a-key]), :doc "Given a configuration and a path through it, gets the most\nspecific value for an option.\n\nFor example, the help generator might be defined on each subcommand,\nor on the root node, or nowhere. We always take the most specific\nvalue.\n\nIf the value is defined nowhere, we return a default.\n\n", :type :var} {:name get-options-for, :file "cli_matic/utils_v2.cljc", :line 200, :arglists ([cfg path]), :doc "Given a configuration and a path through it,\nreturns :opts for the last subcommmand.", :type :var} {:name get-subcommand, :file "cli_matic/utils_v2.cljc", :line 194, :arglists ([cfg path]), :doc "Given a configuration and a path through it,\nreeturns the last subcommand.", :type :var} {:name is-runnable?, :file "cli_matic/utils_v2.cljc", :line 173, :arglists ([xp]), :doc "Checks if the last element if the\nexecutable path is actually runnable, that is,\na command.", :type :var} {:name isRightCmd?, :file "cli_matic/utils_v2.cljc", :line 78, :arglists ([command-or-short-name cfg]), :doc "Check if this is the right command or not,\nby name or alias.", :type :var} {:name list-positional-parms, :file "cli_matic/utils_v2.cljc", :line 222, :arglists ([cfg subcmd]), :doc "Extracts all positional parameters from the configuration.\n", :type :var} {:name rewrite-opts, :file "cli_matic/utils_v2.cljc", :line 206, :arglists ([climatic-args subcmd]), :doc "\nOut of a cli-matic arg list, generates a set of\noptions for tools.cli.\nIt also adds in the -? and --help options\nto trigger display of helpness.\n", :type :var} {:name SETUP-DEFAULTS-v1, :file "cli_matic/utils_v2.cljc", :line 46, :type :var} {:name walk, :file "cli_matic/utils_v2.cljc", :line 85, :arglists ([cfg path]), :doc "\nWalks a path through a configuration object,\nand returns a list of all elements,\nin order from root to leaf, as an\nexecutable path.\n\nDoes not assert that the last element is a leaf.\n\nThe path:\n- A subcommand path.\n-  If empty, no subcommands and no globals\n-  Each member is the canonical name of a subcommand.\n-  Each member but the last is of type ::branch-subcommand\n\nIt is possible to convert an executable-path back\ninto a path with [[as-canonical-path]].\n\n", :type :var})}), "cljs" ({:name cli-matic.core, :doc "\n### ATTENTION\n\nCLI-matic has one main entry-point: [[run-cmd]].\n\nAs an end-user, you need nothing else,  but the documentation\nthat explains how parameters are to be run.\n\nSee `examples/` to get started quickly.\n\n*Developers*\n\nMost of the logic will be run in [[run-cmd*]] to make testing easier,\nas [[run-cmd]] calls `System/exit`.\n\n", :publics ({:name assert-cfg-sanity, :file "cli_matic/core.cljc", :line 443, :arglists ([_]), :type :var} {:name assert-unique-values, :file "cli_matic/core.cljc", :line 414, :arglists ([name vec-opts option]), :doc "Check that all values are unique.\nname is the area of the configuration\nvec-opts are the options to check\noption is the keyword to check.\n", :type :var} {:name check-one-spec, :file "cli_matic/core.cljc", :line 195, :arglists ([name type spec value]), :doc "Checks one spec.\n\n  - If spec passes, returns nil; if not, returns the failure.\n  - If there is an error raised, creates a fake spec result.\n  - If spec is nil, we consider it a pass.\n  - if the value is nil, we consider it missing and don't need to check.\n\n  `explain-data` return nil if everything okay.\n\n  `expound-string` returns 'Success!\n' if all goes well.\n\n\n  ", :type :var} {:name check-specs-on-parameters, :file "cli_matic/core.cljc", :line 240, :arglists ([options parsed-results type]), :doc "Given a set of option (so, global options, or a subcommand's options)\nand the fully parsed results, we assert that any defined specs pass.\n\nThis we do only if the parameter is not nil, that is, is present or\nhas a default value.\n\nIf the parameter should be present but it's not, it's not a spec issue\nbut a ':default :present' issue.\n", :type :var} {:name errors-for-missing-mandatory-args, :file "cli_matic/core.cljc", :line 57, :arglists ([climatic-options parsed-opts other-options]), :doc "Gets us a sequence of errors if mandatory options are missing.\nOptions read by cli module are merged with other options, e.g.\npositional parameters.\n", :type :var} {:name getReturnValue, :file "cli_matic/core.cljc", :line 506, :arglists ([rv]), :doc "Evaluates the result of the CLI-matic subcommand.\nA result can be nil, or int?, or a  deferred value,\nin which case we wait in a platform-specific way.\n", :type :var} {:name invoke-subcmd, :file "cli_matic/core.cljc", :line 525, :arglists ([subcommand-def options]), :doc "Invokes a subcommand, and produces a Return Value.\n\nThe subcommand may:\n\n* return an integer (to specify exit code)\n* return nil\n* throw a Throwable object\n\n\nIf there is a shutdown hook defined, we also add the shutdown hook\nbefore the command is run. If there is a shutdown hook,\nit is called anyway when the JVM terminates - if you only want this\ncalled on early shutdowns, it's up to you to keep some state\nin a shared atom and decide whether to do something or not.\n\n", :type :var} {:name mk-fake-args, :file "cli_matic/core.cljc", :line 88, :arglists ([parms]), :doc "Builds the set of fake arguments that we append to our\nsubcommands' own CLI items\nwhen we have positional parameters.\nIf value is nil, option is not added.\n\nWe receive a map of options and output a vector of strings.\n", :type :var} {:name mkError, :file "cli_matic/core.cljc", :line 30, :arglists ([config subcommand error text]), :doc "Builds an error condition.\n", :type :var} {:name parse-cmds-with-defaults, :file "cli_matic/core.cljc", :line 110, :arglists ([opts argv in-order? fn-env]), :doc "Parses a command line with environment defaults.\n\nWe want environment defaults to be PARSED, so they will go through\nthe same validation/check cycle as other elements.\nSo - if any of them - we first run parsing disabling defaults,\nthen go check if they are available in parsed elements;\nif they are not, we inject them as options to the left of argv\nand parse again.\n\n(As a side effect, if you have a wrong value for your option, and a\ndefault, the default will be used - YMMV).\n\n", :type :var} {:name parse-cmds-with-positions, :file "cli_matic/core.cljc", :line 155, :arglists ([opts argv fn-env]), :doc "To process positional parameters, first we run some parsing; if\nall goes well, we capture the values of positional\narguments and run parsing again with a command line that has those\nitems as if they were expressed.\n\nThis means that type casting and validation just happen in one place\n(CLI parsing) and  we don't have to do them separately.\n\nThis function is used both for global and subcmd parsing,\nbut when doing global parsing, positional parameters are\nnot allowed, so they never come in.\n", :type :var} {:name parse-command-line, :file "cli_matic/core.cljc", :line 266, :arglists ([argv config]), :doc "\nThis is where the magic happens.\n\nWhereas in version 1 we had one 'global' level and one\nsub-command, now we have many. From the point of view of\nsub-commands, all intermediate levels but actual executable\nsub-commands are global levels; each of them may capture\nits own variables and have them validated via specs.\n\nSo we first try walking to the current level through the\nconfiguration, capture and verify what is needed at this level\nand then terminate only if we are on a leaf (executable subcommand)\nor there is any error.\n\nSpec checking:\n\n- If parsing goes well, parameter specs are checked on each parameter\n- If all of them go well, general spec is checked on the current result\n  of all parsing; that is, including results form all earlier\n  general settings\n\n\nTODO:\n - candidates\n - help\n\n", :type :var} {:name run-cmd, :file "cli_matic/core.cljc", :line 591, :arglists ([args supplied-config]), :doc "This is the actual function that is executed.\nIt wraps [[run-cmd*]] and then does the printing\nof any errors, of help pages and  `System.exit`.\n\nAs it invokes `System.exit` you cannot use it from\na REPL (well, you technically can, but...).\n", :type :var} {:name run-cmd*, :file "cli_matic/core.cljc", :line 560, :arglists ([setup args]), :doc "\nExecutes our code.\n\nIt will try and parse the arguments via `clojure.tools.cli` and detect our subcommand.\n\nIf no subcommand was found, it will print the error reminder.\n\nOn exceptions, it will raise an exception message.\n\n", :type :var})} {:name cli-matic.help-gen, :doc "\n## Generate help texts.\n\n", :publics ({:name arg-list-with-positional-entries, :file "cli_matic/help_gen.cljc", :line 175, :arglists ([cfg cmd]), :doc "Creates the `[arguments...]`\n", :type :var} {:name generate-a-command, :file "cli_matic/help_gen.cljc", :line 110, :arglists ([{:keys [command short description]}]), :doc "Maybe we should use a way to format commands\n\nE.g.\n(pp/cl-format true \"~{ ~vA  ~vA  ~vA ~}\" v)\n\n\n(clojure.pprint/cl-format true \"~3a ~a\" \"pippo\" \"pluto\")\n", :type :var} {:name generate-global-command-list, :file "cli_matic/help_gen.cljc", :line 128, :arglists ([commands]), :doc "Creates a list of commands and descriptions.\nCommands are of kind ::S/commands\n", :type :var} {:name generate-global-help, :file "cli_matic/help_gen.cljc", :line 140, :arglists ([cfg path]), :doc "This is where we generate global help, so\nglobal attributes and subcommands.\n\nThis is called for all branch nodes (not just the root),\nand not leaves, therefore we had to add the path as\na parameter to tell who is who.\n\n", :type :var} {:name generate-help-possible-mistypes, :file "cli_matic/help_gen.cljc", :line 242, :arglists ([cfg wrong-subcmd]), :doc "If we have a wrong subcommand, can we guess what the correct\none could have been?\n\n\n", :type :var} {:name generate-possible-mistypes, :file "cli_matic/help_gen.cljc", :line 221, :arglists ([wrong-subcmd commands aliases]), :doc "We go searching if we have any candidates\nto be considered mistypes.\n\nWe require a miss ratio of [[MISTYPE-ERR-RATIO]]\nand we return them by similarity.\n\n", :type :var} {:name generate-section, :file "cli_matic/help_gen.cljc", :line 16, :arglists ([title lines]), :doc "Generates a section (as a collection of strings,\npossibly nested, but we'll flatten it out).\nIf a section has no content, we return [].\n", :type :var} {:name generate-sections, :file "cli_matic/help_gen.cljc", :line 29, :arglists ([name version usage commands opts-title opts examples]), :doc "Generates all sections.\nAll those positional parameters are not that nice.\n", :type :var} {:name generate-subcmd-help, :file "cli_matic/help_gen.cljc", :line 183, :arglists ([cfg cmd]), :doc "This is where we generate help for a specific subcommand.\n", :type :var} {:name get-first-rest-description-rows, :file "cli_matic/help_gen.cljc", :line 97, :arglists ([row-or-rows]), :doc "get title and description of description rows\n", :type :var} {:name get-options-summary, :file "cli_matic/help_gen.cljc", :line 79, :arglists ([cfg subcmd]), :doc "To get the summary of options, we pass options to\ntools.cli parse-opts and an empty set of arguments.\nParsing will fail but we get the :summary.\nWe then split it into a collection of lines.\n", :type :var} {:name getGlobalHelperFn, :file "cli_matic/help_gen.cljc", :line 273, :arglists ([cfg path]), :type :var} {:name getSubcommandHelperFn, :file "cli_matic/help_gen.cljc", :line 277, :arglists ([cfg path]), :type :var} {:name MISTYPE-ERR-RATIO, :file "cli_matic/help_gen.cljc", :line 219, :type :var})} {:name cli-matic.optionals, :doc "### This namespace contains optional dependencies for CLJS.\n\nJSON is always available in CLJS.\n\n", :publics ({:name json-decode, :file "cli_matic/optionals.cljs", :line 11, :arglists ([json]), :doc "\nWe should use Transit if present, but this should be enough to get us started.\n\nhttps://cljs.github.io/api/cljs.core/js-GTclj\n", :type :var} {:name orchestra-instrument, :file "cli_matic/optionals.cljs", :line 32, :arglists ([]), :doc "\n", :type :var} {:name yaml-decode, :file "cli_matic/optionals.cljs", :line 24, :arglists ([& _]), :doc "\n", :type :var})} {:name cli-matic.platform, :doc "\n## Platform-specific functions for ClojureScript.\n\nAt the moment, we only support Planck.\n\nBTW, in this NS, we avoid using Spec / Orchestra.\n\n", :publics ({:name add-shutdown-hook, :file "cli_matic/platform.cljs", :line 30, :arglists ([fnToCallOnShutdown]), :doc "Add a shutdown hook.\n\nDoes not work (?) on CLJS and we will throw an exception.\n\nIt might be conceivable that in JS-land, we save this locally in this namespace\nand then call it on `exit-script`.\n\n", :type :var} {:name asDate, :file "cli_matic/platform.cljs", :line 70, :arglists ([s]), :doc "Converts a string in format yyyy-mm-dd to a\nDate object; if conversion\nfails, returns nil.", :type :var} {:name exit-script, :file "cli_matic/platform.cljs", :line 22, :arglists ([retval]), :doc "Terminates execution with a return value.\n\nPlease note that in Planck, return codes seem to be 8-bit unsigned ints.\n", :type :var} {:name isDeferredValue?, :file "cli_matic/platform.cljs", :line 86, :arglists ([_]), :doc "Is this a deferred value for this platform?\n", :type :var} {:name parseEdn, :file "cli_matic/platform.cljs", :line 77, :arglists ([edn-in]), :doc "\nThis is actually a piece of ClojureScript, though it lives in a different NS.\n\nSee https://cljs.github.io/api/cljs.reader/read-string\n", :type :var} {:name parseFloat, :file "cli_matic/platform.cljs", :line 65, :arglists ([s]), :doc "Converts a string to a float.\n", :type :var} {:name parseInt, :file "cli_matic/platform.cljs", :line 60, :arglists ([s]), :doc "Converts a string to an integer. \n", :type :var} {:name printError, :file "cli_matic/platform.cljs", :line 108, :arglists ([o]), :doc "On ClojureScript, STDERR is not *err* but it's platform dependent.\n\nThanks @mfikes for the tip!  (issue #111)\n", :type :var} {:name read-env, :file "cli_matic/platform.cljs", :line 15, :arglists ([var]), :doc "Reads an environment variable.\nIf undefined, returns nil.", :type :var} {:name slurp-file, :file "cli_matic/platform.cljs", :line 44, :arglists ([f]), :doc "\nLuckily, Planck implements slurp for us.\n\nNo slurping in Node-land.\n\nSee https://github.com/pkpkpk/cljs-node-io\n\n", :type :var} {:name waitForDeferredValue, :file "cli_matic/platform.cljs", :line 92, :arglists ([x]), :doc "Given that value is a deferred  value for this platform,\nblock termination until it's realized.\n\nOn JS, we support:\n\n- nothing yet...\n\n", :type :var})} {:name cli-matic.platform-macros, :doc "## Macros shared between CLJ and CLJS.\n\nUnfortunately:\n\n- Macros must be in a separate file (for CLJS)\n- Macros have a different import syntax (CLJS)\n- Macros defined in .clj  will STILL be loaded by CLJS and will fail big time.\n\nSo we have to use a separate namespace and hide everything behind reader conditionals.\n\nUsage is:\n\n#?(:clj [cli-matic.platform-macros :refer [try-catch-all]]\n\n   :cljs [cli-matic.platform-macros :refer-macros [try-catch-all]]\n             )\n\nThis was a real PITA, man.\n\n", :publics ({:name try-catch-all, :file "cli_matic/platform_macros.cljc", :line 44, :arglists ([f onErr]), :doc "\nSee the .clj docs.", :type :macro})} {:name cli-matic.presets, :doc "\n### Known presets\n\n\n", :publics ({:name asDecodedEdnFile, :file "cli_matic/presets.cljc", :line 41, :arglists ([filename]), :doc "Decodes the contents of a file as a JSON object.\n", :type :var} {:name asDecodedEdnValue, :file "cli_matic/presets.cljc", :line 35, :arglists ([s]), :doc "Decodes the value as an EDN structure.\n", :type :var} {:name asDecodedJsonFile, :file "cli_matic/presets.cljc", :line 51, :arglists ([filename]), :doc "Decodes the contents of a file as a JSON object.\n", :type :var} {:name asDecodedJsonValue, :file "cli_matic/presets.cljc", :line 46, :arglists ([s]), :doc "Decodes the value as a JSON object.\n", :type :var} {:name asDecodedYamlFile, :file "cli_matic/presets.cljc", :line 61, :arglists ([filename]), :doc "Decodes the contents of a file as a JSON object.\n", :type :var} {:name asDecodedYamlValue, :file "cli_matic/presets.cljc", :line 56, :arglists ([s]), :doc "Decodes the value as a YAML object.\n", :type :var} {:name asKeyword, :file "cli_matic/presets.cljc", :line 72, :arglists ([s]), :type :var} {:name asLinesString, :file "cli_matic/presets.cljc", :line 30, :arglists ([filename]), :doc "Reads a text file and returns it as a collection of lines.\n", :type :var} {:name asSet, :file "cli_matic/presets.cljc", :line 155, :arglists ([st v]), :doc "Sets of options are dark black magic.\nThey are also darn useful.\n\nA set can be composed of all-keywords or all-strings.\n\nValues are matched ignoring case, and the correct one\nis returned in the case and type it appears in the set.\nThe default value, if present, is returned as-is, even if\nnot a member of the set.\n\nKeywords are accepted with our without trailing `:`.\n\nOn missing values, the closest matches are searched and printed.\n\nFor example, on a set #{:a :b :c}, `A` `a` `:A` and `:a` all match `:a`.\n\nDefaults for a set are all values, with no colons, separated by a pipe.\n\n", :type :var} {:name asSingleString, :file "cli_matic/presets.cljc", :line 16, :arglists ([filename]), :doc "Turns a filename into a single string.\n\nIf argument is a String, it tries to resolve it first as a URI, then\nas a local file name.  URIs with a 'file' protocol are converted to\nlocal file names.\n\n", :type :var} {:name known-presets, :file "cli_matic/presets.cljc", :line 215, :type :var} {:name parseFlag, :file "cli_matic/presets.cljc", :line 197, :arglists ([flagStr]), :doc "Converts a flag string to a boolean.\nComparison is case-insensitive.\n", :type :var} {:name set-find-didyoumean, :file "cli_matic/presets.cljc", :line 126, :arglists ([st v]), :doc "Finds candidates after normalization.\nReturn original candidates.", :type :var} {:name set-find-didyoumean-str, :file "cli_matic/presets.cljc", :line 140, :arglists ([st v]), :doc "Returns ' Did you mean A or B?' or '' if no candidates. \n", :type :var} {:name set-find-value, :file "cli_matic/presets.cljc", :line 111, :arglists ([st v]), :doc "Finds a string value in a set of options.\nTo do this, we first create a map of\n{normalized original}\nReturns valFound or nil.\n", :type :var} {:name set-help-values, :file "cli_matic/presets.cljc", :line 82, :arglists ([st]), :doc "Given a set, return allowed options as string\n", :type :var} {:name set-normalize-map, :file "cli_matic/presets.cljc", :line 101, :arglists ([st]), :doc "Builds a normalized map that\nhas as key the normalized value, and value the\noriginal one.", :type :var} {:name set-normalized-entry, :file "cli_matic/presets.cljc", :line 92, :arglists ([v]), :doc "A normalized set entry is a lowercase string\nwithout trailing `:`.", :type :var} {:name SET-OF-FALSE-FLAGS, :file "cli_matic/presets.cljc", :line 195, :type :var} {:name SET-OF-TRUE-FLAGS, :file "cli_matic/presets.cljc", :line 194, :type :var})} {:name cli-matic.specs, :publics ({:name has-elements?, :file "cli_matic/specs.cljc", :line 4, :arglists ([s]), :type :var} {:name no-positional-opts, :file "cli_matic/specs.cljc", :line 140, :arglists ([any-subcmd]), :doc "Makes sure that this subcommand does not have\nany positional argument in its opts", :type :var})} {:name cli-matic.utils, :doc "\n### Utilities used in the project\n\n* the *general* section contains low-level\n  stuff that could be anywhere\n* the *cli-matic* section contain low-level functions\n  used by the parser and the help generators.\n\n\n", :publics ({:name a-positional-parm, :file "cli_matic/utils.cljc", :line 295, :arglists ([args option]), :doc "Reads one positional parameter from the arguments.\nReturns a vector [parm value]\nThe value is NOT solved, so it's always a string.", :type :var} {:name all-subcommands, :file "cli_matic/utils.cljc", :line 233, :arglists ([climatic-args]), :doc "Returns all subcommands, as strings.\nWe get all versions of all subcommands.\n", :type :var} {:name all-subcommands-aliases, :file "cli_matic/utils.cljc", :line 200, :arglists ([climatic-args]), :doc "Maps all subcommands and subcommand aliases\nto their canonical name.\nE.g. {'add': 'add', 'a': 'add'}.\n\nWe basically add them all, then remove\nnil keys.\n\n", :type :var} {:name assoc-new-multivalue, :file "cli_matic/utils.cljc", :line 104, :arglists ([parameter-map option v]), :doc "Associates a new multiple value to the\ncurrent parameter map.\nIf the current value is not a vector, creates\na new vector with the new value.", :type :var} {:name asString, :file "cli_matic/utils.cljc", :line 24, :arglists ([s]), :doc "Turns a collection of strings into one string,\nor the string itself.\n\nIf the collection includes multiple sub-arrays,\nthose are flattened into lines as well.\n", :type :var} {:name asStrVec, :file "cli_matic/utils.cljc", :line 50, :arglists ([s]), :doc "Whatever we get in, we want a vector of strings out.\n", :type :var} {:name canonicalize-subcommand, :file "cli_matic/utils.cljc", :line 244, :arglists ([commands subcmd]), :doc "Returns the 'canonical' name of a subcommand,\ni.e. the one that appears in :command, even\nif we pass an alias or short version.", :type :var} {:name capture-positional-parms, :file "cli_matic/utils.cljc", :line 311, :arglists ([opts remaining-args]), :doc "Captures positional parameters in the remaining-args of\na subcommand.", :type :var} {:name cm-opts->cli-opts, :file "cli_matic/utils.cljc", :line 260, :arglists ([climatic-opts]), :doc "\nOut of a cli-matic arg list, generates a set of\noptions for tools.cli.\nIt also adds in the -? and --help options\nto trigger display of helpness.\n", :type :var} {:name deep-merge, :file "cli_matic/utils.cljc", :line 84, :arglists ([& maps]), :doc "\nMerges a number of maps, considering values in inner maps.\n\nSee https://gist.github.com/danielpcox/c70a8aa2c36766200a95#gistcomment-2308595\n", :type :var} {:name exception-info, :file "cli_matic/utils.cljc", :line 339, :arglists ([e]), :doc "Checks the exception; if it was created using [[exit!]]\nwe get that data out; if not, standard exception.\n\nReturns [message exit-code].\n\nTo understand whether it was created by [[exit!]] we\ncheck for a *top-secret* key with a secret value - pls don't tell\nanyone, man. You might immanentize the eschaton.\n", :type :var} {:name exit!, :file "cli_matic/utils.cljc", :line 325, :arglists ([message errorcode]), :doc "Raises an exception that will print a message\nwithout the stack trace. Can specify an optional\nexit code; if not specified, zero.\n\nSee [[exception-info]].\n", :type :var} {:name get-cli-option, :file "cli_matic/utils.cljc", :line 140, :arglists ([type]), :type :var} {:name indent, :file "cli_matic/utils.cljc", :line 67, :arglists ([s]), :doc "Indents a single string, or each string\nin a collection of strings.", :type :var} {:name indent-string, :file "cli_matic/utils.cljc", :line 58, :arglists ([s]), :doc "Indents a single string by one space.\n", :type :var} {:name mk-cli-option, :file "cli_matic/utils.cljc", :line 162, :arglists ([{:keys [option short as type default multiple env]}]), :doc "Builds a tools.cli option out of our own format.\n\nIf for-parsing is true, the option will be used for parsing;\nif false, for generating help messages.\n\n", :type :var} {:name mk-env-name, :file "cli_matic/utils.cljc", :line 132, :arglists ([description env for-parsing?]), :doc "Writes a description with the env name by the end.\n", :type :var} {:name mk-long-opt, :file "cli_matic/utils.cljc", :line 123, :arglists ([option placeholder type]), :doc "Converts long climatic option to long tools.cli option\n", :type :var} {:name mk-short-opt, :file "cli_matic/utils.cljc", :line 116, :arglists ([short]), :doc "Converts short climatic option to short tools.cli option\n", :type :var} {:name pad, :file "cli_matic/utils.cljc", :line 75, :arglists ([s s1 len]), :doc "Pads 's[, s1]' to so many characters\n", :type :var} {:name positional-parms-from-opts, :file "cli_matic/utils.cljc", :line 283, :arglists ([opts]), :doc "\nReturns a list of positional parameters from a subcommand option.\n", :type :var} {:name printErr, :file "cli_matic/utils.cljc", :line 43, :arglists ([s]), :doc "Like [[printString]] but writes on stderr\n", :type :var} {:name printString, :file "cli_matic/utils.cljc", :line 36, :arglists ([s]), :doc "Prints a string (either single, or a nested vector of it).\n", :type :var})} {:name cli-matic.utils-candidates, :doc "\n  ### String candidates tools.\n\nThis namespace contains utilities to compute string candidates.\n\n  ", :publics ({:name candidate-suggestions, :file "cli_matic/utils_candidates.cljc", :line 66, :arglists ([candidates cmd max-str-distance]), :doc "Returns candidate suggestions, in order of\nreliability.", :type :var} {:name str-distance, :file "cli_matic/utils_candidates.cljc", :line 57, :arglists ([a b]), :doc "Distance between two strings, as expressed in percentage\nof changes to the length of the longest string.\n\n", :type :var})} {:name cli-matic.utils-v2, :doc "\n#  Utils to work with nested configuration trees (cfg v2)\n\n- Convert commands v1 to v2 (fully nested).\n- Accessors for data in a nested structure\n\n", :publics ({:name add-setup-defaults-v1, :file "cli_matic/utils_v2.cljc", :line 52, :arglists ([supplied-setup]), :doc "Adds all elements that need to be in the setup spec\nbut we allow the caller not specify explicitly.", :type :var} {:name as-canonical-path, :file "cli_matic/utils_v2.cljc", :line 165, :arglists ([subcommands]), :doc "\nGets the canonical path from an executable-sequence\nof subcommands, as obtained from [[walk]].\n", :type :var} {:name can-walk?, :file "cli_matic/utils_v2.cljc", :line 146, :arglists ([cfg path]), :doc "Check that you can walk up to a point.\nIt basically traps the exception.", :type :var} {:name canonical-path-to-string, :file "cli_matic/utils_v2.cljc", :line 185, :arglists ([path]), :type :var} {:name cfg-v2, :file "cli_matic/utils_v2.cljc", :line 58, :arglists ([cfg]), :doc " Converts a config object into v2, if not already v2.\n\n", :type :var} {:name convert-config-v1->v2, :file "cli_matic/utils_v2.cljc", :line 17, :arglists ([cmd_v1]), :doc "Converts a command version 1 to v2.\n\nA command v1 has always an outer `::S/climatic-cfg`\nwhile a v2 is fully nested.\n\nNote that even in the case where there is only one\ncommand to be run, we still retain the same invocation\nformat as it originally was - no surprises.\n\n", :type :var} {:name get-most-specific-value, :file "cli_matic/utils_v2.cljc", :line 235, :arglists ([cfg path a-key default] [cfg path a-key]), :doc "Given a configuration and a path through it, gets the most\nspecific value for an option.\n\nFor example, the help generator might be defined on each subcommand,\nor on the root node, or nowhere. We always take the most specific\nvalue.\n\nIf the value is defined nowhere, we return a default.\n\n", :type :var} {:name get-options-for, :file "cli_matic/utils_v2.cljc", :line 200, :arglists ([cfg path]), :doc "Given a configuration and a path through it,\nreturns :opts for the last subcommmand.", :type :var} {:name get-subcommand, :file "cli_matic/utils_v2.cljc", :line 194, :arglists ([cfg path]), :doc "Given a configuration and a path through it,\nreeturns the last subcommand.", :type :var} {:name is-runnable?, :file "cli_matic/utils_v2.cljc", :line 173, :arglists ([xp]), :doc "Checks if the last element if the\nexecutable path is actually runnable, that is,\na command.", :type :var} {:name isRightCmd?, :file "cli_matic/utils_v2.cljc", :line 78, :arglists ([command-or-short-name cfg]), :doc "Check if this is the right command or not,\nby name or alias.", :type :var} {:name list-positional-parms, :file "cli_matic/utils_v2.cljc", :line 222, :arglists ([cfg subcmd]), :doc "Extracts all positional parameters from the configuration.\n", :type :var} {:name rewrite-opts, :file "cli_matic/utils_v2.cljc", :line 206, :arglists ([climatic-args subcmd]), :doc "\nOut of a cli-matic arg list, generates a set of\noptions for tools.cli.\nIt also adds in the -? and --help options\nto trigger display of helpness.\n", :type :var} {:name SETUP-DEFAULTS-v1, :file "cli_matic/utils_v2.cljc", :line 46, :type :var} {:name walk, :file "cli_matic/utils_v2.cljc", :line 85, :arglists ([cfg path]), :doc "\nWalks a path through a configuration object,\nand returns a list of all elements,\nin order from root to leaf, as an\nexecutable path.\n\nDoes not assert that the last element is a leaf.\n\nThe path:\n- A subcommand path.\n-  If empty, no subcommands and no globals\n-  Each member is the canonical name of a subcommand.\n-  Each member but the last is of type ::branch-subcommand\n\nIt is possible to convert an executable-path back\ninto a path with [[as-canonical-path]].\n\n", :type :var})})}, :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>cli-matic</groupId>\n  <artifactId>cli-matic</artifactId>\n  <packaging>jar</packaging>\n  <version>0.4.3</version>\n  <name>cli-matic</name>\n  <description>Compact [sub]command line parsing library, for Clojure</description>\n  <url>https://github.com/l3nz/cli-matic</url>\n  <licenses>\n    <license>\n      <name>Eclipse Public License, v2</name>\n      <url>http://www.eclipse.org/legal/epl-v20.html</url>\n    </license>\n  </licenses>\n  <scm>\n    <tag>4bb2c8779732170be40e914a4ffb84f70ec1c16f</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins/>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.9.0</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojurescript</artifactId>\n      <version>1.10.439</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>spec.alpha</artifactId>\n      <version>0.1.143</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>tools.cli</artifactId>\n      <version>1.0.194</version>\n    </dependency>\n    <dependency>\n      <groupId>orchestra</groupId>\n      <artifactId>orchestra</artifactId>\n      <version>2019.02.06-1</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>cheshire</groupId>\n      <artifactId>cheshire</artifactId>\n      <version>5.10.0</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>io.forward</groupId>\n      <artifactId>yaml</artifactId>\n      <version>1.0.9</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>core.async</artifactId>\n      <version>0.5.527</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>l3nz</groupId>\n      <artifactId>planck</artifactId>\n      <version>0.0.0</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>expound</groupId>\n      <artifactId>expound</artifactId>\n      <version>0.8.4</version>\n    </dependency>\n    <dependency>\n      <groupId>cljc.java-time</groupId>\n      <artifactId>cljc.java-time</artifactId>\n      <version>0.1.11</version>\n      <scope>test</scope>\n    </dependency>\n  </dependencies>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n"}
+{:group-id "cli-matic",
+ :artifact-id "cli-matic",
+ :version "0.4.3",
+ :analysis {"clj" ({:doc "\n### ATTENTION\n\nCLI-matic has one main entry-point: [[run-cmd]].\n\nAs an end-user, you need nothing else,  but the documentation\nthat explains how parameters are to be run.\n\nSee `examples/` to get started quickly.\n\n*Developers*\n\nMost of the logic will be run in [[run-cmd*]] to make testing easier,\nas [[run-cmd]] calls `System/exit`.\n\n",
+                    :name cli-matic.core,
+                    :publics ({:name assert-cfg-sanity,
+                               :file "cli_matic/core.cljc",
+                               :line 443,
+                               :arglists ([_]),
+                               :type :var}
+                              {:name assert-unique-values,
+                               :file "cli_matic/core.cljc",
+                               :line 414,
+                               :arglists ([name vec-opts option]),
+                               :doc "Check that all values are unique.\nname is the area of the configuration\nvec-opts are the options to check\noption is the keyword to check.\n",
+                               :type :var}
+                              {:name check-one-spec,
+                               :file "cli_matic/core.cljc",
+                               :line 195,
+                               :arglists ([name type spec value]),
+                               :doc "Checks one spec.\n\n  - If spec passes, returns nil; if not, returns the failure.\n  - If there is an error raised, creates a fake spec result.\n  - If spec is nil, we consider it a pass.\n  - if the value is nil, we consider it missing and don't need to check.\n\n  `explain-data` return nil if everything okay.\n\n  `expound-string` returns 'Success!\n' if all goes well.\n\n\n  ",
+                               :type :var}
+                              {:name check-specs-on-parameters,
+                               :file "cli_matic/core.cljc",
+                               :line 240,
+                               :arglists ([options
+                                           parsed-results
+                                           type]),
+                               :doc "Given a set of option (so, global options, or a subcommand's options)\nand the fully parsed results, we assert that any defined specs pass.\n\nThis we do only if the parameter is not nil, that is, is present or\nhas a default value.\n\nIf the parameter should be present but it's not, it's not a spec issue\nbut a ':default :present' issue.\n",
+                               :type :var}
+                              {:name errors-for-missing-mandatory-args,
+                               :file "cli_matic/core.cljc",
+                               :line 57,
+                               :arglists ([climatic-options
+                                           parsed-opts
+                                           other-options]),
+                               :doc "Gets us a sequence of errors if mandatory options are missing.\nOptions read by cli module are merged with other options, e.g.\npositional parameters.\n",
+                               :type :var}
+                              {:name getReturnValue,
+                               :file "cli_matic/core.cljc",
+                               :line 506,
+                               :arglists ([rv]),
+                               :doc "Evaluates the result of the CLI-matic subcommand.\nA result can be nil, or int?, or a  deferred value,\nin which case we wait in a platform-specific way.\n",
+                               :type :var}
+                              {:name invoke-subcmd,
+                               :file "cli_matic/core.cljc",
+                               :line 525,
+                               :arglists ([subcommand-def options]),
+                               :doc "Invokes a subcommand, and produces a Return Value.\n\nThe subcommand may:\n\n* return an integer (to specify exit code)\n* return nil\n* throw a Throwable object\n\n\nIf there is a shutdown hook defined, we also add the shutdown hook\nbefore the command is run. If there is a shutdown hook,\nit is called anyway when the JVM terminates - if you only want this\ncalled on early shutdowns, it's up to you to keep some state\nin a shared atom and decide whether to do something or not.\n\n",
+                               :type :var}
+                              {:name mk-fake-args,
+                               :file "cli_matic/core.cljc",
+                               :line 88,
+                               :arglists ([parms]),
+                               :doc "Builds the set of fake arguments that we append to our\nsubcommands' own CLI items\nwhen we have positional parameters.\nIf value is nil, option is not added.\n\nWe receive a map of options and output a vector of strings.\n",
+                               :type :var}
+                              {:name mkError,
+                               :file "cli_matic/core.cljc",
+                               :line 30,
+                               :arglists ([config
+                                           subcommand
+                                           error
+                                           text]),
+                               :doc "Builds an error condition.\n",
+                               :type :var}
+                              {:name parse-cmds-with-defaults,
+                               :file "cli_matic/core.cljc",
+                               :line 110,
+                               :arglists ([opts argv in-order? fn-env]),
+                               :doc "Parses a command line with environment defaults.\n\nWe want environment defaults to be PARSED, so they will go through\nthe same validation/check cycle as other elements.\nSo - if any of them - we first run parsing disabling defaults,\nthen go check if they are available in parsed elements;\nif they are not, we inject them as options to the left of argv\nand parse again.\n\n(As a side effect, if you have a wrong value for your option, and a\ndefault, the default will be used - YMMV).\n\n",
+                               :type :var}
+                              {:name parse-cmds-with-positions,
+                               :file "cli_matic/core.cljc",
+                               :line 155,
+                               :arglists ([opts argv fn-env]),
+                               :doc "To process positional parameters, first we run some parsing; if\nall goes well, we capture the values of positional\narguments and run parsing again with a command line that has those\nitems as if they were expressed.\n\nThis means that type casting and validation just happen in one place\n(CLI parsing) and  we don't have to do them separately.\n\nThis function is used both for global and subcmd parsing,\nbut when doing global parsing, positional parameters are\nnot allowed, so they never come in.\n",
+                               :type :var}
+                              {:name parse-command-line,
+                               :file "cli_matic/core.cljc",
+                               :line 266,
+                               :arglists ([argv config]),
+                               :doc "\nThis is where the magic happens.\n\nWhereas in version 1 we had one 'global' level and one\nsub-command, now we have many. From the point of view of\nsub-commands, all intermediate levels but actual executable\nsub-commands are global levels; each of them may capture\nits own variables and have them validated via specs.\n\nSo we first try walking to the current level through the\nconfiguration, capture and verify what is needed at this level\nand then terminate only if we are on a leaf (executable subcommand)\nor there is any error.\n\nSpec checking:\n\n- If parsing goes well, parameter specs are checked on each parameter\n- If all of them go well, general spec is checked on the current result\n  of all parsing; that is, including results form all earlier\n  general settings\n\n\nTODO:\n - candidates\n - help\n\n",
+                               :type :var}
+                              {:name run-cmd,
+                               :file "cli_matic/core.cljc",
+                               :line 591,
+                               :arglists ([args supplied-config]),
+                               :doc "This is the actual function that is executed.\nIt wraps [[run-cmd*]] and then does the printing\nof any errors, of help pages and  `System.exit`.\n\nAs it invokes `System.exit` you cannot use it from\na REPL (well, you technically can, but...).\n",
+                               :type :var}
+                              {:name run-cmd*,
+                               :file "cli_matic/core.cljc",
+                               :line 560,
+                               :arglists ([setup args]),
+                               :doc "\nExecutes our code.\n\nIt will try and parse the arguments via `clojure.tools.cli` and detect our subcommand.\n\nIf no subcommand was found, it will print the error reminder.\n\nOn exceptions, it will raise an exception message.\n\n",
+                               :type :var})}
+                   {:doc "\n## Generate help texts.\n\n",
+                    :name cli-matic.help-gen,
+                    :publics ({:name arg-list-with-positional-entries,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 175,
+                               :arglists ([cfg cmd]),
+                               :doc "Creates the `[arguments...]`\n",
+                               :type :var}
+                              {:name generate-a-command,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 110,
+                               :arglists ([{:keys [command
+                                                   short
+                                                   description]}]),
+                               :doc "Maybe we should use a way to format commands\n\nE.g.\n(pp/cl-format true \"~{ ~vA  ~vA  ~vA ~}\" v)\n\n\n(clojure.pprint/cl-format true \"~3a ~a\" \"pippo\" \"pluto\")\n",
+                               :type :var}
+                              {:name generate-global-command-list,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 128,
+                               :arglists ([commands]),
+                               :doc "Creates a list of commands and descriptions.\nCommands are of kind ::S/commands\n",
+                               :type :var}
+                              {:name generate-global-help,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 140,
+                               :arglists ([cfg path]),
+                               :doc "This is where we generate global help, so\nglobal attributes and subcommands.\n\nThis is called for all branch nodes (not just the root),\nand not leaves, therefore we had to add the path as\na parameter to tell who is who.\n\n",
+                               :type :var}
+                              {:name generate-help-possible-mistypes,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 242,
+                               :arglists ([cfg wrong-subcmd]),
+                               :doc "If we have a wrong subcommand, can we guess what the correct\none could have been?\n\n\n",
+                               :type :var}
+                              {:name generate-possible-mistypes,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 221,
+                               :arglists ([wrong-subcmd
+                                           commands
+                                           aliases]),
+                               :doc "We go searching if we have any candidates\nto be considered mistypes.\n\nWe require a miss ratio of [[MISTYPE-ERR-RATIO]]\nand we return them by similarity.\n\n",
+                               :type :var}
+                              {:name generate-section,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 16,
+                               :arglists ([title lines]),
+                               :doc "Generates a section (as a collection of strings,\npossibly nested, but we'll flatten it out).\nIf a section has no content, we return [].\n",
+                               :type :var}
+                              {:name generate-sections,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 29,
+                               :arglists ([name
+                                           version
+                                           usage
+                                           commands
+                                           opts-title
+                                           opts
+                                           examples]),
+                               :doc "Generates all sections.\nAll those positional parameters are not that nice.\n",
+                               :type :var}
+                              {:name generate-subcmd-help,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 183,
+                               :arglists ([cfg cmd]),
+                               :doc "This is where we generate help for a specific subcommand.\n",
+                               :type :var}
+                              {:name get-first-rest-description-rows,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 97,
+                               :arglists ([row-or-rows]),
+                               :doc "get title and description of description rows\n",
+                               :type :var}
+                              {:name get-options-summary,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 79,
+                               :arglists ([cfg subcmd]),
+                               :doc "To get the summary of options, we pass options to\ntools.cli parse-opts and an empty set of arguments.\nParsing will fail but we get the :summary.\nWe then split it into a collection of lines.\n",
+                               :type :var}
+                              {:name getGlobalHelperFn,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 273,
+                               :arglists ([cfg path]),
+                               :type :var}
+                              {:name getSubcommandHelperFn,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 277,
+                               :arglists ([cfg path]),
+                               :type :var}
+                              {:name MISTYPE-ERR-RATIO,
+                               :file "cli_matic/help_gen.cljc",
+                               :line 219,
+                               :type :var})}
+                   {:doc "### This namespace contains optional dependencies for CLJ.\n\nCLI-matic is supposed to work whether they are present or not.\n\n* JSON (Cheshire)\n* YAML (io.forward/yaml)\n* Orchestra\n\nDetection is taken from `core.clj` in https://github.com/dakrone/clj-http\n\n",
+                    :name cli-matic.optionals,
+                    :publics ({:name is-core-async-channel?,
+                               :file "cli_matic/optionals.clj",
+                               :line 106,
+                               :arglists ([c]),
+                               :doc "Is this entity a core.async channel?\n",
+                               :type :var}
+                              {:name json-decode,
+                               :file "cli_matic/optionals.clj",
+                               :line 31,
+                               :arglists ([json]),
+                               :doc "Decodes a JSON string, without keywordizing.\n",
+                               :type :var}
+                              {:name json-decode-cheshire,
+                               :file "cli_matic/optionals.clj",
+                               :line 25,
+                               :arglists ([& args]),
+                               :doc "Resolve and apply Cheshire's json decoding dynamically.\n",
+                               :dynamic true,
+                               :type :var}
+                              {:name orchestra-instrument,
+                               :file "cli_matic/optionals.clj",
+                               :line 61,
+                               :arglists ([]),
+                               :doc "If Orchestra is present, runs instrumentation.\nIf absent, do nothing.\n\nWhile we are at it, we set up Expound to\nprint meaningful errors.\n\nExpound is a mandatory dependency,  so\nwe take for granted it's there.\n\n\nThe `*explain-out*` binding will NOT be there in a compiled\nuberjar, unless we call `with-bindings`,\nso we just go check. It will succeed from the REPL.\n\nRef: https://github.com/clojure/clojure/blob/clojure-1.9.0/src/clj/clojure/main.clj#L85\n\n",
+                               :dynamic true,
+                               :type :var}
+                              {:name read-value-from-core-async-channel,
+                               :file "cli_matic/optionals.clj",
+                               :line 98,
+                               :arglists ([& args]),
+                               :doc "Reads a value from a core.async channel, blocking.\n",
+                               :dynamic true,
+                               :type :var}
+                              {:name with-cheshire?,
+                               :file "cli_matic/optionals.clj",
+                               :line 19,
+                               :type :var}
+                              {:name with-core-async?,
+                               :file "cli_matic/optionals.clj",
+                               :line 92,
+                               :type :var}
+                              {:name with-orchestra?,
+                               :file "cli_matic/optionals.clj",
+                               :line 55,
+                               :type :var}
+                              {:name with-yaml?,
+                               :file "cli_matic/optionals.clj",
+                               :line 38,
+                               :type :var}
+                              {:name yaml-decode,
+                               :file "cli_matic/optionals.clj",
+                               :line 44,
+                               :arglists ([& args]),
+                               :doc "Resolve and apply io.forward/yaml's yaml decoding dynamically.\n",
+                               :dynamic true,
+                               :type :var})}
+                   {:doc "\n## Platform-specific functions for the JVM.\n\nIf running on ClojureScript, we can have a different file for JS.\n\nBTW, in this NS, we avoid using Spec / Orchestra.\n\n**DO NOT** define macros in this namespace - see [[cli-matic.platform-macros]]\n\n",
+                    :name cli-matic.platform,
+                    :publics ({:name add-shutdown-hook,
+                               :file "cli_matic/platform.clj",
+                               :line 28,
+                               :arglists ([fnToCallOnShutdown]),
+                               :doc "Add a shutdown hook. If `nil`, simply ignores it.\n\nThe shutdown hook is run in a new thread.\n\n",
+                               :type :var}
+                              {:name asDate,
+                               :file "cli_matic/platform.clj",
+                               :line 61,
+                               :arglists ([s]),
+                               :doc "Converts a string in format yyyy-mm-dd to a\nDate object; if conversion\nfails, returns nil.",
+                               :type :var}
+                              {:name exit-script,
+                               :file "cli_matic/platform.clj",
+                               :line 23,
+                               :arglists ([retval]),
+                               :doc "Terminates execution with a return value.\n",
+                               :type :var}
+                              {:name isDeferredValue?,
+                               :file "cli_matic/platform.clj",
+                               :line 82,
+                               :arglists ([v]),
+                               :doc "Is this a deferred value for this platform?\n",
+                               :type :var}
+                              {:name parseEdn,
+                               :file "cli_matic/platform.clj",
+                               :line 72,
+                               :arglists ([edn-in]),
+                               :doc " Decodes EDN through clojure.edn.      \n",
+                               :type :var}
+                              {:name parseFloat,
+                               :file "cli_matic/platform.clj",
+                               :line 56,
+                               :arglists ([s]),
+                               :doc "Converts a string to a float.\n",
+                               :type :var}
+                              {:name parseInt,
+                               :file "cli_matic/platform.clj",
+                               :line 51,
+                               :arglists ([s]),
+                               :doc "Converts a string to an integer. \n",
+                               :type :var}
+                              {:name printError,
+                               :file "cli_matic/platform.clj",
+                               :line 112,
+                               :arglists ([o]),
+                               :doc "On ClojureScript, STDERR is not *err* but it's platform dependent.\nOn JVM, standard approach.",
+                               :type :var}
+                              {:name read-env,
+                               :file "cli_matic/platform.clj",
+                               :line 17,
+                               :arglists ([var]),
+                               :doc "Reads an environment variable.\nIf undefined, returns nil.",
+                               :type :var}
+                              {:name slurp-file,
+                               :file "cli_matic/platform.clj",
+                               :line 41,
+                               :arglists ([f]),
+                               :doc "No slurping in JavaScript. So we have to move this to\nplatform.",
+                               :type :var}
+                              {:name waitForDeferredValue,
+                               :file "cli_matic/platform.clj",
+                               :line 91,
+                               :arglists ([v]),
+                               :doc "Given that value is a deferred  value for this platform,\nblock termination until it's realized.\n\nOn the JVM, we support:\n\n- promises\n- futures\n- core.async channels (if they exist)\n\n",
+                               :type :var})}
+                   {:doc "## Macros shared between CLJ and CLJS.\n\nUnfortunately:\n\n- Macros must be in a separate file (for CLJS)\n- Macros have a different import syntax (CLJS)\n- Macros defined in .clj  will STILL be loaded by CLJS and will fail big time.\n\nSo we have to use a separate namespace and hide everything behind reader conditionals.\n\nUsage is:\n\n#?(:clj [cli-matic.platform-macros :refer [try-catch-all]]\n\n   :cljs [cli-matic.platform-macros :refer-macros [try-catch-all]]\n             )\n\nThis was a real PITA, man.\n\n",
+                    :name cli-matic.platform-macros,
+                    :publics ({:name try-catch-all,
+                               :file "cli_matic/platform_macros.cljc",
+                               :line 23,
+                               :arglists ([f onErr]),
+                               :doc "\nThis creates a try-catch block that either traps\nThrowable on the JVM or :default on Node.\n\nUse:\n\n`(try-catch-all (/ 1 0) (fn [x] 0))`\n\nSo both expressions must be surrounded by round parentheses.",
+                               :type :macro})}
+                   {:doc "\n### Known presets\n\n\n",
+                    :name cli-matic.presets,
+                    :publics ({:name asDecodedEdnFile,
+                               :file "cli_matic/presets.cljc",
+                               :line 41,
+                               :arglists ([filename]),
+                               :doc "Decodes the contents of a file as a JSON object.\n",
+                               :type :var}
+                              {:name asDecodedEdnValue,
+                               :file "cli_matic/presets.cljc",
+                               :line 35,
+                               :arglists ([s]),
+                               :doc "Decodes the value as an EDN structure.\n",
+                               :type :var}
+                              {:name asDecodedJsonFile,
+                               :file "cli_matic/presets.cljc",
+                               :line 51,
+                               :arglists ([filename]),
+                               :doc "Decodes the contents of a file as a JSON object.\n",
+                               :type :var}
+                              {:name asDecodedJsonValue,
+                               :file "cli_matic/presets.cljc",
+                               :line 46,
+                               :arglists ([s]),
+                               :doc "Decodes the value as a JSON object.\n",
+                               :type :var}
+                              {:name asDecodedYamlFile,
+                               :file "cli_matic/presets.cljc",
+                               :line 61,
+                               :arglists ([filename]),
+                               :doc "Decodes the contents of a file as a JSON object.\n",
+                               :type :var}
+                              {:name asDecodedYamlValue,
+                               :file "cli_matic/presets.cljc",
+                               :line 56,
+                               :arglists ([s]),
+                               :doc "Decodes the value as a YAML object.\n",
+                               :type :var}
+                              {:name asKeyword,
+                               :file "cli_matic/presets.cljc",
+                               :line 72,
+                               :arglists ([s]),
+                               :type :var}
+                              {:name asLinesString,
+                               :file "cli_matic/presets.cljc",
+                               :line 30,
+                               :arglists ([filename]),
+                               :doc "Reads a text file and returns it as a collection of lines.\n",
+                               :type :var}
+                              {:name asSet,
+                               :file "cli_matic/presets.cljc",
+                               :line 155,
+                               :arglists ([st v]),
+                               :doc "Sets of options are dark black magic.\nThey are also darn useful.\n\nA set can be composed of all-keywords or all-strings.\n\nValues are matched ignoring case, and the correct one\nis returned in the case and type it appears in the set.\nThe default value, if present, is returned as-is, even if\nnot a member of the set.\n\nKeywords are accepted with our without trailing `:`.\n\nOn missing values, the closest matches are searched and printed.\n\nFor example, on a set #{:a :b :c}, `A` `a` `:A` and `:a` all match `:a`.\n\nDefaults for a set are all values, with no colons, separated by a pipe.\n\n",
+                               :type :var}
+                              {:name asSingleString,
+                               :file "cli_matic/presets.cljc",
+                               :line 16,
+                               :arglists ([filename]),
+                               :doc "Turns a filename into a single string.\n\nIf argument is a String, it tries to resolve it first as a URI, then\nas a local file name.  URIs with a 'file' protocol are converted to\nlocal file names.\n\n",
+                               :type :var}
+                              {:name known-presets,
+                               :file "cli_matic/presets.cljc",
+                               :line 215,
+                               :type :var}
+                              {:name parseFlag,
+                               :file "cli_matic/presets.cljc",
+                               :line 197,
+                               :arglists ([flagStr]),
+                               :doc "Converts a flag string to a boolean.\nComparison is case-insensitive.\n",
+                               :type :var}
+                              {:name set-find-didyoumean,
+                               :file "cli_matic/presets.cljc",
+                               :line 126,
+                               :arglists ([st v]),
+                               :doc "Finds candidates after normalization.\nReturn original candidates.",
+                               :type :var}
+                              {:name set-find-didyoumean-str,
+                               :file "cli_matic/presets.cljc",
+                               :line 140,
+                               :arglists ([st v]),
+                               :doc "Returns ' Did you mean A or B?' or '' if no candidates. \n",
+                               :type :var}
+                              {:name set-find-value,
+                               :file "cli_matic/presets.cljc",
+                               :line 111,
+                               :arglists ([st v]),
+                               :doc "Finds a string value in a set of options.\nTo do this, we first create a map of\n{normalized original}\nReturns valFound or nil.\n",
+                               :type :var}
+                              {:name set-help-values,
+                               :file "cli_matic/presets.cljc",
+                               :line 82,
+                               :arglists ([st]),
+                               :doc "Given a set, return allowed options as string\n",
+                               :type :var}
+                              {:name set-normalize-map,
+                               :file "cli_matic/presets.cljc",
+                               :line 101,
+                               :arglists ([st]),
+                               :doc "Builds a normalized map that\nhas as key the normalized value, and value the\noriginal one.",
+                               :type :var}
+                              {:name set-normalized-entry,
+                               :file "cli_matic/presets.cljc",
+                               :line 92,
+                               :arglists ([v]),
+                               :doc "A normalized set entry is a lowercase string\nwithout trailing `:`.",
+                               :type :var}
+                              {:name SET-OF-FALSE-FLAGS,
+                               :file "cli_matic/presets.cljc",
+                               :line 195,
+                               :type :var}
+                              {:name SET-OF-TRUE-FLAGS,
+                               :file "cli_matic/presets.cljc",
+                               :line 194,
+                               :type :var})}
+                   {:name cli-matic.specs,
+                    :publics ({:name has-elements?,
+                               :file "cli_matic/specs.cljc",
+                               :line 4,
+                               :arglists ([s]),
+                               :type :var}
+                              {:name no-positional-opts,
+                               :file "cli_matic/specs.cljc",
+                               :line 140,
+                               :arglists ([any-subcmd]),
+                               :doc "Makes sure that this subcommand does not have\nany positional argument in its opts",
+                               :type :var})}
+                   {:doc "\n### Utilities used in the project\n\n* the *general* section contains low-level\n  stuff that could be anywhere\n* the *cli-matic* section contain low-level functions\n  used by the parser and the help generators.\n\n\n",
+                    :name cli-matic.utils,
+                    :publics ({:name a-positional-parm,
+                               :file "cli_matic/utils.cljc",
+                               :line 295,
+                               :arglists ([args option]),
+                               :doc "Reads one positional parameter from the arguments.\nReturns a vector [parm value]\nThe value is NOT solved, so it's always a string.",
+                               :type :var}
+                              {:name all-subcommands,
+                               :file "cli_matic/utils.cljc",
+                               :line 233,
+                               :arglists ([climatic-args]),
+                               :doc "Returns all subcommands, as strings.\nWe get all versions of all subcommands.\n",
+                               :type :var}
+                              {:name all-subcommands-aliases,
+                               :file "cli_matic/utils.cljc",
+                               :line 200,
+                               :arglists ([climatic-args]),
+                               :doc "Maps all subcommands and subcommand aliases\nto their canonical name.\nE.g. {'add': 'add', 'a': 'add'}.\n\nWe basically add them all, then remove\nnil keys.\n\n",
+                               :type :var}
+                              {:name assoc-new-multivalue,
+                               :file "cli_matic/utils.cljc",
+                               :line 104,
+                               :arglists ([parameter-map option v]),
+                               :doc "Associates a new multiple value to the\ncurrent parameter map.\nIf the current value is not a vector, creates\na new vector with the new value.",
+                               :type :var}
+                              {:name asString,
+                               :file "cli_matic/utils.cljc",
+                               :line 24,
+                               :arglists ([s]),
+                               :doc "Turns a collection of strings into one string,\nor the string itself.\n\nIf the collection includes multiple sub-arrays,\nthose are flattened into lines as well.\n",
+                               :type :var}
+                              {:name asStrVec,
+                               :file "cli_matic/utils.cljc",
+                               :line 50,
+                               :arglists ([s]),
+                               :doc "Whatever we get in, we want a vector of strings out.\n",
+                               :type :var}
+                              {:name canonicalize-subcommand,
+                               :file "cli_matic/utils.cljc",
+                               :line 244,
+                               :arglists ([commands subcmd]),
+                               :doc "Returns the 'canonical' name of a subcommand,\ni.e. the one that appears in :command, even\nif we pass an alias or short version.",
+                               :type :var}
+                              {:name capture-positional-parms,
+                               :file "cli_matic/utils.cljc",
+                               :line 311,
+                               :arglists ([opts remaining-args]),
+                               :doc "Captures positional parameters in the remaining-args of\na subcommand.",
+                               :type :var}
+                              {:name cm-opts->cli-opts,
+                               :file "cli_matic/utils.cljc",
+                               :line 260,
+                               :arglists ([climatic-opts]),
+                               :doc "\nOut of a cli-matic arg list, generates a set of\noptions for tools.cli.\nIt also adds in the -? and --help options\nto trigger display of helpness.\n",
+                               :type :var}
+                              {:name deep-merge,
+                               :file "cli_matic/utils.cljc",
+                               :line 84,
+                               :arglists ([& maps]),
+                               :doc "\nMerges a number of maps, considering values in inner maps.\n\nSee https://gist.github.com/danielpcox/c70a8aa2c36766200a95#gistcomment-2308595\n",
+                               :type :var}
+                              {:name exception-info,
+                               :file "cli_matic/utils.cljc",
+                               :line 339,
+                               :arglists ([e]),
+                               :doc "Checks the exception; if it was created using [[exit!]]\nwe get that data out; if not, standard exception.\n\nReturns [message exit-code].\n\nTo understand whether it was created by [[exit!]] we\ncheck for a *top-secret* key with a secret value - pls don't tell\nanyone, man. You might immanentize the eschaton.\n",
+                               :type :var}
+                              {:name exit!,
+                               :file "cli_matic/utils.cljc",
+                               :line 325,
+                               :arglists ([message errorcode]),
+                               :doc "Raises an exception that will print a message\nwithout the stack trace. Can specify an optional\nexit code; if not specified, zero.\n\nSee [[exception-info]].\n",
+                               :type :var}
+                              {:name get-cli-option,
+                               :file "cli_matic/utils.cljc",
+                               :line 140,
+                               :arglists ([type]),
+                               :type :var}
+                              {:name indent,
+                               :file "cli_matic/utils.cljc",
+                               :line 67,
+                               :arglists ([s]),
+                               :doc "Indents a single string, or each string\nin a collection of strings.",
+                               :type :var}
+                              {:name indent-string,
+                               :file "cli_matic/utils.cljc",
+                               :line 58,
+                               :arglists ([s]),
+                               :doc "Indents a single string by one space.\n",
+                               :type :var}
+                              {:name mk-cli-option,
+                               :file "cli_matic/utils.cljc",
+                               :line 162,
+                               :arglists ([{:keys [option
+                                                   short
+                                                   as
+                                                   type
+                                                   default
+                                                   multiple
+                                                   env]}]),
+                               :doc "Builds a tools.cli option out of our own format.\n\nIf for-parsing is true, the option will be used for parsing;\nif false, for generating help messages.\n\n",
+                               :type :var}
+                              {:name mk-env-name,
+                               :file "cli_matic/utils.cljc",
+                               :line 132,
+                               :arglists ([description
+                                           env
+                                           for-parsing?]),
+                               :doc "Writes a description with the env name by the end.\n",
+                               :type :var}
+                              {:name mk-long-opt,
+                               :file "cli_matic/utils.cljc",
+                               :line 123,
+                               :arglists ([option placeholder type]),
+                               :doc "Converts long climatic option to long tools.cli option\n",
+                               :type :var}
+                              {:name mk-short-opt,
+                               :file "cli_matic/utils.cljc",
+                               :line 116,
+                               :arglists ([short]),
+                               :doc "Converts short climatic option to short tools.cli option\n",
+                               :type :var}
+                              {:name pad,
+                               :file "cli_matic/utils.cljc",
+                               :line 75,
+                               :arglists ([s s1 len]),
+                               :doc "Pads 's[, s1]' to so many characters\n",
+                               :type :var}
+                              {:name positional-parms-from-opts,
+                               :file "cli_matic/utils.cljc",
+                               :line 283,
+                               :arglists ([opts]),
+                               :doc "\nReturns a list of positional parameters from a subcommand option.\n",
+                               :type :var}
+                              {:name printErr,
+                               :file "cli_matic/utils.cljc",
+                               :line 43,
+                               :arglists ([s]),
+                               :doc "Like [[printString]] but writes on stderr\n",
+                               :type :var}
+                              {:name printString,
+                               :file "cli_matic/utils.cljc",
+                               :line 36,
+                               :arglists ([s]),
+                               :doc "Prints a string (either single, or a nested vector of it).\n",
+                               :type :var})}
+                   {:doc "\n  ### String candidates tools.\n\nThis namespace contains utilities to compute string candidates.\n\n  ",
+                    :name cli-matic.utils-candidates,
+                    :publics ({:name candidate-suggestions,
+                               :file "cli_matic/utils_candidates.cljc",
+                               :line 66,
+                               :arglists ([candidates
+                                           cmd
+                                           max-str-distance]),
+                               :doc "Returns candidate suggestions, in order of\nreliability.",
+                               :type :var}
+                              {:name str-distance,
+                               :file "cli_matic/utils_candidates.cljc",
+                               :line 57,
+                               :arglists ([a b]),
+                               :doc "Distance between two strings, as expressed in percentage\nof changes to the length of the longest string.\n\n",
+                               :type :var})}
+                   {:doc "\n#  Convert old configuration (v1) to the new format (v2), in a printable way.\n\nThis comes in handy when evolving existing scripts.\n\nATM it only works for Clojure, and not so well, as symbol\nde-munging is not 100% deterministic (minuses and underscores are mixed).\n\nThis namespace is not referenced from anywhere else in CLI-matic.\n\n",
+                    :name cli-matic.utils-convert-config,
+                    :publics ({:name convert-and-print,
+                               :file "cli_matic/utils_convert_config.clj",
+                               :line 79,
+                               :arglists ([cfg-v1]),
+                               :doc "Given a configuration v1, pretty-prints the corresponding\nconfiguration v2 that you can copy-and-paste it into\nyour scripts.\n",
+                               :type :var}
+                              {:name fn->className,
+                               :file "cli_matic/utils_convert_config.clj",
+                               :line 45,
+                               :arglists ([a-fn]),
+                               :doc "Extracts the class name for a given function.\n",
+                               :type :var}
+                              {:name fn-name,
+                               :file "cli_matic/utils_convert_config.clj",
+                               :line 60,
+                               :arglists ([f]),
+                               :doc "This works, but only as a macro.\n",
+                               :type :macro}
+                              {:name replace-runs-entries,
+                               :file "cli_matic/utils_convert_config.clj",
+                               :line 65,
+                               :arglists ([v]),
+                               :doc "Whenever we find an entry [:runs fnxxxx] we  replace the\nfunction with its symbol.",
+                               :type :var}
+                              {:name unmangle-fn,
+                               :file "cli_matic/utils_convert_config.clj",
+                               :line 52,
+                               :arglists ([a-fn]),
+                               :doc "Given a non-anonymous function, returns its Clojure name as a symbol.\n",
+                               :type :var}
+                              {:name unmangle-fn-name,
+                               :file "cli_matic/utils_convert_config.clj",
+                               :line 25,
+                               :arglists ([a-fn-name]),
+                               :doc "Given the name of a class that implements a Clojure function, returns the function's name in Clojure. Note: If the true Clojure function name\n contains any underscores (a rare occurrence), the unmangled name will\n contain hyphens at those locations instead.\n\nInspired by https://www.mail-archive.com/clojure@googlegroups.com/msg13018.html\n\nThere is a similar function in 'clojure.repl/demunge' that screws up\nin a very similar way for symbols  that have a '_' or a '-' in their name,\n\n ",
+                               :type :var})}
+                   {:doc "\n#  Utils to work with nested configuration trees (cfg v2)\n\n- Convert commands v1 to v2 (fully nested).\n- Accessors for data in a nested structure\n\n",
+                    :name cli-matic.utils-v2,
+                    :publics ({:name add-setup-defaults-v1,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 52,
+                               :arglists ([supplied-setup]),
+                               :doc "Adds all elements that need to be in the setup spec\nbut we allow the caller not specify explicitly.",
+                               :type :var}
+                              {:name as-canonical-path,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 165,
+                               :arglists ([subcommands]),
+                               :doc "\nGets the canonical path from an executable-sequence\nof subcommands, as obtained from [[walk]].\n",
+                               :type :var}
+                              {:name can-walk?,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 146,
+                               :arglists ([cfg path]),
+                               :doc "Check that you can walk up to a point.\nIt basically traps the exception.",
+                               :type :var}
+                              {:name canonical-path-to-string,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 185,
+                               :arglists ([path]),
+                               :type :var}
+                              {:name cfg-v2,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 58,
+                               :arglists ([cfg]),
+                               :doc " Converts a config object into v2, if not already v2.\n\n",
+                               :type :var}
+                              {:name convert-config-v1->v2,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 17,
+                               :arglists ([cmd_v1]),
+                               :doc "Converts a command version 1 to v2.\n\nA command v1 has always an outer `::S/climatic-cfg`\nwhile a v2 is fully nested.\n\nNote that even in the case where there is only one\ncommand to be run, we still retain the same invocation\nformat as it originally was - no surprises.\n\n",
+                               :type :var}
+                              {:name get-most-specific-value,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 235,
+                               :arglists ([cfg path a-key default]
+                                          [cfg path a-key]),
+                               :doc "Given a configuration and a path through it, gets the most\nspecific value for an option.\n\nFor example, the help generator might be defined on each subcommand,\nor on the root node, or nowhere. We always take the most specific\nvalue.\n\nIf the value is defined nowhere, we return a default.\n\n",
+                               :type :var}
+                              {:name get-options-for,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 200,
+                               :arglists ([cfg path]),
+                               :doc "Given a configuration and a path through it,\nreturns :opts for the last subcommmand.",
+                               :type :var}
+                              {:name get-subcommand,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 194,
+                               :arglists ([cfg path]),
+                               :doc "Given a configuration and a path through it,\nreeturns the last subcommand.",
+                               :type :var}
+                              {:name is-runnable?,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 173,
+                               :arglists ([xp]),
+                               :doc "Checks if the last element if the\nexecutable path is actually runnable, that is,\na command.",
+                               :type :var}
+                              {:name isRightCmd?,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 78,
+                               :arglists ([command-or-short-name cfg]),
+                               :doc "Check if this is the right command or not,\nby name or alias.",
+                               :type :var}
+                              {:name list-positional-parms,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 222,
+                               :arglists ([cfg subcmd]),
+                               :doc "Extracts all positional parameters from the configuration.\n",
+                               :type :var}
+                              {:name rewrite-opts,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 206,
+                               :arglists ([climatic-args subcmd]),
+                               :doc "\nOut of a cli-matic arg list, generates a set of\noptions for tools.cli.\nIt also adds in the -? and --help options\nto trigger display of helpness.\n",
+                               :type :var}
+                              {:name SETUP-DEFAULTS-v1,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 46,
+                               :type :var}
+                              {:name walk,
+                               :file "cli_matic/utils_v2.cljc",
+                               :line 85,
+                               :arglists ([cfg path]),
+                               :doc "\nWalks a path through a configuration object,\nand returns a list of all elements,\nin order from root to leaf, as an\nexecutable path.\n\nDoes not assert that the last element is a leaf.\n\nThe path:\n- A subcommand path.\n-  If empty, no subcommands and no globals\n-  Each member is the canonical name of a subcommand.\n-  Each member but the last is of type ::branch-subcommand\n\nIt is possible to convert an executable-path back\ninto a path with [[as-canonical-path]].\n\n",
+                               :type :var})}),
+            "cljs" ({:name cli-matic.core,
+                     :doc "\n### ATTENTION\n\nCLI-matic has one main entry-point: [[run-cmd]].\n\nAs an end-user, you need nothing else,  but the documentation\nthat explains how parameters are to be run.\n\nSee `examples/` to get started quickly.\n\n*Developers*\n\nMost of the logic will be run in [[run-cmd*]] to make testing easier,\nas [[run-cmd]] calls `System/exit`.\n\n",
+                     :publics ({:name assert-cfg-sanity,
+                                :file "cli_matic/core.cljc",
+                                :line 443,
+                                :arglists ([_]),
+                                :type :var}
+                               {:name assert-unique-values,
+                                :file "cli_matic/core.cljc",
+                                :line 414,
+                                :arglists ([name vec-opts option]),
+                                :doc "Check that all values are unique.\nname is the area of the configuration\nvec-opts are the options to check\noption is the keyword to check.\n",
+                                :type :var}
+                               {:name check-one-spec,
+                                :file "cli_matic/core.cljc",
+                                :line 195,
+                                :arglists ([name type spec value]),
+                                :doc "Checks one spec.\n\n  - If spec passes, returns nil; if not, returns the failure.\n  - If there is an error raised, creates a fake spec result.\n  - If spec is nil, we consider it a pass.\n  - if the value is nil, we consider it missing and don't need to check.\n\n  `explain-data` return nil if everything okay.\n\n  `expound-string` returns 'Success!\n' if all goes well.\n\n\n  ",
+                                :type :var}
+                               {:name check-specs-on-parameters,
+                                :file "cli_matic/core.cljc",
+                                :line 240,
+                                :arglists ([options
+                                            parsed-results
+                                            type]),
+                                :doc "Given a set of option (so, global options, or a subcommand's options)\nand the fully parsed results, we assert that any defined specs pass.\n\nThis we do only if the parameter is not nil, that is, is present or\nhas a default value.\n\nIf the parameter should be present but it's not, it's not a spec issue\nbut a ':default :present' issue.\n",
+                                :type :var}
+                               {:name errors-for-missing-mandatory-args,
+                                :file "cli_matic/core.cljc",
+                                :line 57,
+                                :arglists ([climatic-options
+                                            parsed-opts
+                                            other-options]),
+                                :doc "Gets us a sequence of errors if mandatory options are missing.\nOptions read by cli module are merged with other options, e.g.\npositional parameters.\n",
+                                :type :var}
+                               {:name getReturnValue,
+                                :file "cli_matic/core.cljc",
+                                :line 506,
+                                :arglists ([rv]),
+                                :doc "Evaluates the result of the CLI-matic subcommand.\nA result can be nil, or int?, or a  deferred value,\nin which case we wait in a platform-specific way.\n",
+                                :type :var}
+                               {:name invoke-subcmd,
+                                :file "cli_matic/core.cljc",
+                                :line 525,
+                                :arglists ([subcommand-def options]),
+                                :doc "Invokes a subcommand, and produces a Return Value.\n\nThe subcommand may:\n\n* return an integer (to specify exit code)\n* return nil\n* throw a Throwable object\n\n\nIf there is a shutdown hook defined, we also add the shutdown hook\nbefore the command is run. If there is a shutdown hook,\nit is called anyway when the JVM terminates - if you only want this\ncalled on early shutdowns, it's up to you to keep some state\nin a shared atom and decide whether to do something or not.\n\n",
+                                :type :var}
+                               {:name mk-fake-args,
+                                :file "cli_matic/core.cljc",
+                                :line 88,
+                                :arglists ([parms]),
+                                :doc "Builds the set of fake arguments that we append to our\nsubcommands' own CLI items\nwhen we have positional parameters.\nIf value is nil, option is not added.\n\nWe receive a map of options and output a vector of strings.\n",
+                                :type :var}
+                               {:name mkError,
+                                :file "cli_matic/core.cljc",
+                                :line 30,
+                                :arglists ([config
+                                            subcommand
+                                            error
+                                            text]),
+                                :doc "Builds an error condition.\n",
+                                :type :var}
+                               {:name parse-cmds-with-defaults,
+                                :file "cli_matic/core.cljc",
+                                :line 110,
+                                :arglists ([opts
+                                            argv
+                                            in-order?
+                                            fn-env]),
+                                :doc "Parses a command line with environment defaults.\n\nWe want environment defaults to be PARSED, so they will go through\nthe same validation/check cycle as other elements.\nSo - if any of them - we first run parsing disabling defaults,\nthen go check if they are available in parsed elements;\nif they are not, we inject them as options to the left of argv\nand parse again.\n\n(As a side effect, if you have a wrong value for your option, and a\ndefault, the default will be used - YMMV).\n\n",
+                                :type :var}
+                               {:name parse-cmds-with-positions,
+                                :file "cli_matic/core.cljc",
+                                :line 155,
+                                :arglists ([opts argv fn-env]),
+                                :doc "To process positional parameters, first we run some parsing; if\nall goes well, we capture the values of positional\narguments and run parsing again with a command line that has those\nitems as if they were expressed.\n\nThis means that type casting and validation just happen in one place\n(CLI parsing) and  we don't have to do them separately.\n\nThis function is used both for global and subcmd parsing,\nbut when doing global parsing, positional parameters are\nnot allowed, so they never come in.\n",
+                                :type :var}
+                               {:name parse-command-line,
+                                :file "cli_matic/core.cljc",
+                                :line 266,
+                                :arglists ([argv config]),
+                                :doc "\nThis is where the magic happens.\n\nWhereas in version 1 we had one 'global' level and one\nsub-command, now we have many. From the point of view of\nsub-commands, all intermediate levels but actual executable\nsub-commands are global levels; each of them may capture\nits own variables and have them validated via specs.\n\nSo we first try walking to the current level through the\nconfiguration, capture and verify what is needed at this level\nand then terminate only if we are on a leaf (executable subcommand)\nor there is any error.\n\nSpec checking:\n\n- If parsing goes well, parameter specs are checked on each parameter\n- If all of them go well, general spec is checked on the current result\n  of all parsing; that is, including results form all earlier\n  general settings\n\n\nTODO:\n - candidates\n - help\n\n",
+                                :type :var}
+                               {:name run-cmd,
+                                :file "cli_matic/core.cljc",
+                                :line 591,
+                                :arglists ([args supplied-config]),
+                                :doc "This is the actual function that is executed.\nIt wraps [[run-cmd*]] and then does the printing\nof any errors, of help pages and  `System.exit`.\n\nAs it invokes `System.exit` you cannot use it from\na REPL (well, you technically can, but...).\n",
+                                :type :var}
+                               {:name run-cmd*,
+                                :file "cli_matic/core.cljc",
+                                :line 560,
+                                :arglists ([setup args]),
+                                :doc "\nExecutes our code.\n\nIt will try and parse the arguments via `clojure.tools.cli` and detect our subcommand.\n\nIf no subcommand was found, it will print the error reminder.\n\nOn exceptions, it will raise an exception message.\n\n",
+                                :type :var})}
+                    {:name cli-matic.help-gen,
+                     :doc "\n## Generate help texts.\n\n",
+                     :publics ({:name arg-list-with-positional-entries,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 175,
+                                :arglists ([cfg cmd]),
+                                :doc "Creates the `[arguments...]`\n",
+                                :type :var}
+                               {:name generate-a-command,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 110,
+                                :arglists ([{:keys [command
+                                                    short
+                                                    description]}]),
+                                :doc "Maybe we should use a way to format commands\n\nE.g.\n(pp/cl-format true \"~{ ~vA  ~vA  ~vA ~}\" v)\n\n\n(clojure.pprint/cl-format true \"~3a ~a\" \"pippo\" \"pluto\")\n",
+                                :type :var}
+                               {:name generate-global-command-list,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 128,
+                                :arglists ([commands]),
+                                :doc "Creates a list of commands and descriptions.\nCommands are of kind ::S/commands\n",
+                                :type :var}
+                               {:name generate-global-help,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 140,
+                                :arglists ([cfg path]),
+                                :doc "This is where we generate global help, so\nglobal attributes and subcommands.\n\nThis is called for all branch nodes (not just the root),\nand not leaves, therefore we had to add the path as\na parameter to tell who is who.\n\n",
+                                :type :var}
+                               {:name generate-help-possible-mistypes,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 242,
+                                :arglists ([cfg wrong-subcmd]),
+                                :doc "If we have a wrong subcommand, can we guess what the correct\none could have been?\n\n\n",
+                                :type :var}
+                               {:name generate-possible-mistypes,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 221,
+                                :arglists ([wrong-subcmd
+                                            commands
+                                            aliases]),
+                                :doc "We go searching if we have any candidates\nto be considered mistypes.\n\nWe require a miss ratio of [[MISTYPE-ERR-RATIO]]\nand we return them by similarity.\n\n",
+                                :type :var}
+                               {:name generate-section,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 16,
+                                :arglists ([title lines]),
+                                :doc "Generates a section (as a collection of strings,\npossibly nested, but we'll flatten it out).\nIf a section has no content, we return [].\n",
+                                :type :var}
+                               {:name generate-sections,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 29,
+                                :arglists ([name
+                                            version
+                                            usage
+                                            commands
+                                            opts-title
+                                            opts
+                                            examples]),
+                                :doc "Generates all sections.\nAll those positional parameters are not that nice.\n",
+                                :type :var}
+                               {:name generate-subcmd-help,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 183,
+                                :arglists ([cfg cmd]),
+                                :doc "This is where we generate help for a specific subcommand.\n",
+                                :type :var}
+                               {:name get-first-rest-description-rows,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 97,
+                                :arglists ([row-or-rows]),
+                                :doc "get title and description of description rows\n",
+                                :type :var}
+                               {:name get-options-summary,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 79,
+                                :arglists ([cfg subcmd]),
+                                :doc "To get the summary of options, we pass options to\ntools.cli parse-opts and an empty set of arguments.\nParsing will fail but we get the :summary.\nWe then split it into a collection of lines.\n",
+                                :type :var}
+                               {:name getGlobalHelperFn,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 273,
+                                :arglists ([cfg path]),
+                                :type :var}
+                               {:name getSubcommandHelperFn,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 277,
+                                :arglists ([cfg path]),
+                                :type :var}
+                               {:name MISTYPE-ERR-RATIO,
+                                :file "cli_matic/help_gen.cljc",
+                                :line 219,
+                                :type :var})}
+                    {:name cli-matic.optionals,
+                     :doc "### This namespace contains optional dependencies for CLJS.\n\nJSON is always available in CLJS.\n\n",
+                     :publics ({:name json-decode,
+                                :file "cli_matic/optionals.cljs",
+                                :line 11,
+                                :arglists ([json]),
+                                :doc "\nWe should use Transit if present, but this should be enough to get us started.\n\nhttps://cljs.github.io/api/cljs.core/js-GTclj\n",
+                                :type :var}
+                               {:name orchestra-instrument,
+                                :file "cli_matic/optionals.cljs",
+                                :line 32,
+                                :arglists ([]),
+                                :doc "\n",
+                                :type :var}
+                               {:name yaml-decode,
+                                :file "cli_matic/optionals.cljs",
+                                :line 24,
+                                :arglists ([& _]),
+                                :doc "\n",
+                                :type :var})}
+                    {:name cli-matic.platform,
+                     :doc "\n## Platform-specific functions for ClojureScript.\n\nAt the moment, we only support Planck.\n\nBTW, in this NS, we avoid using Spec / Orchestra.\n\n",
+                     :publics ({:name add-shutdown-hook,
+                                :file "cli_matic/platform.cljs",
+                                :line 30,
+                                :arglists ([fnToCallOnShutdown]),
+                                :doc "Add a shutdown hook.\n\nDoes not work (?) on CLJS and we will throw an exception.\n\nIt might be conceivable that in JS-land, we save this locally in this namespace\nand then call it on `exit-script`.\n\n",
+                                :type :var}
+                               {:name asDate,
+                                :file "cli_matic/platform.cljs",
+                                :line 70,
+                                :arglists ([s]),
+                                :doc "Converts a string in format yyyy-mm-dd to a\nDate object; if conversion\nfails, returns nil.",
+                                :type :var}
+                               {:name exit-script,
+                                :file "cli_matic/platform.cljs",
+                                :line 22,
+                                :arglists ([retval]),
+                                :doc "Terminates execution with a return value.\n\nPlease note that in Planck, return codes seem to be 8-bit unsigned ints.\n",
+                                :type :var}
+                               {:name isDeferredValue?,
+                                :file "cli_matic/platform.cljs",
+                                :line 86,
+                                :arglists ([_]),
+                                :doc "Is this a deferred value for this platform?\n",
+                                :type :var}
+                               {:name parseEdn,
+                                :file "cli_matic/platform.cljs",
+                                :line 77,
+                                :arglists ([edn-in]),
+                                :doc "\nThis is actually a piece of ClojureScript, though it lives in a different NS.\n\nSee https://cljs.github.io/api/cljs.reader/read-string\n",
+                                :type :var}
+                               {:name parseFloat,
+                                :file "cli_matic/platform.cljs",
+                                :line 65,
+                                :arglists ([s]),
+                                :doc "Converts a string to a float.\n",
+                                :type :var}
+                               {:name parseInt,
+                                :file "cli_matic/platform.cljs",
+                                :line 60,
+                                :arglists ([s]),
+                                :doc "Converts a string to an integer. \n",
+                                :type :var}
+                               {:name printError,
+                                :file "cli_matic/platform.cljs",
+                                :line 108,
+                                :arglists ([o]),
+                                :doc "On ClojureScript, STDERR is not *err* but it's platform dependent.\n\nThanks @mfikes for the tip!  (issue #111)\n",
+                                :type :var}
+                               {:name read-env,
+                                :file "cli_matic/platform.cljs",
+                                :line 15,
+                                :arglists ([var]),
+                                :doc "Reads an environment variable.\nIf undefined, returns nil.",
+                                :type :var}
+                               {:name slurp-file,
+                                :file "cli_matic/platform.cljs",
+                                :line 44,
+                                :arglists ([f]),
+                                :doc "\nLuckily, Planck implements slurp for us.\n\nNo slurping in Node-land.\n\nSee https://github.com/pkpkpk/cljs-node-io\n\n",
+                                :type :var}
+                               {:name waitForDeferredValue,
+                                :file "cli_matic/platform.cljs",
+                                :line 92,
+                                :arglists ([x]),
+                                :doc "Given that value is a deferred  value for this platform,\nblock termination until it's realized.\n\nOn JS, we support:\n\n- nothing yet...\n\n",
+                                :type :var})}
+                    {:name cli-matic.platform-macros,
+                     :doc "## Macros shared between CLJ and CLJS.\n\nUnfortunately:\n\n- Macros must be in a separate file (for CLJS)\n- Macros have a different import syntax (CLJS)\n- Macros defined in .clj  will STILL be loaded by CLJS and will fail big time.\n\nSo we have to use a separate namespace and hide everything behind reader conditionals.\n\nUsage is:\n\n#?(:clj [cli-matic.platform-macros :refer [try-catch-all]]\n\n   :cljs [cli-matic.platform-macros :refer-macros [try-catch-all]]\n             )\n\nThis was a real PITA, man.\n\n",
+                     :publics ({:name try-catch-all,
+                                :file "cli_matic/platform_macros.cljc",
+                                :line 44,
+                                :arglists ([f onErr]),
+                                :doc "\nSee the .clj docs.",
+                                :type :macro})}
+                    {:name cli-matic.presets,
+                     :doc "\n### Known presets\n\n\n",
+                     :publics ({:name asDecodedEdnFile,
+                                :file "cli_matic/presets.cljc",
+                                :line 41,
+                                :arglists ([filename]),
+                                :doc "Decodes the contents of a file as a JSON object.\n",
+                                :type :var}
+                               {:name asDecodedEdnValue,
+                                :file "cli_matic/presets.cljc",
+                                :line 35,
+                                :arglists ([s]),
+                                :doc "Decodes the value as an EDN structure.\n",
+                                :type :var}
+                               {:name asDecodedJsonFile,
+                                :file "cli_matic/presets.cljc",
+                                :line 51,
+                                :arglists ([filename]),
+                                :doc "Decodes the contents of a file as a JSON object.\n",
+                                :type :var}
+                               {:name asDecodedJsonValue,
+                                :file "cli_matic/presets.cljc",
+                                :line 46,
+                                :arglists ([s]),
+                                :doc "Decodes the value as a JSON object.\n",
+                                :type :var}
+                               {:name asDecodedYamlFile,
+                                :file "cli_matic/presets.cljc",
+                                :line 61,
+                                :arglists ([filename]),
+                                :doc "Decodes the contents of a file as a JSON object.\n",
+                                :type :var}
+                               {:name asDecodedYamlValue,
+                                :file "cli_matic/presets.cljc",
+                                :line 56,
+                                :arglists ([s]),
+                                :doc "Decodes the value as a YAML object.\n",
+                                :type :var}
+                               {:name asKeyword,
+                                :file "cli_matic/presets.cljc",
+                                :line 72,
+                                :arglists ([s]),
+                                :type :var}
+                               {:name asLinesString,
+                                :file "cli_matic/presets.cljc",
+                                :line 30,
+                                :arglists ([filename]),
+                                :doc "Reads a text file and returns it as a collection of lines.\n",
+                                :type :var}
+                               {:name asSet,
+                                :file "cli_matic/presets.cljc",
+                                :line 155,
+                                :arglists ([st v]),
+                                :doc "Sets of options are dark black magic.\nThey are also darn useful.\n\nA set can be composed of all-keywords or all-strings.\n\nValues are matched ignoring case, and the correct one\nis returned in the case and type it appears in the set.\nThe default value, if present, is returned as-is, even if\nnot a member of the set.\n\nKeywords are accepted with our without trailing `:`.\n\nOn missing values, the closest matches are searched and printed.\n\nFor example, on a set #{:a :b :c}, `A` `a` `:A` and `:a` all match `:a`.\n\nDefaults for a set are all values, with no colons, separated by a pipe.\n\n",
+                                :type :var}
+                               {:name asSingleString,
+                                :file "cli_matic/presets.cljc",
+                                :line 16,
+                                :arglists ([filename]),
+                                :doc "Turns a filename into a single string.\n\nIf argument is a String, it tries to resolve it first as a URI, then\nas a local file name.  URIs with a 'file' protocol are converted to\nlocal file names.\n\n",
+                                :type :var}
+                               {:name known-presets,
+                                :file "cli_matic/presets.cljc",
+                                :line 215,
+                                :type :var}
+                               {:name parseFlag,
+                                :file "cli_matic/presets.cljc",
+                                :line 197,
+                                :arglists ([flagStr]),
+                                :doc "Converts a flag string to a boolean.\nComparison is case-insensitive.\n",
+                                :type :var}
+                               {:name set-find-didyoumean,
+                                :file "cli_matic/presets.cljc",
+                                :line 126,
+                                :arglists ([st v]),
+                                :doc "Finds candidates after normalization.\nReturn original candidates.",
+                                :type :var}
+                               {:name set-find-didyoumean-str,
+                                :file "cli_matic/presets.cljc",
+                                :line 140,
+                                :arglists ([st v]),
+                                :doc "Returns ' Did you mean A or B?' or '' if no candidates. \n",
+                                :type :var}
+                               {:name set-find-value,
+                                :file "cli_matic/presets.cljc",
+                                :line 111,
+                                :arglists ([st v]),
+                                :doc "Finds a string value in a set of options.\nTo do this, we first create a map of\n{normalized original}\nReturns valFound or nil.\n",
+                                :type :var}
+                               {:name set-help-values,
+                                :file "cli_matic/presets.cljc",
+                                :line 82,
+                                :arglists ([st]),
+                                :doc "Given a set, return allowed options as string\n",
+                                :type :var}
+                               {:name set-normalize-map,
+                                :file "cli_matic/presets.cljc",
+                                :line 101,
+                                :arglists ([st]),
+                                :doc "Builds a normalized map that\nhas as key the normalized value, and value the\noriginal one.",
+                                :type :var}
+                               {:name set-normalized-entry,
+                                :file "cli_matic/presets.cljc",
+                                :line 92,
+                                :arglists ([v]),
+                                :doc "A normalized set entry is a lowercase string\nwithout trailing `:`.",
+                                :type :var}
+                               {:name SET-OF-FALSE-FLAGS,
+                                :file "cli_matic/presets.cljc",
+                                :line 195,
+                                :type :var}
+                               {:name SET-OF-TRUE-FLAGS,
+                                :file "cli_matic/presets.cljc",
+                                :line 194,
+                                :type :var})}
+                    {:name cli-matic.specs,
+                     :publics ({:name has-elements?,
+                                :file "cli_matic/specs.cljc",
+                                :line 4,
+                                :arglists ([s]),
+                                :type :var}
+                               {:name no-positional-opts,
+                                :file "cli_matic/specs.cljc",
+                                :line 140,
+                                :arglists ([any-subcmd]),
+                                :doc "Makes sure that this subcommand does not have\nany positional argument in its opts",
+                                :type :var})}
+                    {:name cli-matic.utils,
+                     :doc "\n### Utilities used in the project\n\n* the *general* section contains low-level\n  stuff that could be anywhere\n* the *cli-matic* section contain low-level functions\n  used by the parser and the help generators.\n\n\n",
+                     :publics ({:name a-positional-parm,
+                                :file "cli_matic/utils.cljc",
+                                :line 295,
+                                :arglists ([args option]),
+                                :doc "Reads one positional parameter from the arguments.\nReturns a vector [parm value]\nThe value is NOT solved, so it's always a string.",
+                                :type :var}
+                               {:name all-subcommands,
+                                :file "cli_matic/utils.cljc",
+                                :line 233,
+                                :arglists ([climatic-args]),
+                                :doc "Returns all subcommands, as strings.\nWe get all versions of all subcommands.\n",
+                                :type :var}
+                               {:name all-subcommands-aliases,
+                                :file "cli_matic/utils.cljc",
+                                :line 200,
+                                :arglists ([climatic-args]),
+                                :doc "Maps all subcommands and subcommand aliases\nto their canonical name.\nE.g. {'add': 'add', 'a': 'add'}.\n\nWe basically add them all, then remove\nnil keys.\n\n",
+                                :type :var}
+                               {:name assoc-new-multivalue,
+                                :file "cli_matic/utils.cljc",
+                                :line 104,
+                                :arglists ([parameter-map option v]),
+                                :doc "Associates a new multiple value to the\ncurrent parameter map.\nIf the current value is not a vector, creates\na new vector with the new value.",
+                                :type :var}
+                               {:name asString,
+                                :file "cli_matic/utils.cljc",
+                                :line 24,
+                                :arglists ([s]),
+                                :doc "Turns a collection of strings into one string,\nor the string itself.\n\nIf the collection includes multiple sub-arrays,\nthose are flattened into lines as well.\n",
+                                :type :var}
+                               {:name asStrVec,
+                                :file "cli_matic/utils.cljc",
+                                :line 50,
+                                :arglists ([s]),
+                                :doc "Whatever we get in, we want a vector of strings out.\n",
+                                :type :var}
+                               {:name canonicalize-subcommand,
+                                :file "cli_matic/utils.cljc",
+                                :line 244,
+                                :arglists ([commands subcmd]),
+                                :doc "Returns the 'canonical' name of a subcommand,\ni.e. the one that appears in :command, even\nif we pass an alias or short version.",
+                                :type :var}
+                               {:name capture-positional-parms,
+                                :file "cli_matic/utils.cljc",
+                                :line 311,
+                                :arglists ([opts remaining-args]),
+                                :doc "Captures positional parameters in the remaining-args of\na subcommand.",
+                                :type :var}
+                               {:name cm-opts->cli-opts,
+                                :file "cli_matic/utils.cljc",
+                                :line 260,
+                                :arglists ([climatic-opts]),
+                                :doc "\nOut of a cli-matic arg list, generates a set of\noptions for tools.cli.\nIt also adds in the -? and --help options\nto trigger display of helpness.\n",
+                                :type :var}
+                               {:name deep-merge,
+                                :file "cli_matic/utils.cljc",
+                                :line 84,
+                                :arglists ([& maps]),
+                                :doc "\nMerges a number of maps, considering values in inner maps.\n\nSee https://gist.github.com/danielpcox/c70a8aa2c36766200a95#gistcomment-2308595\n",
+                                :type :var}
+                               {:name exception-info,
+                                :file "cli_matic/utils.cljc",
+                                :line 339,
+                                :arglists ([e]),
+                                :doc "Checks the exception; if it was created using [[exit!]]\nwe get that data out; if not, standard exception.\n\nReturns [message exit-code].\n\nTo understand whether it was created by [[exit!]] we\ncheck for a *top-secret* key with a secret value - pls don't tell\nanyone, man. You might immanentize the eschaton.\n",
+                                :type :var}
+                               {:name exit!,
+                                :file "cli_matic/utils.cljc",
+                                :line 325,
+                                :arglists ([message errorcode]),
+                                :doc "Raises an exception that will print a message\nwithout the stack trace. Can specify an optional\nexit code; if not specified, zero.\n\nSee [[exception-info]].\n",
+                                :type :var}
+                               {:name get-cli-option,
+                                :file "cli_matic/utils.cljc",
+                                :line 140,
+                                :arglists ([type]),
+                                :type :var}
+                               {:name indent,
+                                :file "cli_matic/utils.cljc",
+                                :line 67,
+                                :arglists ([s]),
+                                :doc "Indents a single string, or each string\nin a collection of strings.",
+                                :type :var}
+                               {:name indent-string,
+                                :file "cli_matic/utils.cljc",
+                                :line 58,
+                                :arglists ([s]),
+                                :doc "Indents a single string by one space.\n",
+                                :type :var}
+                               {:name mk-cli-option,
+                                :file "cli_matic/utils.cljc",
+                                :line 162,
+                                :arglists ([{:keys [option
+                                                    short
+                                                    as
+                                                    type
+                                                    default
+                                                    multiple
+                                                    env]}]),
+                                :doc "Builds a tools.cli option out of our own format.\n\nIf for-parsing is true, the option will be used for parsing;\nif false, for generating help messages.\n\n",
+                                :type :var}
+                               {:name mk-env-name,
+                                :file "cli_matic/utils.cljc",
+                                :line 132,
+                                :arglists ([description
+                                            env
+                                            for-parsing?]),
+                                :doc "Writes a description with the env name by the end.\n",
+                                :type :var}
+                               {:name mk-long-opt,
+                                :file "cli_matic/utils.cljc",
+                                :line 123,
+                                :arglists ([option placeholder type]),
+                                :doc "Converts long climatic option to long tools.cli option\n",
+                                :type :var}
+                               {:name mk-short-opt,
+                                :file "cli_matic/utils.cljc",
+                                :line 116,
+                                :arglists ([short]),
+                                :doc "Converts short climatic option to short tools.cli option\n",
+                                :type :var}
+                               {:name pad,
+                                :file "cli_matic/utils.cljc",
+                                :line 75,
+                                :arglists ([s s1 len]),
+                                :doc "Pads 's[, s1]' to so many characters\n",
+                                :type :var}
+                               {:name positional-parms-from-opts,
+                                :file "cli_matic/utils.cljc",
+                                :line 283,
+                                :arglists ([opts]),
+                                :doc "\nReturns a list of positional parameters from a subcommand option.\n",
+                                :type :var}
+                               {:name printErr,
+                                :file "cli_matic/utils.cljc",
+                                :line 43,
+                                :arglists ([s]),
+                                :doc "Like [[printString]] but writes on stderr\n",
+                                :type :var}
+                               {:name printString,
+                                :file "cli_matic/utils.cljc",
+                                :line 36,
+                                :arglists ([s]),
+                                :doc "Prints a string (either single, or a nested vector of it).\n",
+                                :type :var})}
+                    {:name cli-matic.utils-candidates,
+                     :doc "\n  ### String candidates tools.\n\nThis namespace contains utilities to compute string candidates.\n\n  ",
+                     :publics ({:name candidate-suggestions,
+                                :file "cli_matic/utils_candidates.cljc",
+                                :line 66,
+                                :arglists ([candidates
+                                            cmd
+                                            max-str-distance]),
+                                :doc "Returns candidate suggestions, in order of\nreliability.",
+                                :type :var}
+                               {:name str-distance,
+                                :file "cli_matic/utils_candidates.cljc",
+                                :line 57,
+                                :arglists ([a b]),
+                                :doc "Distance between two strings, as expressed in percentage\nof changes to the length of the longest string.\n\n",
+                                :type :var})}
+                    {:name cli-matic.utils-v2,
+                     :doc "\n#  Utils to work with nested configuration trees (cfg v2)\n\n- Convert commands v1 to v2 (fully nested).\n- Accessors for data in a nested structure\n\n",
+                     :publics ({:name add-setup-defaults-v1,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 52,
+                                :arglists ([supplied-setup]),
+                                :doc "Adds all elements that need to be in the setup spec\nbut we allow the caller not specify explicitly.",
+                                :type :var}
+                               {:name as-canonical-path,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 165,
+                                :arglists ([subcommands]),
+                                :doc "\nGets the canonical path from an executable-sequence\nof subcommands, as obtained from [[walk]].\n",
+                                :type :var}
+                               {:name can-walk?,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 146,
+                                :arglists ([cfg path]),
+                                :doc "Check that you can walk up to a point.\nIt basically traps the exception.",
+                                :type :var}
+                               {:name canonical-path-to-string,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 185,
+                                :arglists ([path]),
+                                :type :var}
+                               {:name cfg-v2,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 58,
+                                :arglists ([cfg]),
+                                :doc " Converts a config object into v2, if not already v2.\n\n",
+                                :type :var}
+                               {:name convert-config-v1->v2,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 17,
+                                :arglists ([cmd_v1]),
+                                :doc "Converts a command version 1 to v2.\n\nA command v1 has always an outer `::S/climatic-cfg`\nwhile a v2 is fully nested.\n\nNote that even in the case where there is only one\ncommand to be run, we still retain the same invocation\nformat as it originally was - no surprises.\n\n",
+                                :type :var}
+                               {:name get-most-specific-value,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 235,
+                                :arglists ([cfg path a-key default]
+                                           [cfg path a-key]),
+                                :doc "Given a configuration and a path through it, gets the most\nspecific value for an option.\n\nFor example, the help generator might be defined on each subcommand,\nor on the root node, or nowhere. We always take the most specific\nvalue.\n\nIf the value is defined nowhere, we return a default.\n\n",
+                                :type :var}
+                               {:name get-options-for,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 200,
+                                :arglists ([cfg path]),
+                                :doc "Given a configuration and a path through it,\nreturns :opts for the last subcommmand.",
+                                :type :var}
+                               {:name get-subcommand,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 194,
+                                :arglists ([cfg path]),
+                                :doc "Given a configuration and a path through it,\nreeturns the last subcommand.",
+                                :type :var}
+                               {:name is-runnable?,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 173,
+                                :arglists ([xp]),
+                                :doc "Checks if the last element if the\nexecutable path is actually runnable, that is,\na command.",
+                                :type :var}
+                               {:name isRightCmd?,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 78,
+                                :arglists ([command-or-short-name cfg]),
+                                :doc "Check if this is the right command or not,\nby name or alias.",
+                                :type :var}
+                               {:name list-positional-parms,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 222,
+                                :arglists ([cfg subcmd]),
+                                :doc "Extracts all positional parameters from the configuration.\n",
+                                :type :var}
+                               {:name rewrite-opts,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 206,
+                                :arglists ([climatic-args subcmd]),
+                                :doc "\nOut of a cli-matic arg list, generates a set of\noptions for tools.cli.\nIt also adds in the -? and --help options\nto trigger display of helpness.\n",
+                                :type :var}
+                               {:name SETUP-DEFAULTS-v1,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 46,
+                                :type :var}
+                               {:name walk,
+                                :file "cli_matic/utils_v2.cljc",
+                                :line 85,
+                                :arglists ([cfg path]),
+                                :doc "\nWalks a path through a configuration object,\nand returns a list of all elements,\nin order from root to leaf, as an\nexecutable path.\n\nDoes not assert that the last element is a leaf.\n\nThe path:\n- A subcommand path.\n-  If empty, no subcommands and no globals\n-  Each member is the canonical name of a subcommand.\n-  Each member but the last is of type ::branch-subcommand\n\nIt is possible to convert an executable-path back\ninto a path with [[as-canonical-path]].\n\n",
+                                :type :var})})},
+ :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>cli-matic</groupId>\n  <artifactId>cli-matic</artifactId>\n  <packaging>jar</packaging>\n  <version>0.4.3</version>\n  <name>cli-matic</name>\n  <description>Compact [sub]command line parsing library, for Clojure</description>\n  <url>https://github.com/l3nz/cli-matic</url>\n  <licenses>\n    <license>\n      <name>Eclipse Public License, v2</name>\n      <url>http://www.eclipse.org/legal/epl-v20.html</url>\n    </license>\n  </licenses>\n  <scm>\n    <tag>4bb2c8779732170be40e914a4ffb84f70ec1c16f</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins/>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.9.0</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojurescript</artifactId>\n      <version>1.10.439</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>spec.alpha</artifactId>\n      <version>0.1.143</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>tools.cli</artifactId>\n      <version>1.0.194</version>\n    </dependency>\n    <dependency>\n      <groupId>orchestra</groupId>\n      <artifactId>orchestra</artifactId>\n      <version>2019.02.06-1</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>cheshire</groupId>\n      <artifactId>cheshire</artifactId>\n      <version>5.10.0</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>io.forward</groupId>\n      <artifactId>yaml</artifactId>\n      <version>1.0.9</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>core.async</artifactId>\n      <version>0.5.527</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>l3nz</groupId>\n      <artifactId>planck</artifactId>\n      <version>0.0.0</version>\n      <scope>provided</scope>\n    </dependency>\n    <dependency>\n      <groupId>expound</groupId>\n      <artifactId>expound</artifactId>\n      <version>0.8.4</version>\n    </dependency>\n    <dependency>\n      <groupId>cljc.java-time</groupId>\n      <artifactId>cljc.java-time</artifactId>\n      <version>0.1.11</version>\n      <scope>test</scope>\n    </dependency>\n  </dependencies>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n"}

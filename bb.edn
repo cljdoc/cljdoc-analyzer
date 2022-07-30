@@ -3,6 +3,7 @@
                            :sha "35ed39645038e81b42cb15ed6753b8462e60a06d"}}
  :tasks {;; setup
          :requires ([babashka.fs :as fs]
+                    [clojure.java.io :as io]
                     [clojure.string :as string]
                     [lread.status-line :as status]
                     [release])
@@ -61,6 +62,16 @@
          {:depends [release-checks test]
           :doc "Cut a new release"
           :task (release/release)}
+
+         pretty-expected-edn
+         {:doc "Format expected edn for tests with jet to make diff comparisons more grokable and files more readable"
+          :task (->> (fs/glob "." "test-resources/**/cljdoc-analysis.edn")
+                     (mapv (fn [in-file]
+                             (let [out-file (fs/create-temp-file {:prefix "cljdoc-pretty" :suffix "edn"})]
+                               (println "prettying " (str in-file))
+                               (with-open [in (io/input-stream (fs/file in-file))]
+                                 (shell {:in in :out (str out-file)} "jet --colors false"))
+                               (fs/move out-file in-file {:replace-existing true})))))}
 
          outdated
          {:doc "report on outdated dependencies"
