@@ -1,452 +1,486 @@
 {:artifact-id "hx",
- :analysis
-   {"clj"
-      ({:name hx.hiccup,
-        :publics
-          ({:arglists ([x]),
-            :file "hx/hiccup.cljc",
-            :line 48,
-            :name array?,
-            :type :var}
-           {:arglists ([s]),
-            :file "hx/hiccup.cljc",
-            :line 51,
-            :name ex,
-            :type :var}
-           {:arglists ([tag impl]),
-            :file "hx/hiccup.cljc",
-            :line 12,
-            :name extend-tag,
-            :type :var}
-           {:file "hx/hiccup.cljc",
-            :line 5,
-            :members ({:arglists ([el config]),
-                       :doc "Converts to an element\n",
-                       :name -as-element,
-                       :type :var}),
-            :name IElement,
-            :type :protocol}
-           {:arglists ([config el args]),
-            :file "hx/hiccup.cljc",
-            :line 38,
-            :name make-element,
-            :type :var}
-           {:arglists ([config hiccup]),
-            :file "hx/hiccup.cljc",
-            :line 43,
-            :name parse,
-            :type :var}
-           {:arglists ([el]),
-            :file "hx/hiccup.cljc",
-            :line 32,
-            :name parse-tag,
-            :type :var}
-           {:arglists ([tag]),
-            :file "hx/hiccup.cljc",
-            :line 15,
-            :name tag->impl,
-            :type :var}
-           {:file "hx/hiccup.cljc", :line 10, :name tag-registry, :type :var})}
-       {:name hx.hooks.alpha,
-        :publics ({:arglists ([& body]),
-                   :file "hx/hooks/alpha.clj",
-                   :line 19,
-                   :name useSmartEffect,
-                   :type :macro}
-                  {:arglists ([& body]),
-                   :file "hx/hooks/alpha.clj",
-                   :line 25,
-                   :name useSmartLayoutEffect,
-                   :type :macro}
-                  {:arglists ([& body]),
-                   :file "hx/hooks/alpha.clj",
-                   :line 31,
-                   :name useSmartMemo,
-                   :type :macro})}
-       {:name hx.react,
-        :publics ({:arglists ([display-name constructor & body]),
-                   :file "hx/react.clj",
-                   :line 3,
-                   :name defcomponent,
-                   :type :macro}
-                  {:arglists ([display-name props-bindings & body]),
-                   :file "hx/react.clj",
-                   :line 57,
-                   :name defnc,
-                   :type :macro}
-                  {:arglists ([display-name props-bindings & body]),
-                   :file "hx/react.clj",
-                   :line 54,
-                   :name fnc,
-                   :type :macro}
-                  {:arglists ([& body]),
-                   :file "hx/react.clj",
-                   :line 71,
-                   :name shallow-render,
-                   :type :macro})}
-       {:name hx.utils,
-        :publics ({:dynamic true,
-                   :file "hx/utils.clj",
-                   :line 3,
-                   :name *perf-debug?*,
-                   :type :var}
-                  {:arglists ([tag form]),
-                   :file "hx/utils.clj",
-                   :line 5,
-                   :name measure-perf,
-                   :type :macro})}),
-    "cljs"
-      ({:name frame.core,
-        :publics
-          ({:arglists ([]),
-            :file "frame/core.cljs",
-            :line 97,
-            :name <-dispatcher,
-            :type :var}
-           {:arglists ([]),
-            :file "frame/core.cljs",
-            :line 101,
-            :name <-frame,
-            :type :var}
-           {:arglists ([id h]),
-            :file "frame/core.cljs",
-            :line 91,
-            :name <-reg-event,
-            :type :var}
-           {:arglists ([id h]),
-            :file "frame/core.cljs",
-            :line 61,
-            :name <-reg-sub,
-            :type :var}
-           {:arglists ([id]),
-            :file "frame/core.cljs",
-            :line 67,
-            :name <-sub,
-            :type :var}
-           {:file "frame/core.cljs", :line 38, :name frame-context, :type :var}
-           {:file "frame/core.cljs", :line 40, :name Provider, :type :var})}
-       {:name hx.hiccup,
-        :publics
-          ({:arglists ([s]),
-            :file "hx/hiccup.cljc",
-            :line 51,
-            :name ex,
-            :type :var}
-           {:arglists ([tag impl]),
-            :file "hx/hiccup.cljc",
-            :line 12,
-            :name extend-tag,
-            :type :var}
-           {:file "hx/hiccup.cljc",
-            :line 5,
-            :members ({:arglists ([el config]),
-                       :doc "Converts to an element\n",
-                       :name -as-element,
-                       :type :var}),
-            :name IElement,
-            :type :protocol}
-           {:arglists ([config el args]),
-            :file "hx/hiccup.cljc",
-            :line 38,
-            :name make-element,
-            :type :var}
-           {:arglists ([config hiccup]),
-            :file "hx/hiccup.cljc",
-            :line 43,
-            :name parse,
-            :type :var}
-           {:arglists ([el]),
-            :file "hx/hiccup.cljc",
-            :line 32,
-            :name parse-tag,
-            :type :var}
-           {:arglists ([tag]),
-            :file "hx/hiccup.cljc",
-            :line 15,
-            :name tag->impl,
-            :type :var}
-           {:file "hx/hiccup.cljc", :line 10, :name tag-registry, :type :var})}
-       {:name hx.hooks,
-        :publics
-          ({:deprecated "Use useCallback",
-            :file "hx/hooks.cljs",
-            :line 246,
-            :name <-callback,
-            :type :var}
-           {:deprecated "Use useContext",
-            :doc "Just react/useContext\n",
-            :file "hx/hooks.cljs",
-            :line 238,
-            :name <-context,
-            :type :var}
-           {:deprecated "Use useDebugValue",
-            :doc "Just react/useDebugValue\n",
-            :file "hx/hooks.cljs",
-            :line 250,
-            :name <-debug-value,
-            :type :var}
-           {:arglists ([a]),
-            :deprecated "Use useState",
-            :doc
-              "Takes an atom. Returns the currently derefed value of the atom, and re-renders\nthe component on change.",
-            :file "hx/hooks.cljs",
-            :line 202,
-            :name <-deref,
-            :type :var}
-           {:deprecated "Use useEffect",
-            :file "hx/hooks.cljs",
-            :line 230,
-            :name <-effect,
-            :type :var}
-           {:deprecated "Use useImperativeHandle",
-            :file "hx/hooks.cljs",
-            :line 248,
-            :name <-imperative-handle,
-            :type :var}
-           {:deprecated "Use useLayoutEffect",
-            :file "hx/hooks.cljs",
-            :line 254,
-            :name <-layout-effect,
-            :type :var}
-           {:deprecated "Use useMemo",
-            :doc "Just react/useMemo\n",
-            :file "hx/hooks.cljs",
-            :line 242,
-            :name <-memo,
-            :type :var}
-           {:deprecated "Use useReducer",
-            :doc "Just react/useReducer.\n",
-            :file "hx/hooks.cljs",
-            :line 232,
-            :name <-reducer,
-            :type :var}
-           {:deprecated "Use useIRef",
-            :file "hx/hooks.cljs",
-            :line 200,
-            :name <-ref,
-            :type :var}
-           {:deprecated "Use useState",
-            :file "hx/hooks.cljs",
-            :line 198,
-            :name <-state,
-            :type :var}
-           {:deprecated "Use useValue",
-            :file "hx/hooks.cljs",
-            :line 236,
-            :name <-value,
-            :type :var}
-           {:file "hx/hooks.cljs", :line 5, :name Atomified, :type :var}
-           {:arglists ([f] [f deps]),
-            :doc "Just react/useCallback\n",
-            :file "hx/hooks.cljs",
-            :line 170,
-            :name useCallback,
-            :type :var}
-           {:doc "Just react/useContext\n",
-            :file "hx/hooks.cljs",
-            :line 162,
-            :name useContext,
-            :type :var}
-           {:doc "Just react/useDebugValue\n",
-            :file "hx/hooks.cljs",
-            :line 189,
-            :name useDebugValue,
-            :type :var}
-           {:arglists ([f] [f deps]),
-            :doc "Just react/useEffect\n",
-            :file "hx/hooks.cljs",
-            :line 155,
-            :name useEffect,
-            :type :var}
-           {:arglists ([ref create-handle] [ref create-handle deps]),
-            :doc "Just react/useImperativeHandle\n",
-            :file "hx/hooks.cljs",
-            :line 175,
-            :name useImperativeHandle,
-            :type :var}
-           {:arglists ([initial]),
-            :doc
-              "Takes an initial value. Returns an atom that will _NOT_ re-render component\non change.",
-            :file "hx/hooks.cljs",
-            :line 80,
-            :name useIRef,
-            :type :var}
-           {:arglists ([f] [f deps]),
-            :doc "Just react/useLayoutEffect\n",
-            :file "hx/hooks.cljs",
-            :line 183,
-            :name useLayoutEffect,
-            :type :var}
-           {:doc "Just react/useMemo\n",
-            :file "hx/hooks.cljs",
-            :line 166,
-            :name useMemo,
-            :type :var}
-           {:arglists ([reducer init-state] [reducer init-state init]),
-            :doc "Just react/useReducer.\n",
-            :file "hx/hooks.cljs",
-            :line 102,
-            :name useReducer,
-            :type :var}
-           {:arglists ([initial] [initial eq?]),
-            :doc
-              "Like `React.useState`, but the update function returned can be used similar\nto `swap!`.\n\nExample:\n```\n(let [[state set-state] (useState {:count 0})]\n ;; ...\n (set-state update :count inc))\n```\n\nIf `eq?` is passed in, will use that function to determine whether to update\nthe React state. If it returns `true`, it will keep the old state, `false` it\nwill render with new state.",
-            :file "hx/hooks.cljs",
-            :line 31,
-            :name useState,
-            :type :var}
-           {:arglists ([x]),
-            :doc
-              "Caches `x`. When a new `x` is passed in, returns new `x` only if it is\nnot structurally equal to the previous `x`.\n\nUseful for optimizing `<-effect` et. al. when you have two values that might\nbe structurally equal by referentially different.",
-            :file "hx/hooks.cljs",
-            :line 128,
-            :name useValue,
-            :type :var})}
-       {:name hx.hooks.alpha,
-        :publics
-          ({:file "hx/hooks/alpha.cljs", :line 5, :name states, :type :var}
-           {:arglists ([reducer initial k]),
-            :doc
-              "Like useReducer, but maintains your state across hot-reloads. `k` is a globally\nunique key to ensure you always get the same state back.\n\nExample: `(useReducerOnce reducer initial ::counter)`",
-            :file "hx/hooks/alpha.cljs",
-            :line 29,
-            :name useReducerOnce,
-            :type :var}
-           {:arglists ([& body]),
-            :file "hx/hooks/alpha.clj",
-            :line 19,
-            :name useSmartEffect,
-            :type :macro}
-           {:arglists ([& body]),
-            :file "hx/hooks/alpha.clj",
-            :line 25,
-            :name useSmartLayoutEffect,
-            :type :macro}
-           {:arglists ([& body]),
-            :file "hx/hooks/alpha.clj",
-            :line 31,
-            :name useSmartMemo,
-            :type :macro}
-           {:arglists ([initial k]),
-            :doc
-              "Like useState, but maintains your state across hot-reloads. `k` is a globally\nunique key to ensure you always get the same state back.\n\nExample: `(useStateOnce 0 ::counter)`",
-            :file "hx/hooks/alpha.cljs",
-            :line 7,
-            :name useStateOnce,
-            :type :var})}
-       {:name hx.react,
-        :publics
-          ({:arglists ([el & args]),
-            :file "hx/react.cljs",
-            :line 103,
-            :name $,
-            :type :var}
-           {:arglists ([class method-map]),
-            :file "hx/react.cljs",
-            :line 105,
-            :name assign-methods,
-            :type :var}
-           {:arglists ([super-class init-fn static-properties method-names]),
-            :file "hx/react.cljs",
-            :line 112,
-            :name create-class,
-            :type :var}
-           {:arglists ([init-fn static-properties method-names]),
-            :file "hx/react.cljs",
-            :line 127,
-            :name create-component,
-            :type :var}
-           {:doc "Just react/createContext\n",
-            :file "hx/react.cljs",
-            :line 133,
-            :name create-context,
-            :type :var}
-           {:arglists ([config el args]),
-            :file "hx/react.cljs",
-            :line 25,
-            :name create-element,
-            :type :var}
-           {:arglists ([init-fn static-properties method-names]),
-            :file "hx/react.cljs",
-            :line 130,
-            :name create-pure-component,
-            :type :var}
-           {:arglists ([display-name constructor & body]),
-            :file "hx/react.clj",
-            :line 3,
-            :name defcomponent,
-            :type :macro}
-           {:arglists ([display-name props-bindings & body]),
-            :file "hx/react.clj",
-            :line 57,
-            :name defnc,
-            :type :macro}
-           {:arglists ([form]),
-            :file "hx/react.cljs",
-            :line 82,
-            :name f,
-            :type :var}
-           {:arglists ([component]),
-            :doc
-              "Takes a React component, and creates a function that returns\na new React element",
-            :file "hx/react.cljs",
-            :line 137,
-            :name factory,
-            :type :var}
-           {:arglists ([display-name props-bindings & body]),
-            :file "hx/react.clj",
-            :line 54,
-            :name fnc,
-            :type :macro}
-           {:file "hx/react.cljs", :line 90, :name fragment, :type :var}
-           {:arglists ([body]),
-            :file "hx/react.cljs",
-            :line 85,
-            :name parse-body,
-            :type :var}
-           {:file "hx/react.cljs", :line 8, :name props->clj, :type :var}
-           {:arglists ([& {:keys [only except]}]),
-            :doc
-              "Takes two props objects, and returns true or false whether they are\nstructurally equal. Use with react/memo.",
-            :file "hx/react.cljs",
-            :line 143,
-            :name props=,
-            :type :var}
-           {:file "hx/react.cljs", :line 94, :name Provider, :type :var}
-           {:file "hx/react.cljs",
-            :line 77,
-            :name react-hiccup-config,
-            :type :var}
-           {:arglists ([& body]),
-            :file "hx/react.clj",
-            :line 71,
-            :name shallow-render,
-            :type :macro})}
-       {:name hx.utils,
-        :publics
-          ({:arglists ([props] [props native?]),
-            :doc
-              "Shallowly converts props map to a JS obj. Handles certain special cases:\n\n1. `:class` -> \"className\", and joins collections together as a string\n2. `:for` -> \"htmlFor\"\n3. `:style` -> deeply converts this prop to a JS obj\n\nBy default, converts kebab-case keys to camelCase strings. pass in `false`\nas a second arg to disable this.",
-            :file "hx/utils.cljs",
-            :line 104,
-            :name clj->props,
-            :type :var}
-           {:arglists ([k]),
-            :file "hx/utils.cljs",
-            :line 5,
-            :name keyword->str,
-            :type :var}
-           {:arglists ([tag form])
-            :file "hx/utils.clj"
-            :line 5
-            :name measure-perf
-            :type :macro}
-           {:arglists ([props]),
-            :file "hx/utils.cljs",
-            :line 14,
-            :name props->clj,
-            :type :var})})},
+ :analysis {"clj" ({:name hx.hiccup,
+                    :publics ({:arglists ([x]),
+                               :file "hx/hiccup.cljc",
+                               :line 48,
+                               :name array?,
+                               :type :var}
+                              {:arglists ([s]),
+                               :file "hx/hiccup.cljc",
+                               :line 51,
+                               :name ex,
+                               :type :var}
+                              {:arglists ([tag impl]),
+                               :file "hx/hiccup.cljc",
+                               :line 12,
+                               :name extend-tag,
+                               :type :var}
+                              {:file "hx/hiccup.cljc",
+                               :line 5,
+                               :members ({:arglists ([el config]),
+                                          :doc "Converts to an element\n",
+                                          :name -as-element,
+                                          :type :var}),
+                               :name IElement,
+                               :type :protocol}
+                              {:arglists ([config el args]),
+                               :file "hx/hiccup.cljc",
+                               :line 38,
+                               :name make-element,
+                               :type :var}
+                              {:arglists ([config hiccup]),
+                               :file "hx/hiccup.cljc",
+                               :line 43,
+                               :name parse,
+                               :type :var}
+                              {:arglists ([el]),
+                               :file "hx/hiccup.cljc",
+                               :line 32,
+                               :name parse-tag,
+                               :type :var}
+                              {:arglists ([tag]),
+                               :file "hx/hiccup.cljc",
+                               :line 15,
+                               :name tag->impl,
+                               :type :var}
+                              {:file "hx/hiccup.cljc",
+                               :line 10,
+                               :name tag-registry,
+                               :type :var})}
+                   {:name hx.hooks.alpha,
+                    :publics ({:arglists ([& body]),
+                               :file "hx/hooks/alpha.clj",
+                               :line 19,
+                               :name useSmartEffect,
+                               :type :macro}
+                              {:arglists ([& body]),
+                               :file "hx/hooks/alpha.clj",
+                               :line 25,
+                               :name useSmartLayoutEffect,
+                               :type :macro}
+                              {:arglists ([& body]),
+                               :file "hx/hooks/alpha.clj",
+                               :line 31,
+                               :name useSmartMemo,
+                               :type :macro})}
+                   {:name hx.react,
+                    :publics ({:arglists ([display-name
+                                           constructor
+                                           &
+                                           body]),
+                               :file "hx/react.clj",
+                               :line 3,
+                               :name defcomponent,
+                               :type :macro}
+                              {:arglists ([display-name
+                                           props-bindings
+                                           &
+                                           body]),
+                               :file "hx/react.clj",
+                               :line 57,
+                               :name defnc,
+                               :type :macro}
+                              {:arglists ([display-name
+                                           props-bindings
+                                           &
+                                           body]),
+                               :file "hx/react.clj",
+                               :line 54,
+                               :name fnc,
+                               :type :macro}
+                              {:arglists ([& body]),
+                               :file "hx/react.clj",
+                               :line 71,
+                               :name shallow-render,
+                               :type :macro})}
+                   {:name hx.utils,
+                    :publics ({:dynamic true,
+                               :file "hx/utils.clj",
+                               :line 3,
+                               :name *perf-debug?*,
+                               :type :var}
+                              {:arglists ([tag form]),
+                               :file "hx/utils.clj",
+                               :line 5,
+                               :name measure-perf,
+                               :type :macro})}),
+            "cljs" ({:name frame.core,
+                     :publics ({:arglists ([]),
+                                :file "frame/core.cljs",
+                                :line 97,
+                                :name <-dispatcher,
+                                :type :var}
+                               {:arglists ([]),
+                                :file "frame/core.cljs",
+                                :line 101,
+                                :name <-frame,
+                                :type :var}
+                               {:arglists ([id h]),
+                                :file "frame/core.cljs",
+                                :line 91,
+                                :name <-reg-event,
+                                :type :var}
+                               {:arglists ([id h]),
+                                :file "frame/core.cljs",
+                                :line 61,
+                                :name <-reg-sub,
+                                :type :var}
+                               {:arglists ([id]),
+                                :file "frame/core.cljs",
+                                :line 67,
+                                :name <-sub,
+                                :type :var}
+                               {:file "frame/core.cljs",
+                                :line 38,
+                                :name frame-context,
+                                :type :var}
+                               {:file "frame/core.cljs",
+                                :line 40,
+                                :name Provider,
+                                :type :var})}
+                    {:name hx.hiccup,
+                     :publics ({:arglists ([s]),
+                                :file "hx/hiccup.cljc",
+                                :line 51,
+                                :name ex,
+                                :type :var}
+                               {:arglists ([tag impl]),
+                                :file "hx/hiccup.cljc",
+                                :line 12,
+                                :name extend-tag,
+                                :type :var}
+                               {:file "hx/hiccup.cljc",
+                                :line 5,
+                                :members ({:arglists ([el config]),
+                                           :doc "Converts to an element\n",
+                                           :name -as-element,
+                                           :type :var}),
+                                :name IElement,
+                                :type :protocol}
+                               {:arglists ([config el args]),
+                                :file "hx/hiccup.cljc",
+                                :line 38,
+                                :name make-element,
+                                :type :var}
+                               {:arglists ([config hiccup]),
+                                :file "hx/hiccup.cljc",
+                                :line 43,
+                                :name parse,
+                                :type :var}
+                               {:arglists ([el]),
+                                :file "hx/hiccup.cljc",
+                                :line 32,
+                                :name parse-tag,
+                                :type :var}
+                               {:arglists ([tag]),
+                                :file "hx/hiccup.cljc",
+                                :line 15,
+                                :name tag->impl,
+                                :type :var}
+                               {:file "hx/hiccup.cljc",
+                                :line 10,
+                                :name tag-registry,
+                                :type :var})}
+                    {:name hx.hooks,
+                     :publics ({:deprecated "Use useCallback",
+                                :file "hx/hooks.cljs",
+                                :line 246,
+                                :name <-callback,
+                                :type :var}
+                               {:deprecated "Use useContext",
+                                :doc "Just react/useContext\n",
+                                :file "hx/hooks.cljs",
+                                :line 238,
+                                :name <-context,
+                                :type :var}
+                               {:deprecated "Use useDebugValue",
+                                :doc "Just react/useDebugValue\n",
+                                :file "hx/hooks.cljs",
+                                :line 250,
+                                :name <-debug-value,
+                                :type :var}
+                               {:arglists ([a]),
+                                :deprecated "Use useState",
+                                :doc "Takes an atom. Returns the currently derefed value of the atom, and re-renders\nthe component on change.",
+                                :file "hx/hooks.cljs",
+                                :line 202,
+                                :name <-deref,
+                                :type :var}
+                               {:deprecated "Use useEffect",
+                                :file "hx/hooks.cljs",
+                                :line 230,
+                                :name <-effect,
+                                :type :var}
+                               {:deprecated "Use useImperativeHandle",
+                                :file "hx/hooks.cljs",
+                                :line 248,
+                                :name <-imperative-handle,
+                                :type :var}
+                               {:deprecated "Use useLayoutEffect",
+                                :file "hx/hooks.cljs",
+                                :line 254,
+                                :name <-layout-effect,
+                                :type :var}
+                               {:deprecated "Use useMemo",
+                                :doc "Just react/useMemo\n",
+                                :file "hx/hooks.cljs",
+                                :line 242,
+                                :name <-memo,
+                                :type :var}
+                               {:deprecated "Use useReducer",
+                                :doc "Just react/useReducer.\n",
+                                :file "hx/hooks.cljs",
+                                :line 232,
+                                :name <-reducer,
+                                :type :var}
+                               {:deprecated "Use useIRef",
+                                :file "hx/hooks.cljs",
+                                :line 200,
+                                :name <-ref,
+                                :type :var}
+                               {:deprecated "Use useState",
+                                :file "hx/hooks.cljs",
+                                :line 198,
+                                :name <-state,
+                                :type :var}
+                               {:deprecated "Use useValue",
+                                :file "hx/hooks.cljs",
+                                :line 236,
+                                :name <-value,
+                                :type :var}
+                               {:file "hx/hooks.cljs",
+                                :line 5,
+                                :name Atomified,
+                                :type :var}
+                               {:arglists ([f] [f deps]),
+                                :doc "Just react/useCallback\n",
+                                :file "hx/hooks.cljs",
+                                :line 170,
+                                :name useCallback,
+                                :type :var}
+                               {:doc "Just react/useContext\n",
+                                :file "hx/hooks.cljs",
+                                :line 162,
+                                :name useContext,
+                                :type :var}
+                               {:doc "Just react/useDebugValue\n",
+                                :file "hx/hooks.cljs",
+                                :line 189,
+                                :name useDebugValue,
+                                :type :var}
+                               {:arglists ([f] [f deps]),
+                                :doc "Just react/useEffect\n",
+                                :file "hx/hooks.cljs",
+                                :line 155,
+                                :name useEffect,
+                                :type :var}
+                               {:arglists ([ref create-handle]
+                                           [ref create-handle deps]),
+                                :doc "Just react/useImperativeHandle\n",
+                                :file "hx/hooks.cljs",
+                                :line 175,
+                                :name useImperativeHandle,
+                                :type :var}
+                               {:arglists ([initial]),
+                                :doc "Takes an initial value. Returns an atom that will _NOT_ re-render component\non change.",
+                                :file "hx/hooks.cljs",
+                                :line 80,
+                                :name useIRef,
+                                :type :var}
+                               {:arglists ([f] [f deps]),
+                                :doc "Just react/useLayoutEffect\n",
+                                :file "hx/hooks.cljs",
+                                :line 183,
+                                :name useLayoutEffect,
+                                :type :var}
+                               {:doc "Just react/useMemo\n",
+                                :file "hx/hooks.cljs",
+                                :line 166,
+                                :name useMemo,
+                                :type :var}
+                               {:arglists ([reducer init-state]
+                                           [reducer init-state init]),
+                                :doc "Just react/useReducer.\n",
+                                :file "hx/hooks.cljs",
+                                :line 102,
+                                :name useReducer,
+                                :type :var}
+                               {:arglists ([initial] [initial eq?]),
+                                :doc "Like `React.useState`, but the update function returned can be used similar\nto `swap!`.\n\nExample:\n```\n(let [[state set-state] (useState {:count 0})]\n ;; ...\n (set-state update :count inc))\n```\n\nIf `eq?` is passed in, will use that function to determine whether to update\nthe React state. If it returns `true`, it will keep the old state, `false` it\nwill render with new state.",
+                                :file "hx/hooks.cljs",
+                                :line 31,
+                                :name useState,
+                                :type :var}
+                               {:arglists ([x]),
+                                :doc "Caches `x`. When a new `x` is passed in, returns new `x` only if it is\nnot structurally equal to the previous `x`.\n\nUseful for optimizing `<-effect` et. al. when you have two values that might\nbe structurally equal by referentially different.",
+                                :file "hx/hooks.cljs",
+                                :line 128,
+                                :name useValue,
+                                :type :var})}
+                    {:name hx.hooks.alpha,
+                     :publics ({:file "hx/hooks/alpha.cljs",
+                                :line 5,
+                                :name states,
+                                :type :var}
+                               {:arglists ([reducer initial k]),
+                                :doc "Like useReducer, but maintains your state across hot-reloads. `k` is a globally\nunique key to ensure you always get the same state back.\n\nExample: `(useReducerOnce reducer initial ::counter)`",
+                                :file "hx/hooks/alpha.cljs",
+                                :line 29,
+                                :name useReducerOnce,
+                                :type :var}
+                               {:arglists ([& body]),
+                                :file "hx/hooks/alpha.clj",
+                                :line 19,
+                                :name useSmartEffect,
+                                :type :macro}
+                               {:arglists ([& body]),
+                                :file "hx/hooks/alpha.clj",
+                                :line 25,
+                                :name useSmartLayoutEffect,
+                                :type :macro}
+                               {:arglists ([& body]),
+                                :file "hx/hooks/alpha.clj",
+                                :line 31,
+                                :name useSmartMemo,
+                                :type :macro}
+                               {:arglists ([initial k]),
+                                :doc "Like useState, but maintains your state across hot-reloads. `k` is a globally\nunique key to ensure you always get the same state back.\n\nExample: `(useStateOnce 0 ::counter)`",
+                                :file "hx/hooks/alpha.cljs",
+                                :line 7,
+                                :name useStateOnce,
+                                :type :var})}
+                    {:name hx.react,
+                     :publics ({:arglists ([el & args]),
+                                :file "hx/react.cljs",
+                                :line 103,
+                                :name $,
+                                :type :var}
+                               {:arglists ([class method-map]),
+                                :file "hx/react.cljs",
+                                :line 105,
+                                :name assign-methods,
+                                :type :var}
+                               {:arglists ([super-class
+                                            init-fn
+                                            static-properties
+                                            method-names]),
+                                :file "hx/react.cljs",
+                                :line 112,
+                                :name create-class,
+                                :type :var}
+                               {:arglists ([init-fn
+                                            static-properties
+                                            method-names]),
+                                :file "hx/react.cljs",
+                                :line 127,
+                                :name create-component,
+                                :type :var}
+                               {:doc "Just react/createContext\n",
+                                :file "hx/react.cljs",
+                                :line 133,
+                                :name create-context,
+                                :type :var}
+                               {:arglists ([config el args]),
+                                :file "hx/react.cljs",
+                                :line 25,
+                                :name create-element,
+                                :type :var}
+                               {:arglists ([init-fn
+                                            static-properties
+                                            method-names]),
+                                :file "hx/react.cljs",
+                                :line 130,
+                                :name create-pure-component,
+                                :type :var}
+                               {:arglists ([display-name
+                                            constructor
+                                            &
+                                            body]),
+                                :file "hx/react.clj",
+                                :line 3,
+                                :name defcomponent,
+                                :type :macro}
+                               {:arglists ([display-name
+                                            props-bindings
+                                            &
+                                            body]),
+                                :file "hx/react.clj",
+                                :line 57,
+                                :name defnc,
+                                :type :macro}
+                               {:arglists ([form]),
+                                :file "hx/react.cljs",
+                                :line 82,
+                                :name f,
+                                :type :var}
+                               {:arglists ([component]),
+                                :doc "Takes a React component, and creates a function that returns\na new React element",
+                                :file "hx/react.cljs",
+                                :line 137,
+                                :name factory,
+                                :type :var}
+                               {:arglists ([display-name
+                                            props-bindings
+                                            &
+                                            body]),
+                                :file "hx/react.clj",
+                                :line 54,
+                                :name fnc,
+                                :type :macro}
+                               {:file "hx/react.cljs",
+                                :line 90,
+                                :name fragment,
+                                :type :var}
+                               {:arglists ([body]),
+                                :file "hx/react.cljs",
+                                :line 85,
+                                :name parse-body,
+                                :type :var}
+                               {:file "hx/react.cljs",
+                                :line 8,
+                                :name props->clj,
+                                :type :var}
+                               {:arglists ([& {:keys [only except]}]),
+                                :doc "Takes two props objects, and returns true or false whether they are\nstructurally equal. Use with react/memo.",
+                                :file "hx/react.cljs",
+                                :line 143,
+                                :name props=,
+                                :type :var}
+                               {:file "hx/react.cljs",
+                                :line 94,
+                                :name Provider,
+                                :type :var}
+                               {:file "hx/react.cljs",
+                                :line 77,
+                                :name react-hiccup-config,
+                                :type :var}
+                               {:arglists ([& body]),
+                                :file "hx/react.clj",
+                                :line 71,
+                                :name shallow-render,
+                                :type :macro})}
+                    {:name hx.utils,
+                     :publics ({:arglists ([props] [props native?]),
+                                :doc "Shallowly converts props map to a JS obj. Handles certain special cases:\n\n1. `:class` -> \"className\", and joins collections together as a string\n2. `:for` -> \"htmlFor\"\n3. `:style` -> deeply converts this prop to a JS obj\n\nBy default, converts kebab-case keys to camelCase strings. pass in `false`\nas a second arg to disable this.",
+                                :file "hx/utils.cljs",
+                                :line 104,
+                                :name clj->props,
+                                :type :var}
+                               {:arglists ([k]),
+                                :file "hx/utils.cljs",
+                                :line 5,
+                                :name keyword->str,
+                                :type :var}
+                               {:arglists ([tag form]),
+                                :file "hx/utils.clj",
+                                :line 5,
+                                :name measure-perf,
+                                :type :macro}
+                               {:arglists ([props]),
+                                :file "hx/utils.cljs",
+                                :line 14,
+                                :name props->clj,
+                                :type :var})})},
  :group-id "lilactown",
- :pom-str
-   "<?xml version=\"1.0\" encoding=\"UTF-8\"?><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>lilactown</groupId>\n  <artifactId>hx</artifactId>\n  <packaging>jar</packaging>\n  <version>0.5.2</version>\n  <name>hx</name>\n  <description>An easy to use, decomplected hiccup compiler for ClojureScript &amp; React.</description>\n  <url>https://github.com/Lokeh/hx</url>\n  <licenses>\n    <license>\n      <name>Eclipse Public License</name>\n      <url>http://www.eclipse.org/legal/epl-v10.html</url>\n    </license>\n  </licenses>\n  <scm>\n    <url>https://github.com/Lokeh/hx</url>\n    <connection>scm:git:git://github.com/Lokeh/hx.git</connection>\n    <developerConnection>scm:git:ssh://git@github.com/Lokeh/hx.git</developerConnection>\n    <tag>79e2b8f69ad72a037f74e15894598f9a762d5a30</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins/>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies/>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n",
+ :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>lilactown</groupId>\n  <artifactId>hx</artifactId>\n  <packaging>jar</packaging>\n  <version>0.5.2</version>\n  <name>hx</name>\n  <description>An easy to use, decomplected hiccup compiler for ClojureScript &amp; React.</description>\n  <url>https://github.com/Lokeh/hx</url>\n  <licenses>\n    <license>\n      <name>Eclipse Public License</name>\n      <url>http://www.eclipse.org/legal/epl-v10.html</url>\n    </license>\n  </licenses>\n  <scm>\n    <url>https://github.com/Lokeh/hx</url>\n    <connection>scm:git:git://github.com/Lokeh/hx.git</connection>\n    <developerConnection>scm:git:ssh://git@github.com/Lokeh/hx.git</developerConnection>\n    <tag>79e2b8f69ad72a037f74e15894598f9a762d5a30</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins/>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies/>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n",
  :version "0.5.2"}

@@ -1,1 +1,101 @@
-{:group-id "iced-nrepl", :artifact-id "iced-nrepl", :version "0.2.5", :analysis {"clj" ({:name iced.nrepl, :publics ({:name iced-nrepl-ops, :file "iced/nrepl.clj", :line 84, :type :var} {:name wrap-iced, :file "iced/nrepl.clj", :line 96, :arglists ([handler]), :type :var})} {:name iced.nrepl.core, :publics ({:name version, :file "iced/nrepl/core.clj", :line 3, :arglists ([]), :type :var})} {:name iced.nrepl.format, :publics ({:name code, :file "iced/nrepl/format.clj", :line 26, :arglists ([code-str alias-map]), :type :var} {:name set-indentation-rules!, :file "iced/nrepl/format.clj", :line 14, :arglists ([rules]), :type :var})} {:name iced.nrepl.grimoire, :publics ({:name search, :file "iced/nrepl/grimoire.clj", :line 6, :arglists ([platform ns-name sym]), :type :var})} {:name iced.nrepl.lint, :publics ({:name check-file-syntax, :file "iced/nrepl/lint.clj", :line 55, :arglists ([file-path]), :type :var} {:name lint-by-eastwood, :file "iced/nrepl/lint.clj", :line 35, :arglists ([ns-sym opt]), :type :var} {:name lint-by-joker, :file "iced/nrepl/lint.clj", :line 26, :arglists ([file-path]), :type :var} {:name lint-file, :file "iced/nrepl/lint.clj", :line 67, :arglists ([file-path env eastwood-linter-option]), :type :var})} {:name iced.nrepl.namespace, :publics ({:name aliases, :file "iced/nrepl/namespace.clj", :line 11, :type :multimethod})} {:name iced.nrepl.refactor.thread, :publics ({:name expand-sexp, :file "iced/nrepl/refactor/thread.clj", :line 6, :type :multimethod} {:name thread-first, :file "iced/nrepl/refactor/thread.clj", :line 72, :type :var} {:name thread-last, :file "iced/nrepl/refactor/thread.clj", :line 73, :type :var})} {:name iced.nrepl.spec, :publics ({:name check, :file "iced/nrepl/spec.clj", :line 17, :arglists ([sym num-tests]), :type :var} {:name stest, :file "iced/nrepl/spec.clj", :line 12, :arglists ([fname & args]), :type :macro})} {:name iced.nrepl.test, :publics ({:name test-vars, :file "iced/nrepl/test.clj", :line 4, :arglists ([ns-sym]), :type :var})} {:name iced.util.namespace, :publics ({:name extract-ns-sym, :file "iced/util/namespace.clj", :line 3, :arglists ([s]), :type :var})})}, :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>iced-nrepl</groupId>\n  <artifactId>iced-nrepl</artifactId>\n  <packaging>jar</packaging>\n  <version>0.2.5</version>\n  <name>iced-nrepl</name>\n  <description>nREPL middleware for vim-iced</description>\n  <url>https://github.com/liquidz/iced-nrepl</url>\n  <licenses>\n    <license>\n      <name>Eclipse Public License</name>\n      <url>http://www.eclipse.org/legal/epl-v10.html</url>\n    </license>\n  </licenses>\n  <scm>\n    <tag>fc6725b0a07b977577602451a1247b1eff5b6fc0</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins/>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.9.0</version>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>data.json</artifactId>\n      <version>0.2.6</version>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>test.check</artifactId>\n      <version>0.10.0-alpha3</version>\n    </dependency>\n    <dependency>\n      <groupId>cider</groupId>\n      <artifactId>orchard</artifactId>\n      <version>0.3.3</version>\n    </dependency>\n    <dependency>\n      <groupId>clj-http</groupId>\n      <artifactId>clj-http</artifactId>\n      <version>3.9.1</version>\n    </dependency>\n    <dependency>\n      <groupId>cljfmt</groupId>\n      <artifactId>cljfmt</artifactId>\n      <version>0.6.1</version>\n      <exclusions>\n        <exclusion>\n          <artifactId>tools.reader</artifactId>\n          <groupId>org.clojure</groupId>\n        </exclusion>\n        <exclusion>\n          <artifactId>clojurescript</artifactId>\n          <groupId>org.clojure</groupId>\n        </exclusion>\n      </exclusions>\n    </dependency>\n    <dependency>\n      <groupId>jonase</groupId>\n      <artifactId>eastwood</artifactId>\n      <version>0.3.3</version>\n      <exclusions>\n        <exclusion>\n          <artifactId>clojure</artifactId>\n          <groupId>org.clojure</groupId>\n        </exclusion>\n      </exclusions>\n    </dependency>\n    <dependency>\n      <groupId>medley</groupId>\n      <artifactId>medley</artifactId>\n      <version>1.0.0</version>\n    </dependency>\n    <dependency>\n      <groupId>nrepl</groupId>\n      <artifactId>nrepl</artifactId>\n      <version>0.4.5</version>\n    </dependency>\n    <dependency>\n      <groupId>refactor-nrepl</groupId>\n      <artifactId>refactor-nrepl</artifactId>\n      <version>2.4.0</version>\n    </dependency>\n    <dependency>\n      <groupId>fudje</groupId>\n      <artifactId>fudje</artifactId>\n      <version>0.9.7</version>\n      <scope>test</scope>\n    </dependency>\n  </dependencies>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n"}
+{:group-id "iced-nrepl",
+ :artifact-id "iced-nrepl",
+ :version "0.2.5",
+ :analysis {"clj" ({:name iced.nrepl,
+                    :publics ({:name iced-nrepl-ops,
+                               :file "iced/nrepl.clj",
+                               :line 84,
+                               :type :var}
+                              {:name wrap-iced,
+                               :file "iced/nrepl.clj",
+                               :line 96,
+                               :arglists ([handler]),
+                               :type :var})}
+                   {:name iced.nrepl.core,
+                    :publics ({:name version,
+                               :file "iced/nrepl/core.clj",
+                               :line 3,
+                               :arglists ([]),
+                               :type :var})}
+                   {:name iced.nrepl.format,
+                    :publics ({:name code,
+                               :file "iced/nrepl/format.clj",
+                               :line 26,
+                               :arglists ([code-str alias-map]),
+                               :type :var}
+                              {:name set-indentation-rules!,
+                               :file "iced/nrepl/format.clj",
+                               :line 14,
+                               :arglists ([rules]),
+                               :type :var})}
+                   {:name iced.nrepl.grimoire,
+                    :publics ({:name search,
+                               :file "iced/nrepl/grimoire.clj",
+                               :line 6,
+                               :arglists ([platform ns-name sym]),
+                               :type :var})}
+                   {:name iced.nrepl.lint,
+                    :publics ({:name check-file-syntax,
+                               :file "iced/nrepl/lint.clj",
+                               :line 55,
+                               :arglists ([file-path]),
+                               :type :var}
+                              {:name lint-by-eastwood,
+                               :file "iced/nrepl/lint.clj",
+                               :line 35,
+                               :arglists ([ns-sym opt]),
+                               :type :var}
+                              {:name lint-by-joker,
+                               :file "iced/nrepl/lint.clj",
+                               :line 26,
+                               :arglists ([file-path]),
+                               :type :var}
+                              {:name lint-file,
+                               :file "iced/nrepl/lint.clj",
+                               :line 67,
+                               :arglists ([file-path
+                                           env
+                                           eastwood-linter-option]),
+                               :type :var})}
+                   {:name iced.nrepl.namespace,
+                    :publics ({:name aliases,
+                               :file "iced/nrepl/namespace.clj",
+                               :line 11,
+                               :type :multimethod})}
+                   {:name iced.nrepl.refactor.thread,
+                    :publics ({:name expand-sexp,
+                               :file "iced/nrepl/refactor/thread.clj",
+                               :line 6,
+                               :type :multimethod}
+                              {:name thread-first,
+                               :file "iced/nrepl/refactor/thread.clj",
+                               :line 72,
+                               :type :var}
+                              {:name thread-last,
+                               :file "iced/nrepl/refactor/thread.clj",
+                               :line 73,
+                               :type :var})}
+                   {:name iced.nrepl.spec,
+                    :publics ({:name check,
+                               :file "iced/nrepl/spec.clj",
+                               :line 17,
+                               :arglists ([sym num-tests]),
+                               :type :var}
+                              {:name stest,
+                               :file "iced/nrepl/spec.clj",
+                               :line 12,
+                               :arglists ([fname & args]),
+                               :type :macro})}
+                   {:name iced.nrepl.test,
+                    :publics ({:name test-vars,
+                               :file "iced/nrepl/test.clj",
+                               :line 4,
+                               :arglists ([ns-sym]),
+                               :type :var})}
+                   {:name iced.util.namespace,
+                    :publics ({:name extract-ns-sym,
+                               :file "iced/util/namespace.clj",
+                               :line 3,
+                               :arglists ([s]),
+                               :type :var})})},
+ :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>iced-nrepl</groupId>\n  <artifactId>iced-nrepl</artifactId>\n  <packaging>jar</packaging>\n  <version>0.2.5</version>\n  <name>iced-nrepl</name>\n  <description>nREPL middleware for vim-iced</description>\n  <url>https://github.com/liquidz/iced-nrepl</url>\n  <licenses>\n    <license>\n      <name>Eclipse Public License</name>\n      <url>http://www.eclipse.org/legal/epl-v10.html</url>\n    </license>\n  </licenses>\n  <scm>\n    <tag>fc6725b0a07b977577602451a1247b1eff5b6fc0</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins/>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.9.0</version>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>data.json</artifactId>\n      <version>0.2.6</version>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>test.check</artifactId>\n      <version>0.10.0-alpha3</version>\n    </dependency>\n    <dependency>\n      <groupId>cider</groupId>\n      <artifactId>orchard</artifactId>\n      <version>0.3.3</version>\n    </dependency>\n    <dependency>\n      <groupId>clj-http</groupId>\n      <artifactId>clj-http</artifactId>\n      <version>3.9.1</version>\n    </dependency>\n    <dependency>\n      <groupId>cljfmt</groupId>\n      <artifactId>cljfmt</artifactId>\n      <version>0.6.1</version>\n      <exclusions>\n        <exclusion>\n          <artifactId>tools.reader</artifactId>\n          <groupId>org.clojure</groupId>\n        </exclusion>\n        <exclusion>\n          <artifactId>clojurescript</artifactId>\n          <groupId>org.clojure</groupId>\n        </exclusion>\n      </exclusions>\n    </dependency>\n    <dependency>\n      <groupId>jonase</groupId>\n      <artifactId>eastwood</artifactId>\n      <version>0.3.3</version>\n      <exclusions>\n        <exclusion>\n          <artifactId>clojure</artifactId>\n          <groupId>org.clojure</groupId>\n        </exclusion>\n      </exclusions>\n    </dependency>\n    <dependency>\n      <groupId>medley</groupId>\n      <artifactId>medley</artifactId>\n      <version>1.0.0</version>\n    </dependency>\n    <dependency>\n      <groupId>nrepl</groupId>\n      <artifactId>nrepl</artifactId>\n      <version>0.4.5</version>\n    </dependency>\n    <dependency>\n      <groupId>refactor-nrepl</groupId>\n      <artifactId>refactor-nrepl</artifactId>\n      <version>2.4.0</version>\n    </dependency>\n    <dependency>\n      <groupId>fudje</groupId>\n      <artifactId>fudje</artifactId>\n      <version>0.9.7</version>\n      <scope>test</scope>\n    </dependency>\n  </dependencies>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n"}

@@ -1,1 +1,638 @@
-{:group-id "org.pinkgorilla", :artifact-id "gorilla-ui", :version "0.1.66", :analysis {"clj" ({:doc "why dsl? \ncreate functions/macros that allow to easily create renderable data structures\n\nThe data that gets passed to a renderer has to be verbose, because it allows \nto configure all options. The dsl allows us to build the data that gets displayed\nin an easy manner.\n\ndsl stolen from: https://github.com/wiseman/leaflet-gorilla\n- currently not working, because:\n  1. we need to calculate map center\n  2. wiseman syntax does not allow to specify all params needed", :name pinkgorilla.dsl.leaflet, :publics ({:name canonicalize-geodesc, :file "pinkgorilla/dsl/leaflet.cljc", :line 102, :arglists ([default-type g]), :type :var} {:name default-options, :file "pinkgorilla/dsl/leaflet.cljc", :line 16, :type :var} {:name geo, :file "pinkgorilla/dsl/leaflet.cljc", :line 112, :arglists ([& args]), :doc "Plots geometries on a map.\n", :type :var} {:name geojson, :file "pinkgorilla/dsl/leaflet.cljc", :line 118, :arglists ([& args]), :doc "Plots geometries on a map.\n", :type :var} {:name geojson-for-geodesc, :file "pinkgorilla/dsl/leaflet.cljc", :line 61, :type :multimethod} {:name LeafletView, :file "pinkgorilla/dsl/leaflet.cljc", :line 110, :type :var} {:name parse-args, :file "pinkgorilla/dsl/leaflet.cljc", :line 78, :arglists ([args]), :doc "parses custom syntax for geo-data specification.\nsee unit test\n[vec of points] & [:kw1 val1 :kw2 val2]   ", :type :var})} {:name pinkgorilla.ui.macros, :publics ({:name inline-resource, :file "pinkgorilla/ui/macros.clj", :line 9, :arglists ([resource-path]), :type :macro})}), "cljs" ({:name pinkgorilla.controls.aspect-ratio, :publics ({:name aspect-ratio, :file "pinkgorilla/controls/aspect_ratio.cljs", :line 12, :arglists ([w h & children]), :type :var} {:name padding-ratio, :file "pinkgorilla/controls/aspect_ratio.cljs", :line 7, :arglists ([f s]), :type :var})} {:name pinkgorilla.controls.button, :publics ({:name button, :file "pinkgorilla/controls/button.cljs", :line 8, :arglists ([text] [{:keys [on-click], :as options} text]), :type :var})} {:name pinkgorilla.controls.card, :publics ({:name card, :file "pinkgorilla/controls/card.cljs", :line 5, :arglists ([{:keys [heading text img href]}]), :type :var})} {:name pinkgorilla.controls.checkbox, :publics ({:name checkbox, :file "pinkgorilla/controls/checkbox.cljs", :line 11, :arglists ([a k]), :doc "checkbox that is bound to a key of an external atom\n", :type :var})} {:name pinkgorilla.controls.input, :publics ({:name input, :file "pinkgorilla/controls/input.cljs", :line 8, :arglists ([a k]), :doc "textbox that is bound to a key of an external atom\n", :type :var})} {:name pinkgorilla.controls.ionslider, :publics ({:name default-options, :file "pinkgorilla/controls/ionslider.cljs", :line 15, :type :var} {:name slider-ion, :file "pinkgorilla/controls/ionslider.cljs", :line 18, :arglists ([options]), :type :var} {:name slider-ion-a, :file "pinkgorilla/controls/ionslider.cljs", :line 27, :arglists ([options state kw-from] [options state kw-from kw-to]), :type :var})} {:name pinkgorilla.controls.markdown, :doc "markdown rederers are available as js library or react library\nwe implemented a markdown viewer via a js library marked\nbecause the react component did not work.\n", :publics ({:name markdown, :file "pinkgorilla/controls/markdown.cljs", :line 10, :arglists ([md]), :doc "reagent markdown render component\nusage:\n [markdown markdown-string]", :type :var})} {:name pinkgorilla.controls.panel, :publics ({:name panel, :file "pinkgorilla/controls/panel.cljs", :line 9, :arglists ([{:keys [color title extra], :or {color "grey", title "Panel Title"}} & children]), :type :var})} {:name pinkgorilla.controls.popover, :doc "   popover\nplacement: left, yop, right, bottom\n", :publics ({:name popover, :file "pinkgorilla/controls/popover.cljs", :line 23, :arglists ([{:keys [color placement button-text]} child]), :type :var} {:name tooltip, :file "pinkgorilla/controls/popover.cljs", :line 16, :arglists ([{:keys [title content color]}]), :type :var})} {:name pinkgorilla.controls.progressbar, :publics ({:name progressbar, :file "pinkgorilla/controls/progressbar.cljs", :line 9, :arglists ([percent]), :type :var})} {:name pinkgorilla.controls.select, :publics ({:name css, :file "pinkgorilla/controls/select.cljs", :line 7, :arglists ([]), :type :var} {:name go-next, :file "pinkgorilla/controls/select.cljs", :line 114, :arglists ([v list action]), :type :var} {:name go-prior, :file "pinkgorilla/controls/select.cljs", :line 120, :arglists ([v list action]), :type :var} {:name nav-buttons, :file "pinkgorilla/controls/select.cljs", :line 126, :arglists ([items v change-fn]), :type :var} {:name select, :file "pinkgorilla/controls/select.cljs", :line 63, :arglists ([items val change-fn]), :type :var} {:name select-map, :file "pinkgorilla/controls/select.cljs", :line 131, :arglists ([items val-atom k] [{:keys [on-change nav?], :as options} items val-atom k]), :doc "select one item from a seq of items\nparameters:\n  options: this is an optional parameter, a map with keys:\n           on-change fn with parameter selected-val \n           nav?      bool (show < > buttons)\n  items: vec of selectable items\n  val-atom: map inside an atom\n  k: the key that the selected value is bound to in the val-atom\n\nexamle:\n(def state reagent.core/atom {:letter \"a\"})\n[select-map [\"a\" \"b\"] state :letter]\n", :type :var})} {:name pinkgorilla.controls.slider, :publics ({:name on-select, :file "pinkgorilla/controls/slider.cljs", :line 17, :arglists ([]), :type :var} {:name slider, :file "pinkgorilla/controls/slider.cljs", :line 21, :arglists ([]), :type :var} {:name slider-between, :file "pinkgorilla/controls/slider.cljs", :line 43, :arglists ([]), :type :var} {:name svg1, :file "pinkgorilla/controls/slider.cljs", :line 8, :arglists ([]), :type :var})} {:name pinkgorilla.controls.tailsui, :publics ({:name css, :file "pinkgorilla/controls/tailsui.cljs", :line 7, :type :var} {:name tab, :file "pinkgorilla/controls/tailsui.cljs", :line 32, :arglists ([options]), :type :var} {:name tabs, :file "pinkgorilla/controls/tailsui.cljs", :line 36, :arglists ([& children]), :type :var})} {:name pinkgorilla.dsl.leaflet, :doc "why dsl? \ncreate functions/macros that allow to easily create renderable data structures\n\nThe data that gets passed to a renderer has to be verbose, because it allows \nto configure all options. The dsl allows us to build the data that gets displayed\nin an easy manner.\n\ndsl stolen from: https://github.com/wiseman/leaflet-gorilla\n- currently not working, because:\n  1. we need to calculate map center\n  2. wiseman syntax does not allow to specify all params needed", :publics ({:name canonicalize-geodesc, :file "pinkgorilla/dsl/leaflet.cljc", :line 102, :arglists ([default-type g]), :type :var} {:name default-options, :file "pinkgorilla/dsl/leaflet.cljc", :line 16, :type :var} {:name geo, :file "pinkgorilla/dsl/leaflet.cljc", :line 112, :arglists ([& args]), :doc "Plots geometries on a map.\n", :type :var} {:name geojson, :file "pinkgorilla/dsl/leaflet.cljc", :line 118, :arglists ([& args]), :doc "Plots geometries on a map.\n", :type :var} {:name geojson-for-geodesc, :file "pinkgorilla/dsl/leaflet.cljc", :line 61, :type :multimethod} {:name LeafletView, :file "pinkgorilla/dsl/leaflet.cljc", :line 110, :type :var} {:name parse-args, :file "pinkgorilla/dsl/leaflet.cljc", :line 78, :arglists ([args]), :doc "parses custom syntax for geo-data specification.\nsee unit test\n[vec of points] & [:kw1 val1 :kw2 val2]   ", :type :var})} {:name pinkgorilla.ui.aggrid, :publics ({:name aggrid, :file "pinkgorilla/ui/aggrid.cljs", :line 10, :arglists ([data]), :type :var})} {:name pinkgorilla.ui.clock, :publics ({:name binary-clock, :file "pinkgorilla/ui/clock.cljs", :line 97, :arglists ([]), :type :var} {:name cell, :file "pinkgorilla/ui/clock.cljs", :line 56, :arglists ([n bit]), :type :var} {:name clock, :file "pinkgorilla/ui/clock.cljs", :line 79, :arglists ([date show-100s toggle-100s]), :type :var} {:name clock-state, :file "pinkgorilla/ui/clock.cljs", :line 91, :type :var} {:name clock-style, :file "pinkgorilla/ui/clock.cljs", :line 7, :type :var} {:name column, :file "pinkgorilla/ui/clock.cljs", :line 61, :arglists ([n]), :type :var} {:name column-pair, :file "pinkgorilla/ui/clock.cljs", :line 69, :arglists ([n]), :type :var} {:name legend, :file "pinkgorilla/ui/clock.cljs", :line 74, :arglists ([& items]), :type :var} {:name update-time, :file "pinkgorilla/ui/clock.cljs", :line 94, :arglists ([]), :type :var})} {:name pinkgorilla.ui.default-renderer, :publics ()} {:name pinkgorilla.ui.frisk, :publics ({:name button-style, :file "pinkgorilla/ui/frisk.cljs", :line 58, :type :var} {:name collapse-all, :file "pinkgorilla/ui/frisk.cljs", :line 361, :arglists ([metadata-paths]), :type :var} {:name CollapseAllButton, :file "pinkgorilla/ui/frisk.cljs", :line 70, :arglists ([emit-fn data]), :type :var} {:name CollectionSummary, :file "pinkgorilla/ui/frisk.cljs", :line 158, :arglists ([{:keys [data]}]), :type :var} {:name conj-to-set, :file "pinkgorilla/ui/frisk.cljs", :line 303, :arglists ([coll x]), :type :var} {:name copy-to-clipboard, :file "pinkgorilla/ui/frisk.cljs", :line 336, :arglists ([data]), :type :var} {:name CopyButton, :file "pinkgorilla/ui/frisk.cljs", :line 80, :arglists ([emit-fn data]), :type :var} {:name DataFrisk, :file "pinkgorilla/ui/frisk.cljs", :line 296, :arglists ([{:keys [data], :as all}]), :type :var} {:name DataFriskView, :file "pinkgorilla/ui/frisk.cljs", :line 406, :arglists ([data]), :type :var} {:name emit-fn-factory, :file "pinkgorilla/ui/frisk.cljs", :line 364, :arglists ([state-atom id swappable]), :type :var} {:name ErrorIcon, :file "pinkgorilla/ui/frisk.cljs", :line 26, :arglists ([]), :type :var} {:name ErrorText, :file "pinkgorilla/ui/frisk.cljs", :line 37, :arglists ([text]), :type :var} {:name expand-all-paths, :file "pinkgorilla/ui/frisk.cljs", :line 306, :arglists ([root-value current-expanded-paths]), :type :var} {:name expandable?, :file "pinkgorilla/ui/frisk.cljs", :line 155, :arglists ([v]), :type :var} {:name ExpandAllButton, :file "pinkgorilla/ui/frisk.cljs", :line 62, :arglists ([emit-fn data]), :type :var} {:name ExpandButton, :file "pinkgorilla/ui/frisk.cljs", :line 43, :arglists ([{:keys [expanded? path emit-fn]}]), :type :var} {:name KeySet, :file "pinkgorilla/ui/frisk.cljs", :line 103, :arglists ([keyset]), :type :var} {:name KeyValNode, :file "pinkgorilla/ui/frisk.cljs", :line 172, :arglists ([{[k v] :data, :keys [path metadata-paths emit-fn swappable]}]), :type :var} {:name KeywordText, :file "pinkgorilla/ui/frisk.cljs", :line 97, :arglists ([data]), :type :var} {:name ListVecNode, :file "pinkgorilla/ui/frisk.cljs", :line 208, :arglists ([{:keys [data path metadata-paths emit-fn swappable hide-header?]}]), :type :var} {:name map-vals, :file "pinkgorilla/ui/frisk.cljs", :line 9, :arglists ([f m]), :type :var} {:name MapNode, :file "pinkgorilla/ui/frisk.cljs", :line 268, :arglists ([{:keys [data path metadata-paths emit-fn hide-header?], :as all}]), :type :var} {:name NilText, :file "pinkgorilla/ui/frisk.cljs", :line 91, :arglists ([]), :type :var} {:name Node, :file "pinkgorilla/ui/frisk.cljs", :line 116, :arglists ([{:keys [data path emit-fn swappable metadata-paths]}]), :type :var} {:name NumberText, :file "pinkgorilla/ui/frisk.cljs", :line 100, :arglists ([data]), :type :var} {:name Root, :file "pinkgorilla/ui/frisk.cljs", :line 377, :arglists ([data id state-atom]), :type :var} {:name SetNode, :file "pinkgorilla/ui/frisk.cljs", :line 238, :arglists ([{:keys [data path metadata-paths emit-fn swappable hide-header?]}]), :type :var} {:name StringText, :file "pinkgorilla/ui/frisk.cljs", :line 94, :arglists ([data]), :type :var} {:name styles, :file "pinkgorilla/ui/frisk.cljs", :line 15, :type :var} {:name VisibilityButton, :file "pinkgorilla/ui/frisk.cljs", :line 395, :arglists ([visible? update-fn]), :type :var})} {:name pinkgorilla.ui.gridlayout, :publics ({:name gridlayout, :file "pinkgorilla/ui/gridlayout.cljs", :line 8, :arglists ([data & children]), :type :var})} {:name pinkgorilla.ui.highchart, :doc "reagent component to render highchart-spec via highcharts.js\nUsage:  [:highchart spec-as-clj-data]\n\nHighchart renderer is a pure javascript renderer, the conversion\nof the spec as clj-data to javascript is done in the render-js component\n", :publics ({:name highchart, :file "pinkgorilla/ui/highchart.cljs", :line 19, :arglists ([data]), :type :var} {:name render-highchart, :file "pinkgorilla/ui/highchart.cljs", :line 15, :arglists ([dom-node data]), :type :var})} {:name pinkgorilla.ui.json, :doc "custom components need to define a javascript-module\nmodule-test is a very simple sample that just renders the data as\nJSON to the dom node that is passed.\nIn early state component development this is helpful.", :publics ({:name json, :file "pinkgorilla/ui/json.cljs", :line 16, :arglists ([data-clj]), :type :var} {:name render-json, :file "pinkgorilla/ui/json.cljs", :line 10, :arglists ([dom-node data-js]), :type :var})} {:name pinkgorilla.ui.leaflet, :publics ({:name assoc-if-exists, :file "pinkgorilla/ui/leaflet.cljs", :line 66, :arglists ([m key val]), :type :var} {:name config, :file "pinkgorilla/ui/leaflet.cljs", :line 10, :type :var} {:name default-marker, :file "pinkgorilla/ui/leaflet.cljs", :line 16, :type :var} {:name leaflet-map, :file "pinkgorilla/ui/leaflet.cljs", :line 97, :arglists ([options features-incl-view] [features]), :type :var} {:name marker-default, :file "pinkgorilla/ui/leaflet.cljs", :line 26, :type :var} {:name view-map-props, :file "pinkgorilla/ui/leaflet.cljs", :line 71, :arglists ([view]), :type :var} {:name view?, :file "pinkgorilla/ui/leaflet.cljs", :line 63, :arglists ([feature]), :type :var})} {:name pinkgorilla.ui.math, :doc " MathJax has v2 and v3. v3 is breaking the v2 api.\nes6 modules for the browser not working; this means browser \nwill load mathjax to window/MathJax\nso we ship the compiled mathjax.js bundle\n", :publics ({:name math, :file "pinkgorilla/ui/math.cljs", :line 38, :arglists ([data-clj]), :type :var} {:name options, :file "pinkgorilla/ui/math.cljs", :line 19, :type :var} {:name render-math, :file "pinkgorilla/ui/math.cljs", :line 29, :arglists ([dom-node data-js]), :type :var})} {:name pinkgorilla.ui.player, :publics ({:name player, :file "pinkgorilla/ui/player.cljs", :line 7, :arglists ([url]), :type :var})} {:name pinkgorilla.ui.pydoc, :publics ({:name of-type, :file "pinkgorilla/ui/pydoc.cljs", :line 34, :arglists ([type items]), :type :var} {:name py-category, :file "pinkgorilla/ui/pydoc.cljs", :line 28, :arglists ([category-name items]), :type :var} {:name py-doc, :file "pinkgorilla/ui/pydoc.cljs", :line 37, :arglists ([py-module]), :type :var} {:name py-entry, :file "pinkgorilla/ui/pydoc.cljs", :line 22, :arglists ([f]), :type :var})} {:name pinkgorilla.ui.sparklines, :publics ({:name sparkline, :file "pinkgorilla/ui/sparklines.cljs", :line 6, :arglists ([data]), :type :var} {:name sparkline-bar, :file "pinkgorilla/ui/sparklines.cljs", :line 10, :arglists ([data]), :type :var} {:name sparkline-spot, :file "pinkgorilla/ui/sparklines.cljs", :line 14, :arglists ([data]), :type :var})} {:name pinkgorilla.ui.vega, :doc "plugin to render vega-charts in pink-gorilla\n", :publics ({:name render-vega, :file "pinkgorilla/ui/vega.cljs", :line 24, :arglists ([dom-node data-js]), :type :var} {:name vega, :file "pinkgorilla/ui/vega.cljs", :line 31, :arglists ([data-clj]), :type :var} {:name vega-options, :file "pinkgorilla/ui/vega.cljs", :line 19, :type :var} {:name vega-options-js, :file "pinkgorilla/ui/vega.cljs", :line 22, :type :var} {:name vegaa, :file "pinkgorilla/ui/vega.cljs", :line 36, :arglists ([s k]), :type :var})})}, :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>org.pinkgorilla</groupId>\n  <artifactId>gorilla-ui</artifactId>\n  <packaging>jar</packaging>\n  <version>0.1.66</version>\n  <name>gorilla-ui</name>\n  <description>Reagent components for daa vizualisation.</description>\n  <url>https://github.com/pink-gorilla/gorilla-ui</url>\n  <licenses>\n    <license>\n      <name>MIT</name>\n    </license>\n  </licenses>\n  <scm>\n    <url>https://github.com/pink-gorilla/gorilla-ui</url>\n    <connection>scm:git:git://github.com/pink-gorilla/gorilla-ui.git</connection>\n    <developerConnection>scm:git:ssh://git@github.com/pink-gorilla/gorilla-ui.git</developerConnection>\n    <tag>f8c97151d05e2c8358ca773c673debab429a33d6</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n      <resource>\n        <directory>node_modules/leaflet/dist</directory>\n      </resource>\n      <resource>\n        <directory>node_modules/mathjax/es5</directory>\n      </resource>\n      <resource>\n        <directory>node_modules/ag-grid-community</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n      <testResource>\n        <directory>node_modules/leaflet/dist</directory>\n      </testResource>\n      <testResource>\n        <directory>node_modules/mathjax/es5</directory>\n      </testResource>\n      <testResource>\n        <directory>node_modules/ag-grid-community</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins>\n      <plugin>\n        <groupId>org.codehaus.mojo</groupId>\n        <artifactId>build-helper-maven-plugin</artifactId>\n        <version>1.7</version>\n        <executions>\n          <execution>\n            <id>add-test-source</id>\n            <phase>generate-test-sources</phase>\n            <goals>\n              <goal>add-test-source</goal>\n            </goals>\n            <configuration>\n              <sources>\n                <source>test</source>\n              </sources>\n            </configuration>\n          </execution>\n        </executions>\n      </plugin>\n    </plugins>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojurescript</artifactId>\n      <version>1.10.773</version>\n    </dependency>\n    <dependency>\n      <groupId>reagent</groupId>\n      <artifactId>reagent</artifactId>\n      <version>0.10.0</version>\n      <exclusions>\n        <exclusion>\n          <artifactId>tools.reader</artifactId>\n          <groupId>org.clojure</groupId>\n        </exclusion>\n        <exclusion>\n          <artifactId>react</artifactId>\n          <groupId>cljsjs</groupId>\n        </exclusion>\n        <exclusion>\n          <artifactId>react-dom</artifactId>\n          <groupId>cljsjs</groupId>\n        </exclusion>\n      </exclusions>\n    </dependency>\n    <dependency>\n      <groupId>thi.ng</groupId>\n      <artifactId>strf</artifactId>\n      <version>0.2.2</version>\n    </dependency>\n    <dependency>\n      <groupId>com.lucasbradstreet</groupId>\n      <artifactId>cljs-uuid-utils</artifactId>\n      <version>1.0.2</version>\n    </dependency>\n    <dependency>\n      <groupId>org.pinkgorilla</groupId>\n      <artifactId>gorilla-renderable-ui</artifactId>\n      <version>0.1.36</version>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.10.1</version>\n      <scope>test</scope>\n    </dependency>\n    <dependency>\n      <groupId>thheller</groupId>\n      <artifactId>shadow-cljs</artifactId>\n      <version>2.8.81</version>\n      <scope>test</scope>\n    </dependency>\n    <dependency>\n      <groupId>thheller</groupId>\n      <artifactId>shadow-cljsjs</artifactId>\n      <version>0.0.21</version>\n      <scope>test</scope>\n    </dependency>\n    <dependency>\n      <groupId>clj-kondo</groupId>\n      <artifactId>clj-kondo</artifactId>\n      <version>2019.11.23</version>\n      <scope>test</scope>\n    </dependency>\n  </dependencies>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n"}
+{:group-id "org.pinkgorilla",
+ :artifact-id "gorilla-ui",
+ :version "0.1.66",
+ :analysis {"clj" ({:doc "why dsl? \ncreate functions/macros that allow to easily create renderable data structures\n\nThe data that gets passed to a renderer has to be verbose, because it allows \nto configure all options. The dsl allows us to build the data that gets displayed\nin an easy manner.\n\ndsl stolen from: https://github.com/wiseman/leaflet-gorilla\n- currently not working, because:\n  1. we need to calculate map center\n  2. wiseman syntax does not allow to specify all params needed",
+                    :name pinkgorilla.dsl.leaflet,
+                    :publics ({:name canonicalize-geodesc,
+                               :file "pinkgorilla/dsl/leaflet.cljc",
+                               :line 102,
+                               :arglists ([default-type g]),
+                               :type :var}
+                              {:name default-options,
+                               :file "pinkgorilla/dsl/leaflet.cljc",
+                               :line 16,
+                               :type :var}
+                              {:name geo,
+                               :file "pinkgorilla/dsl/leaflet.cljc",
+                               :line 112,
+                               :arglists ([& args]),
+                               :doc "Plots geometries on a map.\n",
+                               :type :var}
+                              {:name geojson,
+                               :file "pinkgorilla/dsl/leaflet.cljc",
+                               :line 118,
+                               :arglists ([& args]),
+                               :doc "Plots geometries on a map.\n",
+                               :type :var}
+                              {:name geojson-for-geodesc,
+                               :file "pinkgorilla/dsl/leaflet.cljc",
+                               :line 61,
+                               :type :multimethod}
+                              {:name LeafletView,
+                               :file "pinkgorilla/dsl/leaflet.cljc",
+                               :line 110,
+                               :type :var}
+                              {:name parse-args,
+                               :file "pinkgorilla/dsl/leaflet.cljc",
+                               :line 78,
+                               :arglists ([args]),
+                               :doc "parses custom syntax for geo-data specification.\nsee unit test\n[vec of points] & [:kw1 val1 :kw2 val2]   ",
+                               :type :var})}
+                   {:name pinkgorilla.ui.macros,
+                    :publics ({:name inline-resource,
+                               :file "pinkgorilla/ui/macros.clj",
+                               :line 9,
+                               :arglists ([resource-path]),
+                               :type :macro})}),
+            "cljs" ({:name pinkgorilla.controls.aspect-ratio,
+                     :publics ({:name aspect-ratio,
+                                :file "pinkgorilla/controls/aspect_ratio.cljs",
+                                :line 12,
+                                :arglists ([w h & children]),
+                                :type :var}
+                               {:name padding-ratio,
+                                :file "pinkgorilla/controls/aspect_ratio.cljs",
+                                :line 7,
+                                :arglists ([f s]),
+                                :type :var})}
+                    {:name pinkgorilla.controls.button,
+                     :publics ({:name button,
+                                :file "pinkgorilla/controls/button.cljs",
+                                :line 8,
+                                :arglists ([text]
+                                           [{:keys [on-click],
+                                             :as options}
+                                            text]),
+                                :type :var})}
+                    {:name pinkgorilla.controls.card,
+                     :publics ({:name card,
+                                :file "pinkgorilla/controls/card.cljs",
+                                :line 5,
+                                :arglists ([{:keys [heading
+                                                    text
+                                                    img
+                                                    href]}]),
+                                :type :var})}
+                    {:name pinkgorilla.controls.checkbox,
+                     :publics ({:name checkbox,
+                                :file "pinkgorilla/controls/checkbox.cljs",
+                                :line 11,
+                                :arglists ([a k]),
+                                :doc "checkbox that is bound to a key of an external atom\n",
+                                :type :var})}
+                    {:name pinkgorilla.controls.input,
+                     :publics ({:name input,
+                                :file "pinkgorilla/controls/input.cljs",
+                                :line 8,
+                                :arglists ([a k]),
+                                :doc "textbox that is bound to a key of an external atom\n",
+                                :type :var})}
+                    {:name pinkgorilla.controls.ionslider,
+                     :publics ({:name default-options,
+                                :file "pinkgorilla/controls/ionslider.cljs",
+                                :line 15,
+                                :type :var}
+                               {:name slider-ion,
+                                :file "pinkgorilla/controls/ionslider.cljs",
+                                :line 18,
+                                :arglists ([options]),
+                                :type :var}
+                               {:name slider-ion-a,
+                                :file "pinkgorilla/controls/ionslider.cljs",
+                                :line 27,
+                                :arglists ([options state kw-from]
+                                           [options
+                                            state
+                                            kw-from
+                                            kw-to]),
+                                :type :var})}
+                    {:name pinkgorilla.controls.markdown,
+                     :doc "markdown rederers are available as js library or react library\nwe implemented a markdown viewer via a js library marked\nbecause the react component did not work.\n",
+                     :publics ({:name markdown,
+                                :file "pinkgorilla/controls/markdown.cljs",
+                                :line 10,
+                                :arglists ([md]),
+                                :doc "reagent markdown render component\nusage:\n [markdown markdown-string]",
+                                :type :var})}
+                    {:name pinkgorilla.controls.panel,
+                     :publics ({:name panel,
+                                :file "pinkgorilla/controls/panel.cljs",
+                                :line 9,
+                                :arglists ([{:keys [color title extra],
+                                             :or {color "grey",
+                                                  title "Panel Title"}}
+                                            &
+                                            children]),
+                                :type :var})}
+                    {:name pinkgorilla.controls.popover,
+                     :doc "   popover\nplacement: left, yop, right, bottom\n",
+                     :publics ({:name popover,
+                                :file "pinkgorilla/controls/popover.cljs",
+                                :line 23,
+                                :arglists ([{:keys [color
+                                                    placement
+                                                    button-text]}
+                                            child]),
+                                :type :var}
+                               {:name tooltip,
+                                :file "pinkgorilla/controls/popover.cljs",
+                                :line 16,
+                                :arglists ([{:keys [title
+                                                    content
+                                                    color]}]),
+                                :type :var})}
+                    {:name pinkgorilla.controls.progressbar,
+                     :publics ({:name progressbar,
+                                :file "pinkgorilla/controls/progressbar.cljs",
+                                :line 9,
+                                :arglists ([percent]),
+                                :type :var})}
+                    {:name pinkgorilla.controls.select,
+                     :publics ({:name css,
+                                :file "pinkgorilla/controls/select.cljs",
+                                :line 7,
+                                :arglists ([]),
+                                :type :var}
+                               {:name go-next,
+                                :file "pinkgorilla/controls/select.cljs",
+                                :line 114,
+                                :arglists ([v list action]),
+                                :type :var}
+                               {:name go-prior,
+                                :file "pinkgorilla/controls/select.cljs",
+                                :line 120,
+                                :arglists ([v list action]),
+                                :type :var}
+                               {:name nav-buttons,
+                                :file "pinkgorilla/controls/select.cljs",
+                                :line 126,
+                                :arglists ([items v change-fn]),
+                                :type :var}
+                               {:name select,
+                                :file "pinkgorilla/controls/select.cljs",
+                                :line 63,
+                                :arglists ([items val change-fn]),
+                                :type :var}
+                               {:name select-map,
+                                :file "pinkgorilla/controls/select.cljs",
+                                :line 131,
+                                :arglists ([items val-atom k]
+                                           [{:keys [on-change nav?],
+                                             :as options}
+                                            items
+                                            val-atom
+                                            k]),
+                                :doc "select one item from a seq of items\nparameters:\n  options: this is an optional parameter, a map with keys:\n           on-change fn with parameter selected-val \n           nav?      bool (show < > buttons)\n  items: vec of selectable items\n  val-atom: map inside an atom\n  k: the key that the selected value is bound to in the val-atom\n\nexamle:\n(def state reagent.core/atom {:letter \"a\"})\n[select-map [\"a\" \"b\"] state :letter]\n",
+                                :type :var})}
+                    {:name pinkgorilla.controls.slider,
+                     :publics ({:name on-select,
+                                :file "pinkgorilla/controls/slider.cljs",
+                                :line 17,
+                                :arglists ([]),
+                                :type :var}
+                               {:name slider,
+                                :file "pinkgorilla/controls/slider.cljs",
+                                :line 21,
+                                :arglists ([]),
+                                :type :var}
+                               {:name slider-between,
+                                :file "pinkgorilla/controls/slider.cljs",
+                                :line 43,
+                                :arglists ([]),
+                                :type :var}
+                               {:name svg1,
+                                :file "pinkgorilla/controls/slider.cljs",
+                                :line 8,
+                                :arglists ([]),
+                                :type :var})}
+                    {:name pinkgorilla.controls.tailsui,
+                     :publics ({:name css,
+                                :file "pinkgorilla/controls/tailsui.cljs",
+                                :line 7,
+                                :type :var}
+                               {:name tab,
+                                :file "pinkgorilla/controls/tailsui.cljs",
+                                :line 32,
+                                :arglists ([options]),
+                                :type :var}
+                               {:name tabs,
+                                :file "pinkgorilla/controls/tailsui.cljs",
+                                :line 36,
+                                :arglists ([& children]),
+                                :type :var})}
+                    {:name pinkgorilla.dsl.leaflet,
+                     :doc "why dsl? \ncreate functions/macros that allow to easily create renderable data structures\n\nThe data that gets passed to a renderer has to be verbose, because it allows \nto configure all options. The dsl allows us to build the data that gets displayed\nin an easy manner.\n\ndsl stolen from: https://github.com/wiseman/leaflet-gorilla\n- currently not working, because:\n  1. we need to calculate map center\n  2. wiseman syntax does not allow to specify all params needed",
+                     :publics ({:name canonicalize-geodesc,
+                                :file "pinkgorilla/dsl/leaflet.cljc",
+                                :line 102,
+                                :arglists ([default-type g]),
+                                :type :var}
+                               {:name default-options,
+                                :file "pinkgorilla/dsl/leaflet.cljc",
+                                :line 16,
+                                :type :var}
+                               {:name geo,
+                                :file "pinkgorilla/dsl/leaflet.cljc",
+                                :line 112,
+                                :arglists ([& args]),
+                                :doc "Plots geometries on a map.\n",
+                                :type :var}
+                               {:name geojson,
+                                :file "pinkgorilla/dsl/leaflet.cljc",
+                                :line 118,
+                                :arglists ([& args]),
+                                :doc "Plots geometries on a map.\n",
+                                :type :var}
+                               {:name geojson-for-geodesc,
+                                :file "pinkgorilla/dsl/leaflet.cljc",
+                                :line 61,
+                                :type :multimethod}
+                               {:name LeafletView,
+                                :file "pinkgorilla/dsl/leaflet.cljc",
+                                :line 110,
+                                :type :var}
+                               {:name parse-args,
+                                :file "pinkgorilla/dsl/leaflet.cljc",
+                                :line 78,
+                                :arglists ([args]),
+                                :doc "parses custom syntax for geo-data specification.\nsee unit test\n[vec of points] & [:kw1 val1 :kw2 val2]   ",
+                                :type :var})}
+                    {:name pinkgorilla.ui.aggrid,
+                     :publics ({:name aggrid,
+                                :file "pinkgorilla/ui/aggrid.cljs",
+                                :line 10,
+                                :arglists ([data]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.clock,
+                     :publics ({:name binary-clock,
+                                :file "pinkgorilla/ui/clock.cljs",
+                                :line 97,
+                                :arglists ([]),
+                                :type :var}
+                               {:name cell,
+                                :file "pinkgorilla/ui/clock.cljs",
+                                :line 56,
+                                :arglists ([n bit]),
+                                :type :var}
+                               {:name clock,
+                                :file "pinkgorilla/ui/clock.cljs",
+                                :line 79,
+                                :arglists ([date
+                                            show-100s
+                                            toggle-100s]),
+                                :type :var}
+                               {:name clock-state,
+                                :file "pinkgorilla/ui/clock.cljs",
+                                :line 91,
+                                :type :var}
+                               {:name clock-style,
+                                :file "pinkgorilla/ui/clock.cljs",
+                                :line 7,
+                                :type :var}
+                               {:name column,
+                                :file "pinkgorilla/ui/clock.cljs",
+                                :line 61,
+                                :arglists ([n]),
+                                :type :var}
+                               {:name column-pair,
+                                :file "pinkgorilla/ui/clock.cljs",
+                                :line 69,
+                                :arglists ([n]),
+                                :type :var}
+                               {:name legend,
+                                :file "pinkgorilla/ui/clock.cljs",
+                                :line 74,
+                                :arglists ([& items]),
+                                :type :var}
+                               {:name update-time,
+                                :file "pinkgorilla/ui/clock.cljs",
+                                :line 94,
+                                :arglists ([]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.default-renderer,
+                     :publics ()}
+                    {:name pinkgorilla.ui.frisk,
+                     :publics ({:name button-style,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 58,
+                                :type :var}
+                               {:name collapse-all,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 361,
+                                :arglists ([metadata-paths]),
+                                :type :var}
+                               {:name CollapseAllButton,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 70,
+                                :arglists ([emit-fn data]),
+                                :type :var}
+                               {:name CollectionSummary,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 158,
+                                :arglists ([{:keys [data]}]),
+                                :type :var}
+                               {:name conj-to-set,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 303,
+                                :arglists ([coll x]),
+                                :type :var}
+                               {:name copy-to-clipboard,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 336,
+                                :arglists ([data]),
+                                :type :var}
+                               {:name CopyButton,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 80,
+                                :arglists ([emit-fn data]),
+                                :type :var}
+                               {:name DataFrisk,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 296,
+                                :arglists ([{:keys [data], :as all}]),
+                                :type :var}
+                               {:name DataFriskView,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 406,
+                                :arglists ([data]),
+                                :type :var}
+                               {:name emit-fn-factory,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 364,
+                                :arglists ([state-atom id swappable]),
+                                :type :var}
+                               {:name ErrorIcon,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 26,
+                                :arglists ([]),
+                                :type :var}
+                               {:name ErrorText,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 37,
+                                :arglists ([text]),
+                                :type :var}
+                               {:name expand-all-paths,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 306,
+                                :arglists ([root-value
+                                            current-expanded-paths]),
+                                :type :var}
+                               {:name expandable?,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 155,
+                                :arglists ([v]),
+                                :type :var}
+                               {:name ExpandAllButton,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 62,
+                                :arglists ([emit-fn data]),
+                                :type :var}
+                               {:name ExpandButton,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 43,
+                                :arglists ([{:keys [expanded?
+                                                    path
+                                                    emit-fn]}]),
+                                :type :var}
+                               {:name KeySet,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 103,
+                                :arglists ([keyset]),
+                                :type :var}
+                               {:name KeyValNode,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 172,
+                                :arglists ([{[k v] :data,
+                                             :keys [path
+                                                    metadata-paths
+                                                    emit-fn
+                                                    swappable]}]),
+                                :type :var}
+                               {:name KeywordText,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 97,
+                                :arglists ([data]),
+                                :type :var}
+                               {:name ListVecNode,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 208,
+                                :arglists ([{:keys [data
+                                                    path
+                                                    metadata-paths
+                                                    emit-fn
+                                                    swappable
+                                                    hide-header?]}]),
+                                :type :var}
+                               {:name map-vals,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 9,
+                                :arglists ([f m]),
+                                :type :var}
+                               {:name MapNode,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 268,
+                                :arglists ([{:keys [data
+                                                    path
+                                                    metadata-paths
+                                                    emit-fn
+                                                    hide-header?],
+                                             :as all}]),
+                                :type :var}
+                               {:name NilText,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 91,
+                                :arglists ([]),
+                                :type :var}
+                               {:name Node,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 116,
+                                :arglists ([{:keys [data
+                                                    path
+                                                    emit-fn
+                                                    swappable
+                                                    metadata-paths]}]),
+                                :type :var}
+                               {:name NumberText,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 100,
+                                :arglists ([data]),
+                                :type :var}
+                               {:name Root,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 377,
+                                :arglists ([data id state-atom]),
+                                :type :var}
+                               {:name SetNode,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 238,
+                                :arglists ([{:keys [data
+                                                    path
+                                                    metadata-paths
+                                                    emit-fn
+                                                    swappable
+                                                    hide-header?]}]),
+                                :type :var}
+                               {:name StringText,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 94,
+                                :arglists ([data]),
+                                :type :var}
+                               {:name styles,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 15,
+                                :type :var}
+                               {:name VisibilityButton,
+                                :file "pinkgorilla/ui/frisk.cljs",
+                                :line 395,
+                                :arglists ([visible? update-fn]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.gridlayout,
+                     :publics ({:name gridlayout,
+                                :file "pinkgorilla/ui/gridlayout.cljs",
+                                :line 8,
+                                :arglists ([data & children]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.highchart,
+                     :doc "reagent component to render highchart-spec via highcharts.js\nUsage:  [:highchart spec-as-clj-data]\n\nHighchart renderer is a pure javascript renderer, the conversion\nof the spec as clj-data to javascript is done in the render-js component\n",
+                     :publics ({:name highchart,
+                                :file "pinkgorilla/ui/highchart.cljs",
+                                :line 19,
+                                :arglists ([data]),
+                                :type :var}
+                               {:name render-highchart,
+                                :file "pinkgorilla/ui/highchart.cljs",
+                                :line 15,
+                                :arglists ([dom-node data]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.json,
+                     :doc "custom components need to define a javascript-module\nmodule-test is a very simple sample that just renders the data as\nJSON to the dom node that is passed.\nIn early state component development this is helpful.",
+                     :publics ({:name json,
+                                :file "pinkgorilla/ui/json.cljs",
+                                :line 16,
+                                :arglists ([data-clj]),
+                                :type :var}
+                               {:name render-json,
+                                :file "pinkgorilla/ui/json.cljs",
+                                :line 10,
+                                :arglists ([dom-node data-js]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.leaflet,
+                     :publics ({:name assoc-if-exists,
+                                :file "pinkgorilla/ui/leaflet.cljs",
+                                :line 66,
+                                :arglists ([m key val]),
+                                :type :var}
+                               {:name config,
+                                :file "pinkgorilla/ui/leaflet.cljs",
+                                :line 10,
+                                :type :var}
+                               {:name default-marker,
+                                :file "pinkgorilla/ui/leaflet.cljs",
+                                :line 16,
+                                :type :var}
+                               {:name leaflet-map,
+                                :file "pinkgorilla/ui/leaflet.cljs",
+                                :line 97,
+                                :arglists ([options
+                                            features-incl-view]
+                                           [features]),
+                                :type :var}
+                               {:name marker-default,
+                                :file "pinkgorilla/ui/leaflet.cljs",
+                                :line 26,
+                                :type :var}
+                               {:name view-map-props,
+                                :file "pinkgorilla/ui/leaflet.cljs",
+                                :line 71,
+                                :arglists ([view]),
+                                :type :var}
+                               {:name view?,
+                                :file "pinkgorilla/ui/leaflet.cljs",
+                                :line 63,
+                                :arglists ([feature]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.math,
+                     :doc " MathJax has v2 and v3. v3 is breaking the v2 api.\nes6 modules for the browser not working; this means browser \nwill load mathjax to window/MathJax\nso we ship the compiled mathjax.js bundle\n",
+                     :publics ({:name math,
+                                :file "pinkgorilla/ui/math.cljs",
+                                :line 38,
+                                :arglists ([data-clj]),
+                                :type :var}
+                               {:name options,
+                                :file "pinkgorilla/ui/math.cljs",
+                                :line 19,
+                                :type :var}
+                               {:name render-math,
+                                :file "pinkgorilla/ui/math.cljs",
+                                :line 29,
+                                :arglists ([dom-node data-js]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.player,
+                     :publics ({:name player,
+                                :file "pinkgorilla/ui/player.cljs",
+                                :line 7,
+                                :arglists ([url]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.pydoc,
+                     :publics ({:name of-type,
+                                :file "pinkgorilla/ui/pydoc.cljs",
+                                :line 34,
+                                :arglists ([type items]),
+                                :type :var}
+                               {:name py-category,
+                                :file "pinkgorilla/ui/pydoc.cljs",
+                                :line 28,
+                                :arglists ([category-name items]),
+                                :type :var}
+                               {:name py-doc,
+                                :file "pinkgorilla/ui/pydoc.cljs",
+                                :line 37,
+                                :arglists ([py-module]),
+                                :type :var}
+                               {:name py-entry,
+                                :file "pinkgorilla/ui/pydoc.cljs",
+                                :line 22,
+                                :arglists ([f]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.sparklines,
+                     :publics ({:name sparkline,
+                                :file "pinkgorilla/ui/sparklines.cljs",
+                                :line 6,
+                                :arglists ([data]),
+                                :type :var}
+                               {:name sparkline-bar,
+                                :file "pinkgorilla/ui/sparklines.cljs",
+                                :line 10,
+                                :arglists ([data]),
+                                :type :var}
+                               {:name sparkline-spot,
+                                :file "pinkgorilla/ui/sparklines.cljs",
+                                :line 14,
+                                :arglists ([data]),
+                                :type :var})}
+                    {:name pinkgorilla.ui.vega,
+                     :doc "plugin to render vega-charts in pink-gorilla\n",
+                     :publics ({:name render-vega,
+                                :file "pinkgorilla/ui/vega.cljs",
+                                :line 24,
+                                :arglists ([dom-node data-js]),
+                                :type :var}
+                               {:name vega,
+                                :file "pinkgorilla/ui/vega.cljs",
+                                :line 31,
+                                :arglists ([data-clj]),
+                                :type :var}
+                               {:name vega-options,
+                                :file "pinkgorilla/ui/vega.cljs",
+                                :line 19,
+                                :type :var}
+                               {:name vega-options-js,
+                                :file "pinkgorilla/ui/vega.cljs",
+                                :line 22,
+                                :type :var}
+                               {:name vegaa,
+                                :file "pinkgorilla/ui/vega.cljs",
+                                :line 36,
+                                :arglists ([s k]),
+                                :type :var})})},
+ :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>org.pinkgorilla</groupId>\n  <artifactId>gorilla-ui</artifactId>\n  <packaging>jar</packaging>\n  <version>0.1.66</version>\n  <name>gorilla-ui</name>\n  <description>Reagent components for daa vizualisation.</description>\n  <url>https://github.com/pink-gorilla/gorilla-ui</url>\n  <licenses>\n    <license>\n      <name>MIT</name>\n    </license>\n  </licenses>\n  <scm>\n    <url>https://github.com/pink-gorilla/gorilla-ui</url>\n    <connection>scm:git:git://github.com/pink-gorilla/gorilla-ui.git</connection>\n    <developerConnection>scm:git:ssh://git@github.com/pink-gorilla/gorilla-ui.git</developerConnection>\n    <tag>f8c97151d05e2c8358ca773c673debab429a33d6</tag>\n  </scm>\n  <build>\n    <sourceDirectory>src</sourceDirectory>\n    <testSourceDirectory>test</testSourceDirectory>\n    <resources>\n      <resource>\n        <directory>resources</directory>\n      </resource>\n      <resource>\n        <directory>node_modules/leaflet/dist</directory>\n      </resource>\n      <resource>\n        <directory>node_modules/mathjax/es5</directory>\n      </resource>\n      <resource>\n        <directory>node_modules/ag-grid-community</directory>\n      </resource>\n    </resources>\n    <testResources>\n      <testResource>\n        <directory>resources</directory>\n      </testResource>\n      <testResource>\n        <directory>node_modules/leaflet/dist</directory>\n      </testResource>\n      <testResource>\n        <directory>node_modules/mathjax/es5</directory>\n      </testResource>\n      <testResource>\n        <directory>node_modules/ag-grid-community</directory>\n      </testResource>\n    </testResources>\n    <directory>target</directory>\n    <outputDirectory>target/classes</outputDirectory>\n    <plugins>\n      <plugin>\n        <groupId>org.codehaus.mojo</groupId>\n        <artifactId>build-helper-maven-plugin</artifactId>\n        <version>1.7</version>\n        <executions>\n          <execution>\n            <id>add-test-source</id>\n            <phase>generate-test-sources</phase>\n            <goals>\n              <goal>add-test-source</goal>\n            </goals>\n            <configuration>\n              <sources>\n                <source>test</source>\n              </sources>\n            </configuration>\n          </execution>\n        </executions>\n      </plugin>\n    </plugins>\n  </build>\n  <repositories>\n    <repository>\n      <id>central</id>\n      <url>https://repo1.maven.org/maven2/</url>\n      <snapshots>\n        <enabled>false</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n      <snapshots>\n        <enabled>true</enabled>\n      </snapshots>\n      <releases>\n        <enabled>true</enabled>\n      </releases>\n    </repository>\n  </repositories>\n  <dependencyManagement>\n    <dependencies/>\n  </dependencyManagement>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojurescript</artifactId>\n      <version>1.10.773</version>\n    </dependency>\n    <dependency>\n      <groupId>reagent</groupId>\n      <artifactId>reagent</artifactId>\n      <version>0.10.0</version>\n      <exclusions>\n        <exclusion>\n          <artifactId>tools.reader</artifactId>\n          <groupId>org.clojure</groupId>\n        </exclusion>\n        <exclusion>\n          <artifactId>react</artifactId>\n          <groupId>cljsjs</groupId>\n        </exclusion>\n        <exclusion>\n          <artifactId>react-dom</artifactId>\n          <groupId>cljsjs</groupId>\n        </exclusion>\n      </exclusions>\n    </dependency>\n    <dependency>\n      <groupId>thi.ng</groupId>\n      <artifactId>strf</artifactId>\n      <version>0.2.2</version>\n    </dependency>\n    <dependency>\n      <groupId>com.lucasbradstreet</groupId>\n      <artifactId>cljs-uuid-utils</artifactId>\n      <version>1.0.2</version>\n    </dependency>\n    <dependency>\n      <groupId>org.pinkgorilla</groupId>\n      <artifactId>gorilla-renderable-ui</artifactId>\n      <version>0.1.36</version>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.10.1</version>\n      <scope>test</scope>\n    </dependency>\n    <dependency>\n      <groupId>thheller</groupId>\n      <artifactId>shadow-cljs</artifactId>\n      <version>2.8.81</version>\n      <scope>test</scope>\n    </dependency>\n    <dependency>\n      <groupId>thheller</groupId>\n      <artifactId>shadow-cljsjs</artifactId>\n      <version>0.0.21</version>\n      <scope>test</scope>\n    </dependency>\n    <dependency>\n      <groupId>clj-kondo</groupId>\n      <artifactId>clj-kondo</artifactId>\n      <version>2019.11.23</version>\n      <scope>test</scope>\n    </dependency>\n  </dependencies>\n</project>\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n"}

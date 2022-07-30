@@ -317,6 +317,16 @@ bb test
 
 To run a subset of tests, run `bb tasks` to see what's available.
 
+=== Pretty edn
+
+We format expected analysis edn to make it easier to open in an editor and grok any subsequent changes to expectations.
+If you add new `test-resources/` edn files, make sure you have https://github.com/borkdude/jet[jet] installed and then run:
+
+[source,shell]
+----
+bb pretty-expected-edn
+----
+
 === Linting
 
 We use of https://github.com/borkdude/clj-kondo[clj-kondo] for linting.
