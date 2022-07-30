@@ -17,15 +17,60 @@
 (defn- var-symbol [namespace var]
   (symbol (name (:name namespace)) (name (:name var))))
 
-(defn- remove-matching-vars [vars re namespace]
-  (remove (fn [var]
-            (when (and re (re-find re (name (:name var))))
-              (println "Excluding var" (var-symbol namespace var))
-              true))
-          vars))
+(defn- map-factory-for
+  "Return true if var meta looks like a defrecord generated map factory function."
+  [{var-name :name doc :doc}]
+  (when (and var-name (re-find #"^map->\p{Upper}" (name var-name))
+             doc (re-matches #"Factory function for (class |)\S+, taking a map of keywords to field values\.\R?" doc))
+    {:factory-fn :map
+     :factory-from (-> var-name str (subs 5) symbol)}))
 
-(defn- remove-excluded-vars [namespaces exclude-vars]
-  (map #(update-in % [:publics] remove-matching-vars exclude-vars %) namespaces))
+(defn- positional-factory-for
+  "Return true if var meta looks like a defrecord/deftype generated positonal factory function."
+  [{var-name :name doc :doc}]
+  (when (and var-name (re-find #"^->\p{Upper}" (name var-name))
+             doc (re-matches #"Positional factory function for (class |)\S+\.\R?" doc))
+    {:factory-fn :positional
+     :factory-from (-> var-name str (subs 2) symbol)}))
+
+(defn- adorn-factories [vars]
+  (map #(merge % (or (map-factory-for %)
+                     (positional-factory-for %)))
+       vars))
+
+(defn- adorn-factory-targets [vars]
+  (let [fndx (->> vars
+                  (filter :factory-fn)
+                  (group-by :factory-from))]
+    (if (seq fndx)
+      (->> vars
+           (map (fn [{var-name :name :as var-meta}]
+                  (if-let [fs (get fndx var-name nil)]
+                    (assoc var-meta :factory-fns fs)
+                    var-meta))))
+      vars)))
+
+(defn- exclude-vars
+  "Remove defrecord, deftype and any generated defrecord/deftype factory fns.
+
+  Code is currently generic for Clojure and ClojureScript, note:
+  - Clojure does not currently include defrecord and deftype (but does include associated factory fns)
+  but this code assumes defrecord and deftype might be there.
+  - ClojureScript does include entries for defrecrod and deftype. It does seem to mark records with :record,
+  so we could get more clever/specific for ClojureScript if we wanted, but I'm not sure if this would be
+  relying more on internals.
+  - All adorned vars are currently removed, if they were included we'd have to dissoc some special identifying keywords."
+  [vars namespace]
+  (->> vars
+       adorn-factories
+       adorn-factory-targets
+       (remove (fn [var-meta]
+                 (when (or (:factory-fn var-meta) (:factory-fns var-meta))
+                   (println "Excluding" (var-symbol namespace var-meta))
+                   true)))))
+
+(defn- exclude-unwanted-vars [namespaces]
+  (map #(update-in % [:publics] exclude-vars %) namespaces))
 
 (defn- assert-no-dupes-in-publics [namespaces]
   (let [dupes (for [ns namespaces
@@ -67,11 +112,10 @@
 
 (defn- read-namespaces
   [{:keys [language root-path namespaces] :as opts}]
-  (let [record-constructor-function-vars #"^(map)?->\p{Upper}"
-        reader (namespace-readers language)]
+  (let [reader (namespace-readers language)]
     (-> (reader root-path (select-keys opts [:exception-handler :exclude-with]))
         (filter-namespaces namespaces)
-        (remove-excluded-vars record-constructor-function-vars)
+        exclude-unwanted-vars
         (assert-no-dupes-in-publics)
         (sort-by-name))))
 

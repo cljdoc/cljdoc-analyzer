@@ -1121,10 +1121,6 @@
                                 :file "re_frame/router.cljc",
                                 :line 226,
                                 :type :var}
-                               {:name EventQueue,
-                                :file "re_frame/router.cljc",
-                                :line 94,
-                                :type :var}
                                {:name IEventQueue,
                                 :file "re_frame/router.cljc",
                                 :line 71,

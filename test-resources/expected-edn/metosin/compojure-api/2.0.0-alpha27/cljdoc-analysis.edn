@@ -97,10 +97,6 @@
                                          {:name make-open,
                                           :arglists ([this model]),
                                           :type :var})}
-                              {:name CoercionError,
-                               :file "compojure/api/coercion/core.clj",
-                               :line 12,
-                               :type :var}
                               {:name named-coercion,
                                :file "compojure/api/coercion/core.clj",
                                :line 14,
@@ -130,10 +126,6 @@
                               {:name memoized-coercer,
                                :file "compojure/api/coercion/schema.clj",
                                :line 33,
-                               :type :var}
-                              {:name SchemaCoercion,
-                               :file "compojure/api/coercion/schema.clj",
-                               :line 41,
                                :type :var}
                               {:name string-coercion-matcher,
                                :file "compojure/api/coercion/schema.clj",
@@ -179,10 +171,6 @@
                               {:name memoized-specify,
                                :file "compojure/api/coercion/spec.clj",
                                :line 77,
-                               :type :var}
-                              {:name SpecCoercion,
-                               :file "compojure/api/coercion/spec.clj",
-                               :line 93,
                                :type :var}
                               {:name Specify,
                                :file "compojure/api/coercion/spec.clj",
@@ -681,10 +669,6 @@
                                :file "compojure/api/routes.clj",
                                :line 142,
                                :arglists ([routes]),
-                               :type :var}
-                              {:name Route,
-                               :file "compojure/api/routes.clj",
-                               :line 68,
                                :type :var}
                               {:name route-lookup-table,
                                :file "compojure/api/routes.clj",

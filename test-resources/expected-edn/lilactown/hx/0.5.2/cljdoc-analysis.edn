@@ -248,10 +248,6 @@
                                 :line 236,
                                 :name <-value,
                                 :type :var}
-                               {:file "hx/hooks.cljs",
-                                :line 5,
-                                :name Atomified,
-                                :type :var}
                                {:arglists ([f] [f deps]),
                                 :doc "Just react/useCallback\n",
                                 :file "hx/hooks.cljs",

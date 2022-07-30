@@ -2,11 +2,7 @@
  :artifact-id "bidi",
  :version "2.1.3",
  :analysis {"clj" ({:name bidi.bidi,
-                    :publics ({:name Alternates,
-                               :file "bidi/bidi.cljc",
-                               :line 481,
-                               :type :var}
-                              {:name alts,
+                    :publics ({:name alts,
                                :file "bidi/bidi.cljc",
                                :line 492,
                                :arglists ([& alts]),
@@ -22,10 +18,6 @@
                                :line 521,
                                :arglists ([k handler] [handler]),
                                :deprecated true,
-                               :type :var}
-                              {:name IdentifiableHandler,
-                               :file "bidi/bidi.cljc",
-                               :line 512,
                                :type :var}
                               {:name just-path,
                                :file "bidi/bidi.cljc",
@@ -119,10 +111,6 @@
                                          {:name unmatch-segment,
                                           :arglists ([_ params]),
                                           :type :var})}
-                              {:name Route,
-                               :file "bidi/bidi.cljc",
-                               :line 419,
-                               :type :var}
                               {:name route-seq,
                                :file "bidi/bidi.cljc",
                                :line 424,
@@ -143,10 +131,6 @@
                                :arglists ([routes context]),
                                :doc "Wrap a Matched such that a successful match will merge the given\ncontext with the match-context. The merge is such that where there\nis a conflict, the inner sub-tree overrides the outer container.",
                                :type :var}
-                              {:name RoutesContext,
-                               :file "bidi/bidi.cljc",
-                               :line 533,
-                               :type :var}
                               {:name RouteSeq,
                                :file "bidi/bidi.cljc",
                                :line 421,
@@ -164,10 +148,6 @@
                                :file "bidi/bidi.cljc",
                                :line 509,
                                :arglists ([matched tag]),
-                               :type :var}
-                              {:name TaggedMatch,
-                               :file "bidi/bidi.cljc",
-                               :line 498,
                                :type :var}
                               {:name unmatch-pair,
                                :file "bidi/bidi.cljc",
@@ -191,18 +171,10 @@
                                :doc "Function for creating a UUID of the appropriate type for the platform.\nNote that this function should _only_ be used in route patterns as, at least\nin the case of ClojureScript, it does not validate that the input string is\nactually a valid UUID (this is handled by the route matching logic).",
                                :type :var})}
                    {:name bidi.ring,
-                    :publics ({:name Archive,
-                               :file "bidi/ring.cljc",
-                               :line 159,
-                               :type :var}
-                              {:name archive,
+                    :publics ({:name archive,
                                :file "bidi/ring.cljc",
                                :line 179,
                                :arglists ([options]),
-                               :type :var}
-                              {:name Files,
-                               :file "bidi/ring.cljc",
-                               :line 139,
                                :type :var}
                               {:name files,
                                :file "bidi/ring.cljc",
@@ -215,10 +187,6 @@
                                :arglists ([route handler-fn] [route]),
                                :doc "Create a Ring handler from the route definition data\nstructure. Matches a handler from the uri in the request, and invokes\nit with the request as a parameter.",
                                :type :var}
-                              {:name Redirect,
-                               :file "bidi/ring.cljc",
-                               :line 58,
-                               :type :var}
                               {:name redirect,
                                :file "bidi/ring.cljc",
                                :line 81,
@@ -229,10 +197,6 @@
                                :line 85,
                                :arglists ([target]),
                                :type :var}
-                              {:name Resources,
-                               :file "bidi/ring.cljc",
-                               :line 91,
-                               :type :var}
                               {:name resources,
                                :file "bidi/ring.cljc",
                                :line 107,
@@ -242,10 +206,6 @@
                                :file "bidi/ring.cljc",
                                :line 133,
                                :arglists ([options]),
-                               :type :var}
-                              {:name ResourcesMaybe,
-                               :file "bidi/ring.cljc",
-                               :line 119,
                                :type :var}
                               {:name Ring,
                                :file "bidi/ring.cljc",
@@ -261,10 +221,6 @@
                                :file "bidi/ring.cljc",
                                :line 193,
                                :arglists ([matched middleware]),
-                               :type :var}
-                              {:name WrapMiddleware,
-                               :file "bidi/ring.cljc",
-                               :line 185,
                                :type :var})}
                    {:name bidi.schema,
                     :publics ({:name AlternatesSet,
@@ -382,10 +338,6 @@
                                :line 100,
                                :arglists ([vhosts-model vhost]),
                                :type :var}
-                              {:name Redirect,
-                               :file "bidi/vhosts.clj",
-                               :line 210,
-                               :type :var}
                               {:name redirect,
                                :file "bidi/vhosts.clj",
                                :line 234,
@@ -447,21 +399,13 @@
                                :line 53,
                                :arglists ([& vhosts-with-routes]),
                                :type :var}
-                              {:name VHostsModel,
-                               :file "bidi/vhosts.clj",
-                               :line 51,
-                               :type :var}
                               {:name VHostWithRoutes,
                                :file "bidi/vhosts.clj",
                                :line 18,
                                :doc "\n",
                                :type :var})}),
             "cljs" ({:name bidi.bidi,
-                     :publics ({:name Alternates,
-                                :file "bidi/bidi.cljc",
-                                :line 481,
-                                :type :var}
-                               {:name alts,
+                     :publics ({:name alts,
                                 :file "bidi/bidi.cljc",
                                 :line 492,
                                 :arglists ([& alts]),
@@ -477,10 +421,6 @@
                                 :line 521,
                                 :arglists ([k handler] [handler]),
                                 :deprecated true,
-                                :type :var}
-                               {:name IdentifiableHandler,
-                                :file "bidi/bidi.cljc",
-                                :line 512,
                                 :type :var}
                                {:name just-path,
                                 :file "bidi/bidi.cljc",
@@ -578,10 +518,6 @@
                                           {:name unmatch-segment,
                                            :arglists ([_ params]),
                                            :type :var})}
-                               {:name Route,
-                                :file "bidi/bidi.cljc",
-                                :line 419,
-                                :type :var}
                                {:name route-seq,
                                 :file "bidi/bidi.cljc",
                                 :line 424,
@@ -602,10 +538,6 @@
                                 :arglists ([routes context]),
                                 :doc "Wrap a Matched such that a successful match will merge the given\ncontext with the match-context. The merge is such that where there\nis a conflict, the inner sub-tree overrides the outer container.",
                                 :type :var}
-                               {:name RoutesContext,
-                                :file "bidi/bidi.cljc",
-                                :line 533,
-                                :type :var}
                                {:name RouteSeq,
                                 :file "bidi/bidi.cljc",
                                 :line 421,
@@ -623,10 +555,6 @@
                                 :file "bidi/bidi.cljc",
                                 :line 509,
                                 :arglists ([matched tag]),
-                                :type :var}
-                               {:name TaggedMatch,
-                                :file "bidi/bidi.cljc",
-                                :line 498,
                                 :type :var}
                                {:name unmatch-pair,
                                 :file "bidi/bidi.cljc",

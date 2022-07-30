@@ -47,14 +47,6 @@
   (when-let [p (:protocol (meta var))]
     (some #{p} vars)))
 
-(defn- include-record-factory-as-defrecord [var-meta]
-  (let [n (str (:name var-meta))]
-    (if (re-find #"map->\p{Upper}" n)
-      (-> var-meta
-          (assoc :name (symbol (subs n 5)))
-          (dissoc :doc :arglists))
-      var-meta)))
-
 (defn- protocol-methods [protocol vars]
   (filter #(= protocol (:protocol (meta %))) vars))
 
@@ -73,7 +65,6 @@
 (defn- read-var [source-path vars var]
   (let [normalize (partial utils/normalize-to-source-path source-path)]
     (-> (meta var)
-        (include-record-factory-as-defrecord)
         (select-keys [:name :file :line :arglists :doc :dynamic
                       :added :deprecated
                       :no-doc :skip-wiki])
