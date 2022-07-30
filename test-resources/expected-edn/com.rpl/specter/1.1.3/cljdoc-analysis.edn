@@ -758,10 +758,6 @@
                                :line 485,
                                :arglists ([c]),
                                :type :var}
-                              {:name CachedPathInfo,
-                               :file "com/rpl/specter/impl.cljc",
-                               :line 478,
-                               :type :var}
                               {:name cell-nav,
                                :file "com/rpl/specter/impl.cljc",
                                :line 524,
@@ -1157,18 +1153,6 @@
                                :line 666,
                                :arglists ([v]),
                                :type :var}
-                              {:name DynamicFunction,
-                               :file "com/rpl/specter/impl.cljc",
-                               :line 460,
-                               :type :var}
-                              {:name DynamicPath,
-                               :file "com/rpl/specter/impl.cljc",
-                               :line 457,
-                               :type :var}
-                              {:name DynamicVal,
-                               :file "com/rpl/specter/impl.cljc",
-                               :line 454,
-                               :type :var}
                               {:name eval+,
                                :file "com/rpl/specter/impl.cljc",
                                :line 640,
@@ -1210,10 +1194,6 @@
                                :line 433,
                                :arglists ([f]),
                                :type :var}
-                              {:name FnInvocation,
-                               :file "com/rpl/specter/impl.cljc",
-                               :line 450,
-                               :type :var}
                               {:name get-cell,
                                :file "com/rpl/specter/impl.cljc",
                                :line 263,
@@ -1238,10 +1218,6 @@
                                :file "com/rpl/specter/impl.cljc",
                                :line 531,
                                :arglists ([]),
-                               :type :var}
-                              {:name LocalSym,
-                               :file "com/rpl/specter/impl.cljc",
-                               :line 439,
                                :type :var}
                               {:name magic-precompilation,
                                :file "com/rpl/specter/impl.cljc",
@@ -1330,10 +1306,6 @@
                                :line 35,
                                :arglists ([& elems]),
                                :type :var}
-                              {:name SpecialFormUse,
-                               :file "com/rpl/specter/impl.cljc",
-                               :line 447,
-                               :type :var}
                               {:name spy,
                                :file "com/rpl/specter/impl.cljc",
                                :line 25,
@@ -1395,10 +1367,6 @@
                                :file "com/rpl/specter/impl.cljc",
                                :line 892,
                                :arglists ([locals-set form]),
-                               :type :var}
-                              {:name VarUse,
-                               :file "com/rpl/specter/impl.cljc",
-                               :line 444,
                                :type :var}
                               {:name walk-select,
                                :file "com/rpl/specter/impl.cljc",
@@ -1589,10 +1557,6 @@
                               {:name srange-transform,
                                :file "com/rpl/specter/navs.cljc",
                                :line 382,
-                               :type :var}
-                              {:name SrangeEndFunction,
-                               :file "com/rpl/specter/navs.cljc",
-                               :line 686,
                                :type :var}
                               {:name transient-vec-count,
                                :file "com/rpl/specter/navs.cljc",
@@ -2540,10 +2504,6 @@
                                 :line 485,
                                 :arglists ([c]),
                                 :type :var}
-                               {:name CachedPathInfo,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 478,
-                                :type :var}
                                {:name cell-nav,
                                 :file "com/rpl/specter/impl.cljc",
                                 :line 524,
@@ -2940,18 +2900,6 @@
                                 :line 666,
                                 :arglists ([v]),
                                 :type :var}
-                               {:name DynamicFunction,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 460,
-                                :type :var}
-                               {:name DynamicPath,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 457,
-                                :type :var}
-                               {:name DynamicVal,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 454,
-                                :type :var}
                                {:name exec-select*,
                                 :file "com/rpl/specter/impl.cljc",
                                 :line 124,
@@ -2999,10 +2947,6 @@
                                 :line 433,
                                 :arglists ([f]),
                                 :type :var}
-                               {:name FnInvocation,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 450,
-                                :type :var}
                                {:name get-cell,
                                 :file "com/rpl/specter/impl.cljc",
                                 :line 268,
@@ -3028,86 +2972,6 @@
                                 :line 692,
                                 :arglists ([afn]),
                                 :type :var}
-                               {:name LateFn0,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn1,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn10,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn11,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn12,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn13,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn14,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn15,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn16,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn17,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn18,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn19,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn2,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn3,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn4,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn5,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn6,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn7,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn8,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
-                               {:name LateFn9,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 789,
-                                :type :var}
                                {:name LateResolve,
                                 :file "com/rpl/specter/impl.cljc",
                                 :line 774,
@@ -3120,14 +2984,6 @@
                                 :file "com/rpl/specter/impl.cljc",
                                 :line 531,
                                 :arglists ([]),
-                                :type :var}
-                               {:name LocalParam,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 778,
-                                :type :var}
-                               {:name LocalSym,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 439,
                                 :type :var}
                                {:name magic-precompilation,
                                 :file "com/rpl/specter/impl.cljc",
@@ -3164,10 +3020,6 @@
                                 :file "com/rpl/specter/impl.cljc",
                                 :line 246,
                                 :arglists ([] [init]),
-                                :type :var}
-                               {:name MutableCell,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 234,
                                 :type :var}
                                {:name NONE,
                                 :file "com/rpl/specter/impl.cljc",
@@ -3232,10 +3084,6 @@
                                 :line 35,
                                 :arglists ([& elems]),
                                 :type :var}
-                               {:name SpecialFormUse,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 447,
-                                :type :var}
                                {:name spy,
                                 :file "com/rpl/specter/impl.cljc",
                                 :line 25,
@@ -3268,10 +3116,6 @@
                                 :file "com/rpl/specter/impl.cljc",
                                 :line 826,
                                 :arglists ([o]),
-                                :type :var}
-                               {:name StaticParam,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 784,
                                 :type :var}
                                {:name STAY*,
                                 :file "com/rpl/specter/impl.cljc",
@@ -3306,10 +3150,6 @@
                                 :file "com/rpl/specter/impl.cljc",
                                 :line 892,
                                 :arglists ([locals-set form]),
-                                :type :var}
-                               {:name VarUse,
-                                :file "com/rpl/specter/impl.cljc",
-                                :line 444,
                                 :type :var}
                                {:name walk-select,
                                 :file "com/rpl/specter/impl.cljc",
@@ -3483,10 +3323,6 @@
                                {:name srange-transform,
                                 :file "com/rpl/specter/navs.cljc",
                                 :line 382,
-                                :type :var}
-                               {:name SrangeEndFunction,
-                                :file "com/rpl/specter/navs.cljc",
-                                :line 686,
                                 :type :var}
                                {:name transient-vec-count,
                                 :file "com/rpl/specter/navs.cljc",

@@ -2,11 +2,7 @@
  :artifact-id "muuntaja",
  :version "unpublished",
  :analysis {"clj" ({:name muuntaja.core,
-                    :publics ({:name Adapter,
-                               :file "muuntaja/core.clj",
-                               :line 41,
-                               :type :var}
-                              {:name available-charsets,
+                    :publics ({:name available-charsets,
                                :file "muuntaja/core.clj",
                                :line 99,
                                :doc "Set of recognised charsets by the current JVM\n",
@@ -95,10 +91,6 @@
                                :line 79,
                                :arglists ([request]),
                                :doc "Extracts content-type from ring-request.\n",
-                               :type :var}
-                              {:name FormatAndCharset,
-                               :file "muuntaja/core.clj",
-                               :line 35,
                                :type :var}
                               {:name formats,
                                :file "muuntaja/core.clj",
@@ -225,11 +217,7 @@
                                           :arglists ([this
                                                       data
                                                       charset]),
-                                          :type :var})}
-                              {:name Format,
-                               :file "muuntaja/format/core.clj",
-                               :line 12,
-                               :type :var})}
+                                          :type :var})})}
                    {:name muuntaja.format.edn,
                     :publics ({:name decoder,
                                :file "muuntaja/format/edn.clj",

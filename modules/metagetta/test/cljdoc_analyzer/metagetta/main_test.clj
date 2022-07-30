@@ -121,10 +121,28 @@
                 :file "metagetta_test/test_ns1/protocols.cljc"
                 :line 6}]}
     {:name 'metagetta-test.test-ns1.record
-     :publics [{:name 'DefRecordTest
-                :type :var
+     :publics [{:arglists '([])
                 :file "metagetta_test/test_ns1/record.cljc"
-                :line 6}
+                :line 13
+                :name '->NopeNotGenerated
+                :type :var}
+               {:arglists '([])
+                :doc "not a generated positional factory fn, should be included\n"
+                :file "metagetta_test/test_ns1/record.cljc"
+                :line 11
+                :name '->NopeNotGeneratedDoc
+                :type :var}
+               {:arglists '([])
+                :file "metagetta_test/test_ns1/record.cljc",
+                :line 17,
+                :name 'map->NopeNotGenerated,
+                :type :var}
+               {:arglists '([])
+                :doc "not a generated map factory fn, should be included\n",
+                :file "metagetta_test/test_ns1/record.cljc",
+                :line 15,
+                :name 'map->NopeNotGeneratedDoc,
+                :type :var}
                {:name 'record-test
                 :type :var
                 :file "metagetta_test/test_ns1/record.cljc"
@@ -179,7 +197,24 @@
                  :doc "dynamic def docs\n"
                  :dynamic true
                  :file "metagetta_test/test_ns1/special_tags.cljc"
-                 :line 21}])})))
+                 :line 21}])})
+   (list
+     {:name 'metagetta-test.test-ns1.type,
+      :publics '({:arglists ([])
+                  :file "metagetta_test/test_ns1/type.cljc"
+                  :line 13
+                  :name ->NotGenerated
+                  :type :var}
+                 {:arglists ([])
+                  :doc "not generated and should be included\n"
+                  :file "metagetta_test/test_ns1/type.cljc"
+                  :line 11
+                  :name ->NotGeneratedDoc
+                  :type :var}
+                 {:file "metagetta_test/test_ns1/type.cljc"
+                  :line 8
+                  :name type-test
+                  :type :var})})))
 
 (defn- analyze-sources
   "Analyze (by default all) sources from `test-sources`"

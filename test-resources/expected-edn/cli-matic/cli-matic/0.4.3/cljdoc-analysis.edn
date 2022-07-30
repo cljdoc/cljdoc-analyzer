@@ -3,7 +3,17 @@
  :version "0.4.3",
  :analysis {"clj" ({:doc "\n### ATTENTION\n\nCLI-matic has one main entry-point: [[run-cmd]].\n\nAs an end-user, you need nothing else,  but the documentation\nthat explains how parameters are to be run.\n\nSee `examples/` to get started quickly.\n\n*Developers*\n\nMost of the logic will be run in [[run-cmd*]] to make testing easier,\nas [[run-cmd]] calls `System/exit`.\n\n",
                     :name cli-matic.core,
-                    :publics ({:name assert-cfg-sanity,
+                    :publics ({:name ->RV,
+                               :file "cli_matic/core.cljc",
+                               :line 485,
+                               :arglists ([return-code
+                                           type
+                                           stdout
+                                           subcmd
+                                           stderr]),
+                               :doc "This is a Return Value, i.e. what happens after the\nparsing is done and possibly the subcommand was invoked.",
+                               :type :var}
+                              {:name assert-cfg-sanity,
                                :file "cli_matic/core.cljc",
                                :line 443,
                                :arglists ([_]),
@@ -739,7 +749,17 @@
                                :type :var})}),
             "cljs" ({:name cli-matic.core,
                      :doc "\n### ATTENTION\n\nCLI-matic has one main entry-point: [[run-cmd]].\n\nAs an end-user, you need nothing else,  but the documentation\nthat explains how parameters are to be run.\n\nSee `examples/` to get started quickly.\n\n*Developers*\n\nMost of the logic will be run in [[run-cmd*]] to make testing easier,\nas [[run-cmd]] calls `System/exit`.\n\n",
-                     :publics ({:name assert-cfg-sanity,
+                     :publics ({:name ->RV,
+                                :file "cli_matic/core.cljc",
+                                :line 485,
+                                :arglists ([return-code
+                                            type
+                                            stdout
+                                            subcmd
+                                            stderr]),
+                                :doc "This is a Return Value, i.e. what happens after the\nparsing is done and possibly the subcommand was invoked.",
+                                :type :var}
+                               {:name assert-cfg-sanity,
                                 :file "cli_matic/core.cljc",
                                 :line 443,
                                 :arglists ([_]),
