@@ -67,7 +67,7 @@
     (-> (meta var)
         (select-keys [:name :file :line :arglists :doc :dynamic
                       :added :deprecated
-                      :no-doc :skip-wiki])
+                      :no-doc :skip-wiki :mranderson/inlined])
         (utils/update-some :doc utils/correct-indent)
         (utils/update-some :file normalize)
         (utils/assoc-some  :type (var-type var)
@@ -92,7 +92,7 @@
       (require namespace))
     (-> (find-ns namespace)
         (meta)
-        (select-keys [:doc :author :deprecated :added :no-doc :skip-wiki])
+        (select-keys [:doc :author :deprecated :added :no-doc :skip-wiki :mranderson/inlined])
         (assoc :name namespace)
         (assoc :publics (read-publics source-path namespace))
         (utils/update-some :doc utils/correct-indent)
@@ -135,6 +135,7 @@
     :author    - if the metadata is there, we return it
     :no-doc    - request for namespace not to be documented
     :skip-wiki - legacy synonym for :no-doc
+    :mranderson/inlined - default metadata for mranderson inline namespace
     :publics
       :name       - the name of a public function, macro, or value
       :file       - the file the var was declared in
@@ -145,7 +146,8 @@
       :added      - the library version the var was added in
       :deprecated - the library version the var was deprecated in
       :no-doc     - request for var not to be documented
-      :skip-wiki    - legacy synonym for :no-doc"
+      :skip-wiki    - legacy synonym for :no-doc
+      :mranderson/inlined - default meta for mranderson inlined"
 
   ([path] (read-namespaces path {}))
   ([path {:keys [exception-handler exclude-with]

@@ -35,7 +35,7 @@
                                        :pompath (or pompath pom)
                                        :extra-repos extra-repos
                                        :namespaces :all
-                                       :exclude-with [:no-doc :skip-wiki]
+                                       :exclude-with [:no-doc :skip-wiki :mranderson/inlined]
                                        :output-filename (or output-filename
                                                           (str "output-" project "-" version ".edn"))}))]
     (shutdown-agents)

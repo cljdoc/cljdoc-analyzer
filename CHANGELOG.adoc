@@ -10,7 +10,8 @@
 
 == Unreleased
 
-*
+* Exclude MrAnderson inlined namespaces
+https://github.com/cljdoc/cljdoc-analyzer/issues/4[#4]
 
 == v1.0.702
 

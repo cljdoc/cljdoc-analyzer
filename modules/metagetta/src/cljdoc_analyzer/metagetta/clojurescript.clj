@@ -70,7 +70,7 @@
     (-> var
         (select-keys [:name :file :line :arglists :doc :dynamic
                       :added :deprecated
-                      :no-doc :skip-wiki])
+                      :no-doc :skip-wiki :mranderson/inlined])
         (utils/update-some :name (comp symbol name))
         (utils/update-some :arglists remove-quote)
         (utils/update-some :doc utils/correct-indent)
@@ -152,7 +152,7 @@
              (-> ns
                  (select-keys [:name :doc])
                  (utils/update-some :doc utils/correct-indent)
-                 (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki :author :deprecated :added])))
+                 (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki :mranderson/inlined :author :deprecated :added])))
                  (utils/remove-empties)
                  (assoc :publics (read-publics state ns-name source-path file)))})
           (println "Dropping" file "because" ns-name "was not present in state. Is it missing an (ns) declaration?")))
@@ -191,6 +191,7 @@
     :author    - if the metadata is there, we return it
     :no-doc    - request for namespace not to be documented
     :skip-wiki - legacy synonym for :no-doc
+    :mranderson/inlined - default metadata for mranderson inline namespace
     :publics
       :name       - the name of a public function, macro, or value
       :file       - the file the var was declared in
@@ -201,7 +202,8 @@
       :added      - the library version the var was added in
       :deprecated - the library version the var was deprecated in
       :no-doc     - request for var not to be documented
-      :skip-wiki    - legacy synonym for :no-doc"
+      :skip-wiki    - legacy synonym for :no-doc
+      :mranderson/inlined - default meta for mranderson inlined"
   ([path] (read-namespaces path {}))
   ([path {:keys [exception-handler exclude-with]
            :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]

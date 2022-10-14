@@ -71,19 +71,29 @@
                      :arglists '([a & xs])
                      :type :macro
                      :file "metagetta_test/test_ns1/macro.cljc"
-                     :line 17}]}
-         {:name 'metagetta-test.test-ns1.multiarity
-          :publics [{:name 'multiarity
-                     :arglists '([] [a] [a b] [a b c d])
-                     :type :var
-                     :doc "Multiarity comment\n"
-                       :file "metagetta_test/test_ns1/multiarity.cljc"
-                     :line 7}]}
-         {:name 'metagetta-test.test-ns1.multimethod
-          :publics [{:name 'start
-                     :type :multimethod
-                     :file "metagetta_test/test_ns1/multimethod.cljc"
-                     :line 6}]})
+                     :line 17}]})
+   (when (not (in? opts :mranderson/inlined))
+     (list
+       {:name 'metagetta-test.test-ns1.mranderson-inlined-ns,
+        :publics [{:arglists '([a]),
+                   :file "metagetta_test/test_ns1/mranderson_inlined_ns.cljc",
+                   :line 6
+                   :name 'an-inlined-var
+                   :type :var}]
+        :mranderson/inlined true}))
+   (list
+     {:name 'metagetta-test.test-ns1.multiarity
+      :publics [{:name 'multiarity
+                 :arglists '([] [a] [a b] [a b c d])
+                 :type :var
+                 :doc "Multiarity comment\n"
+                 :file "metagetta_test/test_ns1/multiarity.cljc"
+                 :line 7}]}
+     {:name 'metagetta-test.test-ns1.multimethod
+      :publics [{:name 'start
+                 :type :multimethod
+                 :file "metagetta_test/test_ns1/multimethod.cljc"
+                 :line 6}]})
    (when (not (in? opts :no-doc))
      (list
        {:doc "This namespace will be marked with no-doc at load-time\n"
@@ -249,9 +259,9 @@
   ;; requires special setup, see test task in bb.edn
   (let [actual (analyze-sources {:root-path "target/no-doc-sources-test"
                                  :languages #{"clj" "cljs"}
-                                 :exclude-with [:no-doc :skip-wiki]})
-        expected {"clj" (expected-result :clj :no-doc :skip-wiki)
-                  "cljs" (expected-result :cljs :no-doc :skip-wiki)}]
+                                 :exclude-with [:no-doc :skip-wiki :mranderson/inlined]})
+        expected {"clj" (expected-result :clj :no-doc :skip-wiki :mranderson/inlined)
+                  "cljs" (expected-result :cljs :no-doc :skip-wiki :mranderson/inlined)}]
     (t/is (= expected actual))))
 
 (t/deftest analyze-select-namespace-no-matches-test

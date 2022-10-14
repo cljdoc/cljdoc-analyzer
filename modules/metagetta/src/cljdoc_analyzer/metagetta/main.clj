@@ -160,7 +160,7 @@
     when namespace is a symbol, match is absolute
     when namespace is a string, match is by regular expression
   - `:output-filename` - on success, edn is serialized to this file with special encoding for regexes.
-  - `:exclude-with` - optional - exclude ns and publics with any key in vector - ex [:no-doc :skip-wiki]
+  - `:exclude-with` - optional - exclude ns and publics with any key in vector - ex [:no-doc :skip-wiki :mranderson/inlined]
 
   Launching a separate process for analysis is necessary to limit the dependencies to the minimum required.
 

@@ -17,7 +17,7 @@
                                                     :extra-repos extra-repos
                                                     :languages languages
                                                     :namespaces :all
-                                                    :exclude-with [:no-doc :skip-wiki]
+                                                    :exclude-with [:no-doc :skip-wiki :mranderson/inlined]
                                                     :output-filename (analysis/result-path project version)})]
     (shutdown-agents)
     (System/exit (if (= :success analysis-status) 0 1))))
