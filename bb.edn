@@ -1,6 +1,6 @@
 {:paths ["script"]
  :deps {lread/status-line {:git/url "https://github.com/lread/status-line.git"
-                           :sha "35ed39645038e81b42cb15ed6753b8462e60a06d"}}
+                           :sha "cf44c15f30ea3867227fa61ceb823e5e942c707f"}}
  :tasks {;; setup
          :requires ([babashka.fs :as fs]
                     [clojure.java.io :as io]

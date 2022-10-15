@@ -4,8 +4,8 @@
         org.clojure/clojurescript {:mvn/version "1.11.60"}}
  :aliases {:test-base
            {:extra-paths ["test"]
-            :extra-deps {lambdaisland/kaocha {:mvn/version "1.68.1059"}
-                         lambdaisland/kaocha-junit-xml {:mvn/version "0.0.76"}}}
+            :extra-deps {lambdaisland/kaocha {:mvn/version "1.70.1086"}
+                         lambdaisland/kaocha-junit-xml {:mvn/version "1.16.98"}}}
 
            :test-sources
            {:extra-paths ["test-sources"
