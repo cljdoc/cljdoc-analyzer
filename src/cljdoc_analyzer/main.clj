@@ -20,7 +20,7 @@
         languages (when (seq language) (into #{} language))
         {:keys [jar pom]} (deps/resolve-dep (symbol project) version (:repos config) extra-repos)]
     (runner/analyze! (-> (merge
-                          {:exclude-with [:no-doc :skip-wiki]}
+                          {:exclude-with [:no-doc :skip-wiki :mranderson/inlined]}
                           (select-keys args [:project :version :exclude-with :output-filename]))
                          (assoc :jarpath jar :pompath pom :extra-repos extra-repos :languages languages)))))
 

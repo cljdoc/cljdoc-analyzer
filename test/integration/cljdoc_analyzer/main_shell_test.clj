@@ -21,6 +21,7 @@
                                                   "--version" version
                                                   "--exclude-with" ":no-doc"
                                                   "--exclude-with" ":skip-wiki"
+                                                  "--exclude-with" ":mranderson/inlined"
                                                   "--output-filename" edn-out-filename))))
 
 ;; main testing is done in cljdoc-main-test, this is a sanity run that this main path works as well.

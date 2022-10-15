@@ -75,6 +75,9 @@ For example:
 The Clojure core team still uses https://tomfaulhaber.github.io/autodoc[autodoc] to generate their API docs.
 Autodoc's `:skip-wiki` metadata is equivalent to `:no-doc`.
 
+The default metadata that https://github.com/benedekfazekas/mranderson[MrAnderson] adds to inlined namespaces is `:mranderson/inlined`.
+We see this as equivalent to `:no-doc` and `:skip-wiki`.
+
 ==== :added
 
 To denote the library version the var was added in, use the `:added` metadata key:
@@ -158,6 +161,7 @@ clojure -M -m cljdoc-analyzer.main analyze \
   --output-filename "io-aviso-pretty-0.1.29.edn" \
   --exclude-with :no-doc \
   --exclude-with :skip-wiki \
+  --exclude-with :mranderson/inlined \
   --extra-repo "clojars https://repo.clojars.org/" \
   --extra-repo "central http://central.maven.org/maven2/"
 ----
@@ -264,6 +268,7 @@ special metadata tags when present are included on namespaces and/or publics:
 * `:deprecated` version an element was deprecated
 * `:no-doc` author requests that this item be excluded from docs
 * `:skip-wiki` autodoc's equivalent to `:no-doc`
+* `:mranderson/inlined` metadata that mranderson places on inlined namespaces
 
 [#internal-workings]
 == Internal Workings
