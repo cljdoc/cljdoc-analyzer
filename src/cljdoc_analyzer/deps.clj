@@ -1,7 +1,7 @@
 (ns ^:no-doc cljdoc-analyzer.deps
   (:require [babashka.fs :as fs]
             [clojure.java.io :as io]
-            [clojure.tools.deps.alpha :as tdeps]
+            [clojure.tools.deps :as tdeps]
             [clojure.string :as string]
             [version-clj.core :as v]
             [cljdoc-shared.pom :as pom]
