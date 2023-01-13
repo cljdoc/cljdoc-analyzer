@@ -5,8 +5,11 @@ jobs:
     docker:
       - image: clojure:temurin-17-tools-deps
 
+    working_directory: ~/repo
+
     steps:
       - checkout
+
 
       - restore_cache:
           keys:
