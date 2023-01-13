@@ -21,8 +21,8 @@
             min-versions)))
 
 (defn- ensure-required-deps [deps-map]
-  (merge {'org.clojure/clojure {:mvn/version "1.10.1"}
-          'org.clojure/clojurescript {:mvn/version "1.10.773"}
+  (merge {'org.clojure/clojure {:mvn/version "1.11.1"}
+          'org.clojure/clojurescript {:mvn/version "1.11.60"}
           ;; many ring libraries implicitly depend on this and getting all
           ;; downstream libraries to properly declare it as a "provided"
           ;; dependency would be a major effort. since it's all java it also

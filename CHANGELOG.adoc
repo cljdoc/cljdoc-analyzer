@@ -10,7 +10,7 @@
 
 == Unreleased
 
-*
+* Bump default versions of Clojure, ClojureScript used for analysis https://github.com/cljdoc/cljdoc-analyzer/issues/60[#60]
 
 == v1.0.705
 
