@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.724
+
 * Bump deps
 * Parse poms less naively
 https://github.com/cljdoc/cljdoc/issues/742[cljdoc#742]
