@@ -158,3 +158,11 @@
                  ["miika/clj-branca"
                   "0.1.0"
                   "https://repo.clojars.org/miikka/clj-branca/0.1.0/clj-branca-0.1.0"])))
+
+(t/deftest clojure-tools-deps-remotely
+  ;; https://github.com/cljdoc/cljdoc/issues/742
+  ;; https://github.com/cljdoc/cljdoc-analyzer/issues/66
+  (run-analysis (remote->args
+                  ["org.clojure/tools.deps"
+                   "0.16.1281"
+                   "https://repo1.maven.org/maven2/org/clojure/tools.deps/0.16.1281/tools.deps-0.16.1281"])))

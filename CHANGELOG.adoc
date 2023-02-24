@@ -11,6 +11,9 @@
 == Unreleased
 
 * Bump deps
+* Parse poms less naively
+https://github.com/cljdoc/cljdoc/issues/742[cljdoc#742]
+https://github.com/cljdoc/cljdoc-analyzer/issues/66[#66]
 * Internal dev-facing stuff:
 ** Add eastwood linting https://github.com/cljdoc/cljdoc-analyzer/issues/67[#67]
 
