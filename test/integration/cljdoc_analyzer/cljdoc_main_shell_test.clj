@@ -4,35 +4,32 @@
             [clojure.java.shell :as shell]
             [clojure.string :as string]
             [clojure.java.io :as io]
-            [cljdoc-analyzer.test-helper :as test-helper])
-  (:import [java.nio.file Files]))
+            [cljdoc-analyzer.test-helper :as test-helper]
+            [babashka.fs :as fs]))
 
 (def clean-temp
   "Disable for debugging"
   true)
 
 (def temp-dir
-  (let [path (Files/createTempDirectory
-              "cljdoc-test"
-              (into-array java.nio.file.attribute.FileAttribute []))
-        file (.toFile path)]
+  (let [dir (fs/create-temp-dir {:prefix "cljdoc-test"})]
     (when clean-temp
       ;; This will remove temp-dir only if empty
-      (.deleteOnExit file))
-    file))
+      (fs/delete-on-exit dir))
+    dir))
 
-(defn mktemp [name]
-  (let [file (io/file temp-dir name)]
+(defn temp-file [name]
+  (let [file (fs/file temp-dir name)]
     (when clean-temp
-      (.deleteOnExit file))
+      (fs/delete-on-exit file))
     file))
 
 (defn download-temp! [url name]
-  (let [file (mktemp name)]
+  (let [file (temp-file name)]
     (with-open [in  (io/input-stream (io/as-url url))
                 out (io/output-stream file)]
       (io/copy in out))
-    (.getAbsolutePath file)))
+    (-> file fs/absolutize str)))
 
 (defn remote->args [[project version base-url]]
   {:project project
@@ -52,7 +49,7 @@
   (let [;; convention for metadata output file
         edn-out-filename (test-helper/edn-filename "/tmp/cljdoc/analysis-out/cljdoc-analysis-edn" project version)
         ;; wipe out any file from previous analysis
-        _  (io/delete-file edn-out-filename true)
+        _  (fs/delete-if-exists edn-out-filename)
         args ["clojure" "-M" "--report" "stderr" "-m" "cljdoc-analyzer.cljdoc-main" (pr-str args)]]
     (println (string/join " " args))
     (println "Analyzing" project version)

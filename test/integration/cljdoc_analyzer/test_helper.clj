@@ -1,5 +1,6 @@
 (ns cljdoc-analyzer.test-helper
-  (:require [clojure.test :as t]
+  (:require [babashka.fs]
+            [clojure.test :as t]
             [clojure.java.io :as io]
             [clojure.string :as string]
             [cljdoc-shared.analysis-edn :as analysis-edn]))
@@ -33,7 +34,7 @@
                        :version version
                        :path (edn-filename "expected-edn" project version)})))
     (let [expected-analysis (analysis-edn/read expected-f)
-          actual-analysis (analysis-edn/read edn-out-filename)]
+          actual-analysis (analysis-edn/read (str edn-out-filename))]
       (cond
         ;; For specter package, filter the "com.rpl.specter.impl" namespace
         (and (= project "com.rpl/specter")

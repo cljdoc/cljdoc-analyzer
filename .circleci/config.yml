@@ -10,7 +10,6 @@ jobs:
     steps:
       - checkout
 
-
       - restore_cache:
           keys:
             - v1-dependencies-{{checksum "deps.edn"}}-{{ checksum "modules/metagetta/deps.edn" }}
@@ -39,9 +38,14 @@ jobs:
             clojure -P -M:test
 
       - run:
-          name: Lint
+          name: Lint clj-kondo
           command: |
             bb lint
+
+      - run:
+          name: Lint eastwood
+          command: |
+            bb eastwood
 
       - run:
           name: Test

@@ -11,6 +11,8 @@
 == Unreleased
 
 * Bump deps
+* Internal dev-facing stuff:
+** Add eastwood linting https://github.com/cljdoc/cljdoc-analyzer/issues/67[#67]
 
 == v1.0.718
 

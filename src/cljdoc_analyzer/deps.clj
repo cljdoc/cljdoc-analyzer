@@ -35,10 +35,10 @@
   [target-dir]
   {'cljdoc-analyzer/metagetta
    {:local/root (if-let [metagetta-jar-resource (io/resource "metagetta.jar")]
-                  (let [target-jar (str (io/file target-dir "metagetta.jar"))]
+                  (let [target-jar (str (fs/file target-dir "metagetta.jar"))]
                     (fs/copy-tree metagetta-jar-resource target-jar)
                     target-jar)
-                  (clojure.java.io/resource "metagetta"))}})
+                  (io/resource "metagetta"))}})
 
 (defn- extra-pom-deps
   "Some projects require additional depenencies that have either been specified with
@@ -55,7 +55,7 @@
        ;; Remains to be seen if this causes any issues
        ;; http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Management
        (remove #(nil? (:version %)))
-       (remove #(.startsWith (:artifact-id %) "boot-"))
+       (remove #(string/starts-with? (:artifact-id %) "boot-"))
        ;; Ensure that tools.reader version is used as specified by CLJS
        (remove #(and (= (:group-id %) "org.clojure")
                      (= (:artifact-id %) "tools.reader")))
