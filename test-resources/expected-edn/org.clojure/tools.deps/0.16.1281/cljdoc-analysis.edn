@@ -1,0 +1,185 @@
+{:group-id "org.clojure",
+ :artifact-id "tools.deps",
+ :version "0.16.1281",
+ :analysis {"clj" ({:name clojure.tools.deps,
+                    :publics ({:name calc-basis,
+                               :file "clojure/tools/deps.clj",
+                               :line 727,
+                               :arglists ([master-edn]
+                                          [master-edn
+                                           {:keys [resolve-args
+                                                   classpath-args],
+                                            :as argmaps}]),
+                               :doc "Calculates and returns the runtime basis from a master deps edn map, modifying\n resolve-deps and make-classpath args as needed.\n\n  master-edn - a master deps edn map\n  args - an optional map of arguments to constituent steps, keys:\n    :resolve-args - map of args to resolve-deps, with possible keys:\n      :extra-deps\n      :override-deps\n      :default-deps\n      :threads - number of threads to use during deps resolution\n      :trace - flag to record a trace log\n    :classpath-args - map of args to make-classpath-map, with possible keys:\n      :extra-paths\n      :classpath-overrides\n\nReturns the runtime basis, which is the initial deps edn map plus these keys:\n  :resolve-args - the resolve args passed in, if any\n  :classpath-args - the classpath args passed in, if any\n  :libs - lib map, per resolve-deps\n  :classpath - classpath map per make-classpath-map\n  :classpath-roots - vector of paths in classpath order",
+                               :type :var}
+                              {:name combine-aliases,
+                               :file "clojure/tools/deps.clj",
+                               :line 186,
+                               :arglists ([edn-map alias-kws]),
+                               :doc "Find, read, and combine alias maps identified by alias keywords from\na deps edn map into a single args map.",
+                               :type :var}
+                              {:name create-basis,
+                               :file "clojure/tools/deps.clj",
+                               :line 789,
+                               :arglists ([{:keys [aliases],
+                                            :as params}]),
+                               :doc "Create a basis from a set of deps sources and a set of aliases. By default, use\nroot, user, and project deps and no argmaps (essentially the same classpath you get by\ndefault from the Clojure CLI).\n\nEach dep source value can be :standard, a string path, a deps edn map, or nil.\nSources are merged in the order - :root, :user, :project, :extra.\n\nAliases refer to argmaps in the merged deps that will be supplied to the basis\nsubprocesses (tool, resolve-deps, make-classpath-map).\n\nThe following subprocess argmap args can be provided:\n  Key                  Subproc             Description\n  :replace-deps        tool                Replace project deps\n  :replace-paths       tool                Replace project paths\n  :extra-deps          resolve-deps        Add additional deps\n  :override-deps       resolve-deps        Override coord of dep\n  :default-deps        resolve-deps        Provide coord if missing\n  :extra-paths         make-classpath-map  Add additional paths\n  :classpath-overrides make-classpath-map  Replace lib path in cp\n\nOptions:\n  :root    - dep source, default = :standard\n  :user    - dep source, default = :standard\n  :project - dep source, default = :standard (\"./deps.edn\")\n  :extra   - dep source, default = nil\n  :aliases - coll of aliases of argmaps  to apply to subprocesses\n\nReturns a runtime basis, which is the initial merged deps edn map plus these keys:\n :resolve-args - the resolve args passed in, if any\n :classpath-args - the classpath args passed in, if any\n :libs - lib map, per resolve-deps\n :classpath - classpath map per make-classpath-map\n :classpath-roots - vector of paths in classpath order",
+                               :type :var}
+                              {:name create-edn-maps,
+                               :file "clojure/tools/deps.clj",
+                               :line 774,
+                               :arglists ([{:keys [root
+                                                   user
+                                                   project
+                                                   extra],
+                                            :as params,
+                                            :or {root :standard,
+                                                 user :standard,
+                                                 project :standard}}]),
+                               :doc "Create a set of edn maps from the standard dep sources and return\nthem in a map with keys :root :user :project :extra",
+                               :type :var}
+                              {:name find-edn-maps,
+                               :file "clojure/tools/deps.clj",
+                               :line 118,
+                               :arglists ([] [project-edn-file]),
+                               :doc "Finds and returns standard deps edn maps in a map with keys\n  :root-edn, :user-edn, :project-edn\nIf no project-edn is supplied, use the deps.edn in current directory",
+                               :type :var}
+                              {:name join-classpath,
+                               :file "clojure/tools/deps.clj",
+                               :line 610,
+                               :arglists ([roots]),
+                               :doc "Takes a coll of string classpath roots and creates a platform sensitive classpath\n",
+                               :type :var}
+                              {:name lib-location,
+                               :file "clojure/tools/deps.clj",
+                               :line 194,
+                               :arglists ([lib coord deps-config]),
+                               :doc "Find the file path location of where a lib/coord would be located if procured\nwithout actually doing the procuring!",
+                               :type :var}
+                              {:name make-classpath,
+                               :file "clojure/tools/deps.clj",
+                               :line 615,
+                               :arglists ([lib-map
+                                           paths
+                                           classpath-args]),
+                               :doc "Takes a lib map, and a set of explicit paths. Extracts the paths for each chosen\nlib coordinate, and assembles a classpath string using the system path separator.\nThe classpath-args is a map with keys that can be used to modify the classpath\nbuilding operation:\n\n  :extra-paths - extra classpath paths to add to the classpath\n  :classpath-overrides - a map of lib to path, where path is used instead of the coord's paths\n\nReturns the classpath as a string.",
+                               :deprecated "0.9.745",
+                               :type :var}
+                              {:name make-classpath-map,
+                               :file "clojure/tools/deps.clj",
+                               :line 591,
+                               :arglists ([deps-edn-map
+                                           lib-map
+                                           classpath-args]),
+                               :doc "Takes a merged deps edn map and a lib map. Extracts the paths for each chosen\nlib coordinate, and assembles a classpath map. The classpath-args is a map with\nkeys that can be used to modify the classpath building operation:\n  :extra-paths - extra classpath paths to add to the classpath\n  :classpath-overrides - a map of lib to path, where path is used instead of the coord's paths\n\nReturns a map:\n  :classpath map of path entry (string) to a map describing where its from,  either a :lib-name or :path-key entry.\n  :classpath-roots coll of the classpath keys in classpath order",
+                               :type :var}
+                              {:name merge-edns,
+                               :file "clojure/tools/deps.clj",
+                               :line 141,
+                               :arglists ([deps-edn-maps]),
+                               :doc "Merge multiple deps edn maps from left to right into a single deps edn map.\n",
+                               :type :var}
+                              {:name prep-libs!,
+                               :file "clojure/tools/deps.clj",
+                               :line 676,
+                               :arglists ([lib-map
+                                           {:keys [action current log],
+                                            :or {current false}}
+                                           config]),
+                               :doc "Takes a lib map and looks for unprepped libs, optionally prepping them.\n\nOptions:\n  :action - what to do when an unprepped lib is found, one of:\n              :prep - if unprepped, prep\n              :force - prep regardless of whether already prepped\n              :error (default) - don't prep, error\n  :current - boolean, default = false. Whether to prep current project\n  :log -  print to console based on log level (default, no logging):\n            :info  - print only when prepping\n            :debug - :info + print for each lib considered",
+                               :type :var}
+                              {:name print-tree,
+                               :file "clojure/tools/deps.clj",
+                               :line 519,
+                               :arglists ([lib-map]),
+                               :doc "Print lib-map tree to the console\n",
+                               :type :var}
+                              {:name resolve-deps,
+                               :file "clojure/tools/deps.clj",
+                               :line 477,
+                               :arglists ([deps-map args-map]),
+                               :doc "Takes a deps configuration map and resolves the transitive dependency graph\nfrom the initial set of deps. args-map is a map with several keys (all\noptional) that can modify the results of the transitive expansion:\n\n  :extra-deps - a map from lib to coord of deps to add to the main deps\n  :override-deps - a map from lib to coord of coord to use instead of those in the graph\n  :default-deps - a map from lib to coord of deps to use if no coord specified\n  :trace - boolean. If true, the returned lib map will have metadata with :trace log\n  :threads - long. If provided, sets the number of concurrent download threads\n\nReturns a lib map (map of lib to coordinate chosen).",
+                               :type :var}
+                              {:name root-deps,
+                               :file "clojure/tools/deps.clj",
+                               :line 99,
+                               :arglists ([]),
+                               :doc "Read the root deps.edn resource from the classpath at the path\nclojure/tools/deps/deps.edn",
+                               :type :var}
+                              {:name slurp-deps,
+                               :file "clojure/tools/deps.clj",
+                               :line 92,
+                               :arglists ([dep-file]),
+                               :doc "Read a single deps.edn file from disk and canonicalize symbols,\nreturn a deps map. If the file doesn't exist, returns nil.",
+                               :type :var}
+                              {:name tool,
+                               :file "clojure/tools/deps.clj",
+                               :line 629,
+                               :arglists ([project-edn tool-args]),
+                               :doc "Transform project edn for tool by applying tool args (keys = :paths, :deps) and\nreturning an updated project edn.",
+                               :type :var}
+                              {:name user-deps-path,
+                               :file "clojure/tools/deps.clj",
+                               :line 106,
+                               :arglists ([]),
+                               :doc "Use the same logic as clj to calculate the location of the user deps.edn.\nNote that it's possible no file may exist at this location.",
+                               :type :var})}
+                   {:name clojure.tools.deps.specs, :publics ()}
+                   {:name clojure.tools.deps.tool,
+                    :publics ({:name install-tool,
+                               :file "clojure/tools/deps/tool.clj",
+                               :line 29,
+                               :arglists ([lib coord as]),
+                               :doc "Procure the lib+coord, install the tool to the user tools dir (with lib, coord)\n",
+                               :type :var}
+                              {:name list-tools,
+                               :file "clojure/tools/deps/tool.clj",
+                               :line 69,
+                               :arglists ([]),
+                               :doc "Return seq of available tool names\n",
+                               :type :var}
+                              {:name remove-tool,
+                               :file "clojure/tools/deps/tool.clj",
+                               :line 79,
+                               :arglists ([tool]),
+                               :doc "Removes tool installation, if it exists. Returns true if it exists and was deleted.\n",
+                               :type :var}
+                              {:name resolve-tool,
+                               :file "clojure/tools/deps/tool.clj",
+                               :line 47,
+                               :arglists ([tool]),
+                               :doc "Resolve a tool by name, look up and return:\n{:lib lib\n :coord coord}\nOr nil if unknown.",
+                               :type :var}
+                              {:name usage,
+                               :file "clojure/tools/deps/tool.clj",
+                               :line 57,
+                               :arglists ([tool]),
+                               :doc "Resolve a tool and return it's usage data, which may be nil.\nThrows ex-info if tool is unknown.",
+                               :type :var})}
+                   {:name clojure.tools.deps.tree,
+                    :publics ({:name calc-trace,
+                               :file "clojure/tools/deps/tree.clj",
+                               :line 48,
+                               :arglists ([] [opts]),
+                               :doc "Like calc-basis, but create and return the dep expansion trace. The trace\ncan be passed to trace->tree to get tree data.\n\nThe opts map includes the same opts accepted by clojure.tools.deps/create-basis.\nBy default, uses the   root, user, and project deps and no argmaps (essentially the same\nclasspath you get by default from the Clojure CLI).\n\nEach dep source value can be :standard, a string path, a deps edn map, or nil.\nSources are merged in the order - :root, :user, :project, :extra.\n\nAliases refer to argmaps in the merged deps that will be supplied to the basis\nsubprocesses (tool, resolve-deps, make-classpath-map).\n\nOptions:\n  :root    - dep source, default = :standard\n  :user    - dep source, default = :standard\n  :project - dep source, default = :standard (\"./deps.edn\")\n  :extra   - dep source, default = nil\n  :aliases - coll of aliases of argmaps to apply to subprocesses",
+                               :type :var}
+                              {:name print-tree,
+                               :file "clojure/tools/deps/tree.clj",
+                               :line 105,
+                               :arglists ([tree
+                                           {:keys [indent],
+                                            :or {indent 2},
+                                            :as opts}]
+                                          [{:keys [children],
+                                            :as tree}
+                                           indented
+                                           opts]),
+                               :doc "Print the tree to the console.\nOptions:\n  :indent    Indent spacing (default = 2)\n  :hide-libs Set of libs to ignore as deps under top deps, default = #{org.clojure/clojure}",
+                               :type :var}
+                              {:name trace->tree,
+                               :file "clojure/tools/deps/tree.clj",
+                               :line 17,
+                               :arglists ([trace]),
+                               :doc "Convert a deps trace data structure into a deps tree.\n\nA deps tree has the structure of the full dependency expansion.\nEach node of the tree is a map from lib to coord-info with at least these keys:\n  :lib - library symbol\n  :coord - the coord map that was used (may not be the original coord if replaced\n           due to default-deps or override-deps)\n  :include - boolean of whether this node is included in the returned deps\n  :reason - why the node was or was not included\n  :children - vector of child nodes",
+                               :type :var})})},
+ :pom-str "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <artifactId>tools.deps</artifactId>\n  <version>0.16.1281</version>\n  <name>tools.deps</name>\n\n  <parent>\n    <groupId>org.clojure</groupId>\n    <artifactId>pom.contrib</artifactId>\n    <version>1.1.0</version>\n  </parent>\n\n  <developers>\n    <developer>\n      <id>puredanger</id>\n      <name>Alex Miller</name>\n    </developer>\n  </developers>\n\n  <properties>\n    <!-- used for build -->\n    <clojure.warnOnReflection>true</clojure.warnOnReflection>\n    <clojure.version>1.10.3</clojure.version>\n    <resolverVersion>1.8.2</resolverVersion>\n    <mavenVersion>3.8.6</mavenVersion>\n\n    <!-- default published in install deps.edn -->\n    <clojure.default>1.10.3</clojure.default>\n  </properties>\n\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>${clojure.version}</version>\n    </dependency>\n    <dependency>\n      <groupId>org.apache.maven.resolver</groupId>\n      <artifactId>maven-resolver-api</artifactId>\n      <version>${resolverVersion}</version>\n    </dependency>\n    <dependency>\n      <groupId>org.apache.maven.resolver</groupId>\n      <artifactId>maven-resolver-spi</artifactId>\n      <version>${resolverVersion}</version>\n    </dependency>\n    <dependency>\n      <groupId>org.apache.maven.resolver</groupId>\n      <artifactId>maven-resolver-impl</artifactId>\n      <version>${resolverVersion}</version>\n    </dependency>\n    <dependency>\n      <groupId>org.apache.maven.resolver</groupId>\n      <artifactId>maven-resolver-util</artifactId>\n      <version>${resolverVersion}</version>\n    </dependency>\n    <dependency>\n      <groupId>org.apache.maven.resolver</groupId>\n      <artifactId>maven-resolver-connector-basic</artifactId>\n      <version>${resolverVersion}</version>\n    </dependency>\n    <dependency>\n      <groupId>org.apache.maven.resolver</groupId>\n      <artifactId>maven-resolver-transport-file</artifactId>\n      <version>${resolverVersion}</version>\n    </dependency>\n    <dependency>\n      <groupId>org.apache.maven.resolver</groupId>\n      <artifactId>maven-resolver-transport-http</artifactId>\n      <version>${resolverVersion}</version>\n    </dependency>\n    <dependency>\n      <groupId>org.apache.maven</groupId>\n      <artifactId>maven-resolver-provider</artifactId>\n      <version>${mavenVersion}</version>\n    </dependency>\n    <dependency>\n      <groupId>org.apache.maven</groupId>\n      <artifactId>maven-core</artifactId>\n      <version>${mavenVersion}</version>\n\t  <exclusions>\n        <exclusion> <!-- CVE-2021-29425 -->\n          <groupId>commons-io</groupId>\n          <artifactId>commons-io</artifactId>\n        </exclusion>\n        <exclusion> <!-- CVE-2020-8908 -->\n          <groupId>com.google.guava</groupId>\n          <artifactId>guava</artifactId>\n        </exclusion>\n      </exclusions>\n    </dependency>\n    <dependency> <!-- overridden transitive dep -->\n      <groupId>commons-io</groupId>\n      <artifactId>commons-io</artifactId>\n      <version>2.11.0</version>\n    </dependency>\n    <dependency> <!-- overridden transitive dep -->\n      <groupId>com.google.guava</groupId>\n      <artifactId>guava</artifactId>\n      <version>31.1-android</version>\n    </dependency>\n    <dependency>\n      <groupId>org.slf4j</groupId>\n      <artifactId>slf4j-nop</artifactId>\n      <version>1.7.36</version>\n      <scope>test</scope>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>data.xml</artifactId>\n      <version>0.2.0-alpha8</version>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>tools.gitlibs</artifactId>\n      <version>2.5.190</version>\n    </dependency>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>tools.cli</artifactId>\n      <version>1.0.214</version>\n    </dependency>\n    <dependency>\n      <groupId>com.cognitect.aws</groupId>\n      <artifactId>api</artifactId>\n      <version>0.8.612</version>\n    </dependency>\n    <dependency>\n      <groupId>com.cognitect.aws</groupId>\n      <artifactId>endpoints</artifactId>\n      <version>1.1.12.321</version>\n    </dependency>\n    <dependency>\n      <groupId>com.cognitect.aws</groupId>\n      <artifactId>s3</artifactId>\n      <version>822.2.1145.0</version>\n    </dependency>\n    <dependency>\n      <groupId>javax.inject</groupId>\n      <artifactId>javax.inject</artifactId>\n      <version>1</version>\n    </dependency>\n  </dependencies>\n\n  <build>\n    <resources>\n      <resource>\n        <directory>src/main/resources</directory>\n        <filtering>true</filtering>\n      </resource>\n    </resources>\n    <plugins>\n      <plugin>\n        <groupId>org.apache.maven.plugins</groupId>\n        <artifactId>maven-resources-plugin</artifactId>\n        <version>3.1.0</version>\n      </plugin>\n      <plugin>\n      <!-- By default, compile everything as a sanity check, but do\n           not include any AOT-compiled .class files in the\n           JAR. Projects may override as needed. -->\n      <groupId>com.theoryinpractise</groupId>\n      <artifactId>clojure-maven-plugin</artifactId>\n      <version>1.7.1</version>\n      <extensions>true</extensions>\n      <configuration>\n        <warnOnReflection>${clojure.warnOnReflection}</warnOnReflection>\n        <temporaryOutputDirectory>true</temporaryOutputDirectory>\n      </configuration>\n      <executions>\n        <execution>\n          <id>clojure-compile</id>\n          <phase>none</phase>\n        </execution>\n        <execution>\n          <id>clojure-test</id>\n          <phase>test</phase>\n          <goals>\n            <goal>test</goal>\n          </goals>\n        </execution>\n      </executions>\n      </plugin>\n    </plugins>\n  </build>\n\n  <scm>\n    <connection>scm:git:git@github.com:clojure/tools.deps.git</connection>\n    <developerConnection>scm:git:git@github.com:clojure/tools.deps.git</developerConnection>\n    <url>git@github.com:clojure/tools.deps.git</url>\n    <tag>v0.16.1281</tag>\n  </scm>\n\n  <repositories>\n    <repository>\n      <id>clojars</id>\n      <url>https://clojars.org/repo/</url>\n    </repository>\n  </repositories>\n</project>\n"}
