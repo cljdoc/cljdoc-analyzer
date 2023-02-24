@@ -22,26 +22,16 @@
             [cljdoc-shared.proj :as proj]
             [cljdoc-shared.spec.analyzer :as analyzer-spec]
             [cljdoc-shared.analysis-edn :as analysis-edn])
-  (:import (java.util.zip ZipFile)
-           (java.net URI)))
+  (:import (java.net URI)))
 
 ;; enable spec asserts for cljdoc-analyzer
 (s/check-asserts true)
 
 (defn- download-jar! [jar-uri target-dir]
-  (let [jar-f (io/file target-dir "downloaded.jar")]
+  (let [jar-f (fs/file target-dir "downloaded.jar")]
     (log/infof "Downloading %s" jar-uri)
     (file/copy jar-uri jar-f)
-    (.getPath jar-f)))
-
-(defn- unzip!
-  [source target-dir]
-  (with-open [zip (ZipFile. (io/file source))]
-    (let [entries (enumeration-seq (.entries zip))]
-      (doseq [entry entries
-              :when (not (.isDirectory ^java.util.zip.ZipEntry entry))
-              :let [f (io/file target-dir (str entry))]]
-        (file/copy (.getInputStream zip entry) f)))))
+    (str jar-f)))
 
 (defn- clean-jar-contents!
   "Some projects include their `out` directories in their jars,
@@ -51,15 +41,15 @@
 
   NOTE this means projects with the group-id `public` will fail to build."
   [unpacked-jar-dir]
-  (when (.exists (io/file unpacked-jar-dir "public"))
+  (when (fs/exists? (fs/file unpacked-jar-dir "public"))
     (log/info "Deleting public/ dir")
-    (fs/delete-tree (io/file unpacked-jar-dir "public")))
+    (fs/delete-tree (fs/file unpacked-jar-dir "public")))
   ;; Delete the clj-kondo exports directory, which includes clj files
   ;; with namespaces that don't match their directory location.
   ;; This fixes the issue https://github.com/cljdoc/cljdoc/issues/455
-  (when (.exists (io/file unpacked-jar-dir "clj-kondo.exports"))
+  (when (fs/exists? (fs/file unpacked-jar-dir "clj-kondo.exports"))
     (log/info "Deleting clj-kondo.exports/ dir")
-    (fs/delete-tree (io/file unpacked-jar-dir "clj-kondo.exports")))
+    (fs/delete-tree (fs/file unpacked-jar-dir "clj-kondo.exports")))
   ;; Delete .class files that have a corresponding .clj or .cljc file
   ;; to circle around https://dev.clojure.org/jira/browse/CLJ-130
   ;; This only affects Jars with AOT compiled namespaces where the
@@ -67,24 +57,24 @@
   ;; This hast mostly been put into place for datascript and might
   ;; get deleted if datascript changes it's packaging strategy.
   (doseq [class-file (->> (file-seq unpacked-jar-dir)
-                          (map #(.getAbsolutePath %))
+                          (map #(-> % fs/absolutize str))
                           (filter (fn clj-or-cljc [path]
-                                    (or (.endsWith path ".cljc")
-                                        (.endsWith path ".clj"))))
+                                    (or (string/ends-with? path ".cljc")
+                                        (string/ends-with? path ".clj"))))
                           (map #(string/replace % #"(\.clj$|\.cljc$)" "__init.class"))
-                          (map io/file))]
-    (when (.exists class-file)
-      (log/info "Deleting" (.getPath class-file))
-      (.delete class-file)))
+                          (map fs/file))]
+    (when (fs/exists? class-file)
+      (log/info "Deleting" (str class-file))
+      (fs/delete class-file)))
   (doseq [path ["deps.cljs" "data_readers.clj" "data_readers.cljc"]
-          :let [file (io/file unpacked-jar-dir path)]]
+          :let [file (fs/file unpacked-jar-dir path)]]
     ;; TODO: is this still relevant now that we have switched to metagetta?
     ;; codox returns {:publics ()} for deps.cljs, data_readers.cljc
     ;; when present this should probably be fixed in codox as well
     ;; but just deleting the file will also do the job for now
-    (when (.exists file)
+    (when (fs/exists? file)
       (log/info "Deleting" path)
-      (.delete file))))
+      (fs/delete file))))
 
 (defn- resolve-jar!
   "Returns local path to `jar`, if download necessary, downloads to `target-dir`"
@@ -102,7 +92,7 @@
   ;; If a pom is read from target-dir, src/main/clojure relative to that pom is
   ;; added to the classpath by tdeps.
   (let [jar-contents-dir (io/file target-dir "src/main/clojure")]
-    (unzip! local-jar-path jar-contents-dir)
+    (fs/unzip local-jar-path jar-contents-dir)
     (clean-jar-contents! jar-contents-dir)
     jar-contents-dir))
 
@@ -130,12 +120,14 @@
 (defn- launch-metagetta
   "Analysis to get metadata is launched in a separate process to minimize dependencies to those of project being analyzed."
   [{:keys [project namespaces src-dir languages exclude-with classpath]}]
-  (let [metadata-output-file (file/system-temp-file project ".edn")]
+  (let [metadata-output-file (str (fs/create-temp-file
+                                    {:prefix (string/replace project #"/" "-")
+                                     :suffix ".edn"}))]
     (log/info "launching metagetta for:" project "languages:" languages)
     (let [analysis-args {:namespaces namespaces
                          :root-path (str src-dir)
                          :languages languages
-                         :output-filename  (.getAbsolutePath metadata-output-file)
+                         :output-filename  (-> metadata-output-file fs/absolutize str)
                          :exclude-with exclude-with}
           process (sh/sh "java"
                          "-cp" classpath
@@ -146,7 +138,7 @@
                          (pr-str analysis-args)
                          ;; supplying :dir is necessary to avoid local deps.edn being included
                          ;; once -Srepro is finalized it might be useful for this purpose
-                         :dir (.getParentFile metadata-output-file))
+                         :dir (-> metadata-output-file fs/parent fs/file))
           _ (log-process-result process)]
       (if (zero? (:exit process))
         (let [result (analysis-edn/read metadata-output-file)]
@@ -194,7 +186,7 @@
              :artifact-id (proj/artifact-id project)
              :version version
              :analysis (launch-metagetta (assoc opts
-                                                :src-dir (.getPath jar-contents-dir)
+                                                :src-dir (str jar-contents-dir)
                                                 :languages (or (:languages overrides) languages :auto-detect)
                                                 :namespaces (or (:namespaces overrides) :all)
                                                 :classpath classpath))

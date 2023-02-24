@@ -1,19 +1,16 @@
 (ns ^:integration cljdoc-analyzer.main-shell-test
   "These tests do not represent the way cljdoc calls cljdoc-analyzer.
    They are here to ensure our command-line friendly adhoc interface works."
-  (:require [clojure.test :as t]
+  (:require [babashka.fs :as fs]
+            [clojure.test :as t]
             [clojure.java.shell :as shell]
             [cljdoc-analyzer.test-helper :as test-helper]))
 
-(defn- temp-edn-filename []
-  (str
-   (doto (java.io.File/createTempFile "cljdoc-analysis-edn" ".edn")
-     (.deleteOnExit)
-     (.getAbsolutePath))))
-
 (defn- run-analysis [project version]
   (println "Analyzing" project version)
-  (let [edn-out-filename (temp-edn-filename)]
+  (let [edn-out-filename (str (fs/create-temp-file {:prefix "cljdoc-analysis-edn"
+                                                    :suffix ".edn"}))]
+    (fs/delete-on-exit edn-out-filename)
     (test-helper/verify-analysis-result project version edn-out-filename
                                         (shell/sh "clojure" "-M" "--report" "stderr" "-m" "cljdoc-analyzer.main"
                                                   "analyze"

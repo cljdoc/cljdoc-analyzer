@@ -31,6 +31,10 @@
                       (= 3 exit) (status/die exit "clj-kondo found one or more lint warnings")
                       (> exit 0) (status/die exit "clj-kondo returned unexpected exit code"))))}
 
+         eastwood
+         {:doc "Lint source code using eastwood"
+          :task (clojure "-M:eastwood")}
+
          test-metagetta
          {:doc "metagetta unit tests"
           :task (shell {:dir "modules/metagetta"}
