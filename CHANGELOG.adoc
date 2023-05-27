@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.731
+
 * Bump deps
 * Pick up `:arglists` metadata for cljs analysis
 https://github.com/cljdoc/cljdoc-analyzer/issues/71[#71]
