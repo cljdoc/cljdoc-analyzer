@@ -71,7 +71,64 @@
                      :arglists '([a & xs])
                      :type :macro
                      :file "metagetta_test/test_ns1/macro.cljc"
-                     :line 17}]})
+                     :line 17}]}
+        {:name 'metagetta-test.test-ns1.meta,
+         :publics [{:name 'arglists1,
+                    :arglists '([al1])
+                    :type :var
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 6}
+                   {:name 'arglists2
+                    :arglists '([al2 bl2] [al2 bl2 cl2])
+                    :type :var
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 7}
+                   {:name 'arglists3
+                    :arglists '([al3])
+                    :type :var
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 8}
+                   {:name 'arglists4
+                    :arglists '([al4])
+                    :type :var
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 9}
+                   {:name 'doc1
+                    :doc "doc1\n"
+                    :arglists '([]),
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 11,
+                    :type :var}
+                   {:name 'doc2
+                    :doc "doc2\n"
+                    :arglists '([])
+                    :type :var
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 12}
+                   {:name 'doc3
+                    :doc "doc3\n"
+                    :arglists '([])
+                    :type :var
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 13}
+                   {:name 'doc4
+                    :doc "doc4\n"
+                    :arglists '([])
+                    :type :var
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 14}
+                   {:name 'doc5
+                    :doc "doc5\n"
+                    :arglists '([])
+                    :type :var
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 15}
+                   {:name 'theworks
+                    :doc "tw\n"
+                    :arglists '([tw])
+                    :type :var
+                    :file "metagetta_test/test_ns1/meta.cljc"
+                    :line 17}]})
    (when (not (in? opts :mranderson/inlined))
      (list
        {:name 'metagetta-test.test-ns1.mranderson-inlined-ns,
