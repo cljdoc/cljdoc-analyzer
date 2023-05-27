@@ -1,35 +1,38 @@
 {:paths ["src" "resources" "modules"]
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
-        org.clojure/tools.deps {:mvn/version "0.16.1281"}
+        org.clojure/tools.deps {:mvn/version "0.18.1335"}
         org.clojure/tools.logging {:mvn/version "1.2.4"}
-        ch.qos.logback/logback-classic {:mvn/version "1.4.5"}
+        ch.qos.logback/logback-classic {:mvn/version "1.4.7"}
         version-clj/version-clj {:mvn/version "2.0.2"}
         cli-matic/cli-matic {:mvn/version "0.5.4"}
-        babashka/fs {:mvn/version "0.2.16"}
+        babashka/fs {:mvn/version "0.4.19"}
         ;; cljoc and cljdoc-analyzer should reference same version of cljdoc-shared
         cljdoc/cljdoc-shared {:git/url "https://github.com/cljdoc/cljdoc-shared.git"
                               :git/sha "53c113e375df94d50cf96c6f2c1b3842dc0e9b35"}}
  :tools/usage {:ns-default cljdoc-analyzer.deps-tool}
  :aliases {:test
            {:extra-paths ["test/integration" "test-resources"]
-            :extra-deps {lambdaisland/kaocha {:mvn/version "1.77.1236"}
+            :extra-deps {lambdaisland/kaocha {:mvn/version "1.84.1335"}
                          lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}}
             :main-opts ["-m" "kaocha.runner"]}
 
            :clj-kondo
-           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2023.02.17"}}
+           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2023.05.26"}}
             :main-opts ["-m" "clj-kondo.main"]}
 
            :eastwood
            {:extra-paths ["test/integration"]
-            :extra-deps {jonase/eastwood {:mvn/version "1.3.0"}}
+            :extra-deps {jonase/eastwood {:mvn/version "1.4.0"}}
             :main-opts ["-m" "eastwood.lint" {:source-paths ["src"]
                                               :test-paths ["test/integration"]}]}
 
            :outdated
-           {:replace-deps {com.github.liquidz/antq {:mvn/version "2.2.992"}
-                           org.slf4j/slf4j-simple {:mvn/version "2.0.6"} ;; to rid ourselves of logger warnings
+           {:replace-deps {com.github.liquidz/antq {:mvn/version "2.4.1070"}
+                           org.slf4j/slf4j-simple {:mvn/version "2.0.7"} ;; to rid ourselves of logger warnings
                            }
             :main-opts ["-m" "antq.core"
                         "--exclude=org.clojure/tools.namespace@1.4.1" ;; https://clojure.atlassian.net/browse/TNS-59
+                        "--exclude=org.clojure/tools.namespace@1.4.2" ;; https://ask.clojure.org/index.php/12965/tools-namespace-longer-returns-declared-metadata-namespace
+                        "--exclude=org.clojure/tools.namespace@1.4.3" ;; https://ask.clojure.org/index.php/12965/tools-namespace-longer-returns-declared-metadata-namespace
+                        "--exclude=org.clojure/tools.namespace@1.4.4" ;; https://ask.clojure.org/index.php/12965/tools-namespace-longer-returns-declared-metadata-namespace
                         ]}}}
