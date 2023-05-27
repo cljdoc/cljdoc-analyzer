@@ -66,8 +66,11 @@
 
 (defn- read-var [source-path file vars var]
   (let [vt (var-type var)
-        normalize (partial utils/normalize-to-source-path source-path)]
+        normalize (partial utils/normalize-to-source-path source-path)
+        ;; arglists is not always reflected in var analysis root map, grab from :meta
+        metad (-> var :meta (select-keys [:arglists]))]
     (-> var
+        (merge metad)
         (select-keys [:name :file :line :arglists :doc :dynamic
                       :added :deprecated
                       :no-doc :skip-wiki :mranderson/inlined])
