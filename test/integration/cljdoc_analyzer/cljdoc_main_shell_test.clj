@@ -155,7 +155,7 @@
   ;; https://github.com/cljdoc/cljdoc/issues/404 - but oz still has some
   ;; unrelated issues, clj-branca works today.
   (run-analysis (remote->args
-                 ["miika/clj-branca"
+                 ["miikka/clj-branca"
                   "0.1.0"
                   "https://repo.clojars.org/miikka/clj-branca/0.1.0/clj-branca-0.1.0"])))
 

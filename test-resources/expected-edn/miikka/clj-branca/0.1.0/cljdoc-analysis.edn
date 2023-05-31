@@ -1,4 +1,4 @@
-{:group-id "miika",
+{:group-id "miikka",
  :artifact-id "clj-branca",
  :version "0.1.0",
  :analysis {"clj" ({:name clj-branca.core,
