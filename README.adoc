@@ -123,10 +123,10 @@ Example of analyzing cljfmt v0.6.4:
 clojure -M -m cljdoc-analyzer.cljdoc-main \
   '{:project "cljfmt/cljfmt"
     :version "0.6.4"
-    :jarpath "http://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.jar"
-    :pompath "http://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.pom"
+    :jarpath "https://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.jar"
+    :pompath "https://repo.clojars.org/cljfmt/cljfmt/0.6.4/cljfmt-0.6.4.pom"
     :extra-repos {"clojars" {:url "https://repo.clojars.org/"}
-                  "central" {:url "http://central.maven.org/maven2/"}}}'
+                  "central" {:url "https://central.maven.org/maven2/"}}}'
 ----
 
 The `:extra-repos` options is somewhat contrived as these repos already exist in cljdoc-analyzer's default config, but this does
@@ -163,7 +163,7 @@ clojure -M -m cljdoc-analyzer.main analyze \
   --exclude-with :skip-wiki \
   --exclude-with :mranderson/inlined \
   --extra-repo "clojars https://repo.clojars.org/" \
-  --extra-repo "central http://central.maven.org/maven2/"
+  --extra-repo "central https://central.maven.org/maven2/"
 ----
 
 We can look at other features as we get a feel for what folks are interested in.
