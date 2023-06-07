@@ -10,7 +10,8 @@
 
 == Unreleased
 
-*
+* Artifacts that reference non-default maven repos now analyze properly for user-facing cmd line
+https://github.com/cljdoc/cljdoc-analyzer/issues/78[#78]
 
 == v1.0.731
 

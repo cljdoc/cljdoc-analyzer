@@ -18,7 +18,7 @@
   (let [config (config/load)
         extra-repos (extra-repo-arg-to-option extra-repo)
         languages (when (seq language) (into #{} language))
-        {:keys [jar pom]} (deps/resolve-dep (symbol project) version (:repos config) extra-repos)]
+        {:keys [jar pom]} (deps/resolve-artifact (symbol project) version (:repos config) extra-repos)]
     (runner/analyze! (-> (merge
                           {:exclude-with [:no-doc :skip-wiki :mranderson/inlined]}
                           (select-keys args [:project :version :exclude-with :output-filename]))
