@@ -68,15 +68,15 @@
   (let [vt (var-type var)
         normalize (partial utils/normalize-to-source-path source-path)
         ;; arglists is not always reflected in var analysis root map, grab from :meta
-        metad (-> var :meta (select-keys [:arglists]))]
-    (-> var
-        (merge metad)
-        (select-keys [:name :file :line :arglists :doc :dynamic
+        metad-fix (-> var :meta (select-keys [:arglists]))
+        {:keys [doc] :as metadata} (merge var metad-fix)]
+    (-> metadata
+        (select-keys [:name :file :line :arglists :dynamic
                       :added :deprecated
                       :no-doc :skip-wiki :mranderson/inlined])
         (utils/update-some :name (comp symbol name))
         (utils/update-some :arglists remove-quote)
-        (utils/update-some :doc utils/correct-indent)
+        (utils/assoc-some :doc (utils/correct-indent doc))
         (utils/update-some :file normalize)
         (utils/assoc-some  :type    vt
                      :members (->> (protocol-methods var vars)
@@ -150,11 +150,11 @@
       (let [state (analyze-file state source)]
         (if-let [ns (ana/find-ns state ns-name)]
           ;; use the ns name from the found ns because it may have load-time overrides
-          (let [ns-name (:name ns)]
+          (let [ns-name (:name ns)
+                doc (:doc ns)]
             {ns-name
-             (-> ns
-                 (select-keys [:name :doc])
-                 (utils/update-some :doc utils/correct-indent)
+             (-> {:name ns-name}
+                 (utils/assoc-some :doc (utils/correct-indent doc))
                  (merge (-> ns-name meta (select-keys [:no-doc :skip-wiki :mranderson/inlined :author :deprecated :added])))
                  (utils/remove-empties)
                  (assoc :publics (read-publics state ns-name source-path file)))})

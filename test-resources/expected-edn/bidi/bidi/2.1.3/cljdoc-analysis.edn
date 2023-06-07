@@ -226,12 +226,10 @@
                     :publics ({:name AlternatesSet,
                                :file "bidi/schema.cljc",
                                :line 31,
-                               :doc "\n",
                                :type :var}
                               {:name DeprecatedAlternates,
                                :file "bidi/schema.cljc",
                                :line 34,
-                               :doc "\n",
                                :type :var}
                               {:name GeneralGuard,
                                :file "bidi/schema.cljc",
@@ -264,7 +262,6 @@
                               {:name SegmentedPattern,
                                :file "bidi/schema.cljc",
                                :line 26,
-                               :doc "\n",
                                :type :var}
                               {:name valid-qualifier-function?,
                                :file "bidi/schema.cljc",
@@ -387,7 +384,6 @@
                               {:name VHost,
                                :file "bidi/vhosts.clj",
                                :line 13,
-                               :doc "\n",
                                :type :var}
                               {:name vhosts->roots,
                                :file "bidi/vhosts.clj",
@@ -402,7 +398,6 @@
                               {:name VHostWithRoutes,
                                :file "bidi/vhosts.clj",
                                :line 18,
-                               :doc "\n",
                                :type :var})}),
             "cljs" ({:name bidi.bidi,
                      :publics ({:name alts,
@@ -619,12 +614,10 @@
                      :publics ({:name AlternatesSet,
                                 :file "bidi/schema.cljc",
                                 :line 31,
-                                :doc "\n",
                                 :type :var}
                                {:name DeprecatedAlternates,
                                 :file "bidi/schema.cljc",
                                 :line 34,
-                                :doc "\n",
                                 :type :var}
                                {:name GeneralGuard,
                                 :file "bidi/schema.cljc",
@@ -657,7 +650,6 @@
                                {:name SegmentedPattern,
                                 :file "bidi/schema.cljc",
                                 :line 26,
-                                :doc "\n",
                                 :type :var}
                                {:name valid-qualifier-function?,
                                 :file "bidi/schema.cljc",

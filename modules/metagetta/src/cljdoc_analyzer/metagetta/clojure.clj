@@ -63,12 +63,13 @@
       (:t ret))))
 
 (defn- read-var [source-path vars var]
-  (let [normalize (partial utils/normalize-to-source-path source-path)]
-    (-> (meta var)
-        (select-keys [:name :file :line :arglists :doc :dynamic
+  (let [normalize (partial utils/normalize-to-source-path source-path)
+        {:keys [doc] :as metadata} (meta var)]
+    (-> metadata
+        (select-keys [:name :file :line :arglists :dynamic
                       :added :deprecated
                       :no-doc :skip-wiki :mranderson/inlined])
-        (utils/update-some :doc utils/correct-indent)
+        (utils/assoc-some :doc (utils/correct-indent doc))
         (utils/update-some :file normalize)
         (utils/assoc-some  :type (var-type var)
                      :type-sig (when (core-typed?) (core-typed-type var))
@@ -90,13 +91,13 @@
   (try
     (binding [*default-data-reader-fn* (utils/new-failsafe-data-reader-fn namespace)]
       (require namespace))
-    (-> (find-ns namespace)
-        (meta)
-        (select-keys [:doc :author :deprecated :added :no-doc :skip-wiki :mranderson/inlined])
-        (assoc :name namespace)
-        (assoc :publics (read-publics source-path namespace))
-        (utils/update-some :doc utils/correct-indent)
-        (list))
+    (let [{:keys [doc] :as metadata} (-> namespace find-ns meta)]
+         (-> metadata
+             (select-keys [:author :deprecated :added :no-doc :skip-wiki :mranderson/inlined])
+             (assoc :name namespace)
+             (assoc :publics (read-publics source-path namespace))
+             (utils/assoc-some :doc (utils/correct-indent doc))
+             (list)))
     (catch Exception e
       (exception-handler e namespace))))
 

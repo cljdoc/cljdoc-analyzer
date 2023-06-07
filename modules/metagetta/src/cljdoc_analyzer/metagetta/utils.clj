@@ -52,7 +52,7 @@
             (str/join "\n")))))
 
 (defn correct-indent [text]
-  (when text
+  (when (and text (not (str/blank? text)))
     (let [lines (str/split-lines text)]
       (->> (rest lines)
            (str/join "\n")

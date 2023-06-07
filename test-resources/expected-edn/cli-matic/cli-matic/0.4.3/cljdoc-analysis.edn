@@ -956,13 +956,11 @@
                                 :file "cli_matic/optionals.cljs",
                                 :line 32,
                                 :arglists ([]),
-                                :doc "\n",
                                 :type :var}
                                {:name yaml-decode,
                                 :file "cli_matic/optionals.cljs",
                                 :line 24,
                                 :arglists ([& _]),
-                                :doc "\n",
                                 :type :var})}
                     {:name cli-matic.platform,
                      :doc "\n## Platform-specific functions for ClojureScript.\n\nAt the moment, we only support Planck.\n\nBTW, in this NS, we avoid using Spec / Orchestra.\n\n",
