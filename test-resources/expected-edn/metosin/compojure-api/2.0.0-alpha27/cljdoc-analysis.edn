@@ -604,7 +604,6 @@
                     :publics ({:name Options,
                                :file "compojure/api/resource.clj",
                                :line 143,
-                               :doc "\n",
                                :type :var}
                               {:name resource,
                                :file "compojure/api/resource.clj",
