@@ -17,7 +17,7 @@
 
 (defn maybe-download [{:keys [download extra-repos project version]}]
   (when download
-    (deps/resolve-dep
+    (deps/resolve-artifact
       (symbol project) version
       (:repos (config/load))
       (extra-repo-arg-to-option extra-repos))))

@@ -7,6 +7,7 @@
    [clojure.tools.deps :as tdeps]
    [version-clj.core :as v]
    ;; the following not part of the tools deps public API, will reconsider if this causes us any grief
+   [clojure.tools.deps.extensions :as tdeps-ext]
    [clojure.tools.deps.extensions.pom :as tdeps-pom]
    [clojure.tools.deps.util.maven :as tdeps-maven]
    [clojure.tools.deps.util.session :as tdeps-session])
@@ -131,16 +132,22 @@
                         {:extra-deps {(symbol project) {:local/root jar-url}}
                          :verbose false})))
 
-(defn resolve-dep
-  "Return resolved local `:jar` and `:pom` for maven repo hosted `project` `version`"
+(defn resolve-artifact
+  "Return resolved (downloaded, if necessary) local `:jar` and `:pom` for maven repo
+  hosted `project` `version`withour resolving project's dependencies."
   [project version default-repos extra-repos]
-  (let [jar (-> (tdeps/resolve-deps {:deps {project {:mvn/version version}}
-                                     :mvn/repos (merge default-repos extra-repos)} nil)
-                (get project)
-                :paths
-                first)
-        pom (string/replace jar #"\.jar$" ".pom")]
-    {:jar jar :pom pom}))
+  (let [lib project
+        repos (merge default-repos extra-repos)
+        coord {:mvn/version version}
+        ;; this seems to resolve and downlaod the the jar
+        jar (first (tdeps-ext/coord-paths lib
+                     coord
+                     :mvn {:mvn/repos repos}))]
+    ;; this seems to resolve and download the pom
+    (tdeps-ext/coord-deps lib
+                    coord
+                    :mvn {:mvn/repos repos})
+    {:jar jar :pom (string/replace jar #"\.jar$" ".pom")}))
 
 (defn make-classpath
   "Build a classpath for `resolved-deps`."

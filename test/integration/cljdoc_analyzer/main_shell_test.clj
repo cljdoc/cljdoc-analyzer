@@ -3,6 +3,7 @@
    They are here to ensure our command-line friendly adhoc interface works."
   (:require [babashka.fs :as fs]
             [clojure.test :as t]
+            [clojure.tools.deps :as tdeps]
             [clojure.java.shell :as shell]
             [cljdoc-analyzer.test-helper :as test-helper]))
 
@@ -22,5 +23,13 @@
                                                   "--output-filename" edn-out-filename))))
 
 ;; main testing is done in cljdoc-main-test, this is a sanity run that this main path works as well.
-(t/deftest bidi
-  (run-analysis "bidi" "2.1.3"))
+(t/deftest clj-branca
+  ;; force re-download of artifact to local maven repo by deleting it first
+  (let [project 'miikka/clj-branca
+        version "0.1.0"
+        {:keys [base path]} (tdeps/lib-location project {:mvn/version version} {})
+        m2-repo-dir (fs/file base path)]
+    (when (fs/exists? m2-repo-dir)
+      (println "deleting" (str m2-repo-dir))
+      (fs/delete-tree m2-repo-dir))
+    (run-analysis (str project) version)))
