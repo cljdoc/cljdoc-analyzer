@@ -14,6 +14,8 @@
 https://github.com/cljdoc/cljdoc-analyzer/issues/78[#78]
 * Omit blank docstrings from analysis
 https://github.com/cljdoc/cljdoc-analyzer/issues/80[#80]
+* Fix: some cljs-only libs auto-detected also as clj libs
+https://github.com/cljdoc/cljdoc-analyzer/issues/82[#82]
 
 == v1.0.731
 
