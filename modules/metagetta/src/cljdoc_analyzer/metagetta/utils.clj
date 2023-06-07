@@ -102,16 +102,21 @@
   "Given a directory `src-dir` inspect all files and infer which
   platforms the source files likely target."
   [^java.io.File src-dir]
-  (assert (< 1 (count (file-seq src-dir))) "jar contents dir does not contain any files")
-  (let [file-types (->> (file-seq src-dir)
-                        (keep (fn [f]
-                                (cond
-                                  (.endsWith (.getPath f) ".clj")  :clj
-                                  (.endsWith (.getPath f) ".cljs") :cljs
-                                  (.endsWith (.getPath f) ".cljc") :cljc))))]
-    (case (set file-types)
-      #{:clj}  ["clj"]
-      #{:cljs} ["cljs"]
+  (let [src-dir (.getAbsoluteFile src-dir)
+        file-types (->> (file-seq src-dir)
+                        (filter #(.isFile %))
+                        (map #(.relativize (.toPath src-dir) (.toPath %)))
+                        (map str)
+                        (remove #(str/starts-with? % "META-INF"))
+                        (reduce (fn [acc f]
+                                  (if-let [[_ ext] (re-find #".*\.(clj|cljs|cljc)$" f)]
+                                    (conj acc ext)
+                                    acc))
+                                #{}))]
+    (case file-types
+      #{} (throw (ex-info "no Clojure/Clojurescript sources found" {}))
+      #{"clj"}  ["clj"]
+      #{"cljs"} ["cljs"]
       ["clj" "cljs"])))
 
 (defn default-exception-handler [lang e file]
