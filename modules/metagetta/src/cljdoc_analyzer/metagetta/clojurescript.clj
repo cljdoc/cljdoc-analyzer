@@ -7,6 +7,8 @@
             [cljs.compiler.api :as comp]
             [cljs.env]
             [clojure.set]
+            [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.find :as ns-find]
+            [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.parse :as ns-parse]
             [cljdoc-analyzer.metagetta.utils :as utils]))
 
 (defn- default-data-reader-fn-var
@@ -165,15 +167,17 @@
 (defn- ns-merger [val-first val-next]
   (update val-first :publics #(seq (into (set %) (:publics val-next)))))
 
-(defn- get-string-dependencies
-  "Compute the set of all dependencies expressed as string for a give  package path.
-  Usually, these strings required namespace refer to JS library not embedded in
-  ClojureScript package.
+(defn- classpath
+  "Returns sequence of File paths from the 'java.class.path' system property.
+  (code taken from 'clojure.java.classpath')"
+  []
+  (map #(io/file %)
+       (.split (System/getProperty "java.class.path")
+               (System/getProperty "path.separator"))))
 
-  Example: for the package 'lilactown-hx-0.5.2', #{\"react\"} is returned."
-  [ns-infos]
-  (->> ns-infos
-       (map :requires)
+(defn all-js-requires []
+  (->> (ns-find/find-ns-decls (classpath) ns-find/cljs)
+       (map ns-parse/deps-from-ns-decl)
        (reduce clojure.set/union)
        (filter string?)
        (into #{})))
@@ -209,12 +213,12 @@
       :mranderson/inlined - default meta for mranderson inlined"
   ([path] (read-namespaces path {}))
   ([path {:keys [exception-handler exclude-with]
-           :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
+          :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
    (let [path (io/file (utils/canonical-path path))
          ns-infos (->> (find-files path)
                        (map #(assoc (ana/parse-ns (io/file path %))
                                     ::source-rel-path %)))
-         js-dependencies (get-string-dependencies ns-infos)
+         js-dependencies (all-js-requires)
          compiler-state (create-compiler-state js-dependencies)
          source-loader #(load-source compiler-state path % exception-handler)]
      (->> ns-infos

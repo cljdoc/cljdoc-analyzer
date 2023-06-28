@@ -3,7 +3,7 @@
   (:import java.util.jar.JarFile
            java.io.FileNotFoundException)
   (:require [clojure.java.io :as io]
-            [clojure.tools.namespace.find :as ns-find]
+            [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.find :as ns-find]
             [cljdoc-analyzer.metagetta.utils :as utils]))
 
 (defn try-require [namespace]
