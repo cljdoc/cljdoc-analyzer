@@ -350,6 +350,38 @@ We use https://github.com/liquidz/antq[antq] to check for outdated dependencies.
 bb outdated
 ----
 
+=== Inlined deps
+To avoid dependency conflicts with libraries we are analyzing, we have inlined the `org.clojure/tools.namespace` dependency in metagetta.
+
+At the time of this writing, the current version is v1.4.4 but we have inlined v1.4.0.
+Later versions currently have bugs that are show stoppers for cljdoc analyzer.
+
+Inlining was done manually with the help of MrAnderson like so:
+
+From an empty dir, create a dummy `project.clj`:
+[source,clojure]
+----
+(defproject lread/testing "1.0.0"
+  :description "inlining test"
+  :dependencies [^:source-dep [org.clojure/tools.namespace "1.4.0"]]
+  :plugins [[thomasa/mranderson "0.5.3"]]
+  :mranderson {:project-prefix "cljdoc-analyzer.metagetta.inlined"})
+----
+And then run:
+[source,shell]
+----
+lein inline-deps
+----
+The resulting inlined library sources are found under `./target/srcdeps` and are to be copied to the metagetta module `src` dir. 
+Any existing affected instances of `:require` should be updated to the inlined namespaces.
+
+NOTE: We also tweaked inlined `tools.namespace/parse` to return cljs npm deps. 
+These are expressed as `(ns foo (:require ["some-npm-dep-here"]))`.
+The metagetta ClojureScript analyzer is interested in these, and without the tweak they are skipped. 
+You can see the change in the commit history.
+
+If we ever want/need to bump tools.namespace for metagetta, we can repeat the above process.
+
 === Releasing
 After you have have dotted all your i's and crossed all your t's, you may want to cut a release.
 
