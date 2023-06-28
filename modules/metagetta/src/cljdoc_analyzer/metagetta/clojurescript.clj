@@ -7,9 +7,10 @@
             [cljs.compiler.api :as comp]
             [cljs.env]
             [clojure.set]
+            [cljdoc-analyzer.metagetta.utils :as utils]
+            [cljdoc-analyzer.metagetta.inlined.javaclasspath.v1v0v0.clojure.java.classpath :as cp]
             [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.find :as ns-find]
-            [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.parse :as ns-parse]
-            [cljdoc-analyzer.metagetta.utils :as utils]))
+            [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.parse :as ns-parse]))
 
 (defn- default-data-reader-fn-var
   "Starting with ClojureScript 1.11.51 tools reader is vendorized to cljs.vendor.clojure.tools.reader"
@@ -167,16 +168,8 @@
 (defn- ns-merger [val-first val-next]
   (update val-first :publics #(seq (into (set %) (:publics val-next)))))
 
-(defn- classpath
-  "Returns sequence of File paths from the 'java.class.path' system property.
-  (code taken from 'clojure.java.classpath')"
-  []
-  (map #(io/file %)
-       (.split (System/getProperty "java.class.path")
-               (System/getProperty "path.separator"))))
-
 (defn all-js-requires []
-  (->> (ns-find/find-ns-decls (classpath) ns-find/cljs)
+  (->> (ns-find/find-ns-decls (cp/classpath) ns-find/cljs)
        (map ns-parse/deps-from-ns-decl)
        (reduce clojure.set/union)
        (filter string?)
