@@ -91,8 +91,9 @@
           (list (symbol (str (when prefix (str prefix ".")) form)))
 	(keyword? form)  ; Some people write (:require ... :reload-all)
           nil
-        (string? form) ; NPM dep, ignore
-          nil
+          ;; CHANGED from clojure.tools.namespace/parse, it returns nil, we return the string lib
+          (string? form) ; NPM dep, aka JavaScript require.
+          (list form)
         :else
           (throw (ex-info "Unparsable namespace form"
                           {:reason ::unparsable-ns-form
