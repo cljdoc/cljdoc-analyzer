@@ -20,12 +20,14 @@
                                  :out)]
                       (shell "clojure -M:clj-kondo --dependencies --copy-configs --lint" cp)))
                   (status/line :head "Linting")
-                  (let [{:keys [exit]}
+                  (let [config {:output {:exclude-files ["/inlined/"]}}
+                        {:keys [exit]}
                         (shell {:continue true}
                                "clojure -M:clj-kondo --lint src test bb.edn deps.edn"
                                "modules/metagetta/src"
                                "modules/metagetta/test"
-                               "modules/metagetta/deps.edn")]
+                               "modules/metagetta/deps.edn"
+                               "--config" (str config))]
                     (cond
                       (= 2 exit) (status/die exit "clj-kondo found one or more lint errors")
                       (= 3 exit) (status/die exit "clj-kondo found one or more lint warnings")
