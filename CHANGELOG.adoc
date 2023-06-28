@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.750
+
 * ClojureScript analysis should now be able to handle analyzing libs with deps that use JavaScript requires
 https://github.com/cljdoc/cljdoc-analyzer/issues/84[#84]
 * Artifacts that reference non-default maven repos now analyze properly for user-facing cmd line
