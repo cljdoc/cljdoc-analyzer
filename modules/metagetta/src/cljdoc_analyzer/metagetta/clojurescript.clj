@@ -168,7 +168,12 @@
 (defn- ns-merger [val-first val-next]
   (update val-first :publics #(seq (into (set %) (:publics val-next)))))
 
-(defn all-js-requires []
+(defn all-js-requires
+  "In ClojureSript an npm dep (aka JavaScript require) is required by string.
+  Ex. `(ns foo (:require [\"somejsthing\"]))`
+
+  This fn returns a set of all \"somejsthing\"s found in cljs sources on the classpath. "
+  []
   (->> (ns-find/find-ns-decls (cp/classpath) ns-find/cljs)
        (map ns-parse/deps-from-ns-decl)
        (reduce clojure.set/union)
