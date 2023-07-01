@@ -88,10 +88,14 @@
        (into {})))
 
 (defn- pom-repos
-  "Returns maven repositories declared with `pom`"
+  "Returns maven repositories declared within `pom`, automatically upgrading
+  any http: urls to https:"
   [^Model pom]
   (->> (.getRepositories pom)
-       (map (fn [^Repository repo] [(.getId repo) {:url (.getUrl repo)}]))
+       (map (fn [^Repository repo]
+              [(.getId repo)
+               {:url (-> repo .getUrl
+                         (string/replace-first #"^http:" "https:" ))}]))
        (into {})))
 
 (defn- overriding-deps
