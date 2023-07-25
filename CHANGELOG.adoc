@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.759
+
 * Bump deps
 * Referenced maven repos now auto-upgraded to https
 https://github.com/cljdoc/cljdoc-analyzer/issues/87[#87]
