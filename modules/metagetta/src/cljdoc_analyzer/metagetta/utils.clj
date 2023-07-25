@@ -151,21 +151,24 @@
       ;(tagged-literal tag value) ; <-- OK for reading but breaks the Clojure Compiler's `emitValue` unless we define print-dup
       [:cljdoc/unknown-tagged-literal (name tag) value])))
 
+(defn humanize-duration [^Duration duration]
+  (-> duration
+      str
+      (subs 2)
+      (str/replace #"(\d[HMS])" "$1 ")
+      (str/lower-case)
+      str/trim))
 
 (defmacro time-op
-  "Evaluates expr and prints the time it took.  Returns the value of
- expr."
+  "Evaluates expr and prints the time it took.  Returns the value of expr."
   {:added "1.0"}
   [desc expr]
   `(let [start# (System/currentTimeMillis)
          ret# ~expr
          end# (System/currentTimeMillis)]
-     (printf "⏱  %s took: %s\n" ~desc (-> (Duration/ofMillis (- end# start#))
-                                       str
-                                       (subs 2)
-                                       (str/replace #"\d[HMS](?!$)" "$1 ")
-                                       (str/lower-case)))
+     (printf "⏱  %s took: %s\n" ~desc (humanize-duration (Duration/ofMillis (- end# start#))))
      ret#))
+
 
 (defn parse-ns-name-with-meta
   "Return namespace name adorned with its metadata from unevaluated `ns-decl` form."
