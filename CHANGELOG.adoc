@@ -13,6 +13,8 @@
 * Bump deps
 * Referenced maven repos now auto-upgraded to https
 https://github.com/cljdoc/cljdoc-analyzer/issues/87[#87]
+* Fix: analysis duration reporting could throw
+https://github.com/cljdoc/cljdoc-analyzer/issues/89[#89]
 
 == v1.0.750
 
