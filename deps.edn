@@ -2,7 +2,7 @@
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/tools.deps {:mvn/version "0.18.1354"}
         org.clojure/tools.logging {:mvn/version "1.2.4"}
-        ch.qos.logback/logback-classic {:mvn/version "1.4.8"}
+        ch.qos.logback/logback-classic {:mvn/version "1.4.11"}
         version-clj/version-clj {:mvn/version "2.0.2"}
         cli-matic/cli-matic {:mvn/version "0.5.4"}
         babashka/fs {:mvn/version "0.4.19"}
@@ -13,7 +13,7 @@
  :tools/usage {:ns-default cljdoc-analyzer.deps-tool}
  :aliases {:test
            {:extra-paths ["test/integration" "test-resources"]
-            :extra-deps {lambdaisland/kaocha {:mvn/version "1.85.1342"}
+            :extra-deps {lambdaisland/kaocha {:mvn/version "1.86.1355"}
                          lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}}
             :main-opts ["-m" "kaocha.runner"]}
 
@@ -28,7 +28,7 @@
                                               :test-paths ["test/integration"]}]}
 
            :outdated
-           {:replace-deps {com.github.liquidz/antq {:mvn/version "2.5.1095"}
+           {:replace-deps {com.github.liquidz/antq {:mvn/version "2.5.1109"}
                            org.slf4j/slf4j-simple {:mvn/version "2.0.7"} ;; to rid ourselves of logger warnings
                            }
             :main-opts ["-m" "antq.core"

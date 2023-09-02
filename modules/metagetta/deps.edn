@@ -3,7 +3,7 @@
         org.clojure/clojurescript {:mvn/version "1.11.60"}}
  :aliases {:test-base
            {:extra-paths ["test"]
-            :extra-deps {lambdaisland/kaocha {:mvn/version "1.85.1342"}
+            :extra-deps {lambdaisland/kaocha {:mvn/version "1.86.1355"}
                          lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}}}
 
            :test-sources
