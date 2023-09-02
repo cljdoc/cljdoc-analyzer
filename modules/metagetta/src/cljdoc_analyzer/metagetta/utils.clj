@@ -83,7 +83,7 @@
   if needed before converting."
   [file]
   (if (re-find #"^(jar:)?file:/.*\.jar!/" file)
-    (->> (if (str/starts-with? file "jar:") file (str "jar:" file))
+    (->> (if (.startsWith file "jar:") file (str "jar:" file))
          java.net.URL.
          .openConnection
          (cast java.net.JarURLConnection)
@@ -107,7 +107,7 @@
                         (filter #(.isFile %))
                         (map #(.relativize (.toPath src-dir) (.toPath %)))
                         (map str)
-                        (remove #(str/starts-with? % "META-INF"))
+                        (remove #(.startsWith % "META-INF"))
                         (reduce (fn [acc f]
                                   (if-let [[_ ext] (re-find #".*\.(clj|cljs|cljc)$" f)]
                                     (conj acc ext)

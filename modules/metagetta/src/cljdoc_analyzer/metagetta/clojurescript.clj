@@ -6,6 +6,7 @@
             [cljs.closure]
             [cljs.compiler.api :as comp]
             [cljs.env]
+            [cljs.util :as cljs-util]
             [clojure.set]
             [cljdoc-analyzer.metagetta.utils :as utils]
             [cljdoc-analyzer.metagetta.inlined.javaclasspath.v1v0v0.clojure.java.classpath :as cp]
@@ -228,6 +229,7 @@
   ([path] (read-namespaces path {}))
   ([path {:keys [exception-handler exclude-with namespaces]
           :or {exception-handler (partial utils/default-exception-handler "ClojureScript")}}]
+   (println "ClojureScript version" (cljs-util/clojurescript-version))
    (let [ns-filters namespaces
          path (io/file (utils/canonical-path path))
          ns-infos (->> (find-files path)

@@ -163,7 +163,8 @@
 
   ([path] (read-namespaces path {}))
   ([path {:keys [exception-handler exclude-with namespaces]
-           :or {exception-handler (partial utils/default-exception-handler "Clojure")}}]
+          :or {exception-handler (partial utils/default-exception-handler "Clojure")}}]
+   (println "Clojure version" (clojure-version))
    (let [path (utils/canonical-path path)
          ns-filters namespaces]
      (->> (io/file path)
