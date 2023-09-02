@@ -100,21 +100,10 @@
                             %)
                          namespaces))
 
-(defn- ns-matches? [{ns-name :name} pattern]
-  (cond
-    (string? pattern) (re-find (re-pattern pattern) (str ns-name))
-    (symbol? pattern) (= pattern (symbol ns-name))))
-
-(defn- filter-namespaces [namespaces ns-filters]
-  (if (and ns-filters (not= ns-filters :all))
-    (filter #(some (partial ns-matches? %) ns-filters) namespaces)
-    namespaces))
-
 (defn- read-namespaces
-  [{:keys [language root-path namespaces] :as opts}]
+  [{:keys [language root-path] :as opts}]
   (let [reader (namespace-readers language)]
-    (-> (reader root-path (select-keys opts [:exception-handler :exclude-with]))
-        (filter-namespaces namespaces)
+    (-> (reader root-path (select-keys opts [:exception-handler :exclude-with :namespaces]))
         exclude-unwanted-vars
         (assert-no-dupes-in-publics)
         (sort-by-name))))

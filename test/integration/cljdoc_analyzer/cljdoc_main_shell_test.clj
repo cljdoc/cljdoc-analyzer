@@ -166,3 +166,10 @@
                   ["org.clojure/tools.deps"
                    "0.16.1281"
                    "https://repo1.maven.org/maven2/org/clojure/tools.deps/0.16.1281/tools.deps-0.16.1281"])))
+
+(t/deftest clojure-remotely
+  ;; https://github.com/cljdoc/cljdoc-analyzer/issues/53
+  (run-analysis (remote->args
+                  ["org.clojure/clojure"
+                   "1.11.1"
+                   "https://repo1.maven.org/maven2/org/clojure/clojure/1.11.1/clojure-1.11.1"])))

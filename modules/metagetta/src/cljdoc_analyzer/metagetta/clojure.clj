@@ -120,6 +120,16 @@
             coll)
     coll))
 
+(defn- ns-matches? [ns-sym pattern]
+  (cond
+    (string? pattern) (re-find (re-pattern pattern) (str ns-sym))
+    (symbol? pattern) (= pattern ns-sym)))
+
+(defn- filter-namespaces [ns-filters found-namespaces]
+  (if (and ns-filters (not= ns-filters :all))
+    (filter #(some (partial ns-matches? %) ns-filters) found-namespaces)
+    found-namespaces))
+
 (defn read-namespaces
   "Read Clojure namespaces from a source directory and return a list
    namespaces with their public vars.
@@ -129,6 +139,7 @@
                          while reading a namespace
     :exclude-with - coll of metadata keywords to exclude, applied
                     first to namespaces, then to vars
+    :namespaces - codox style namespaces
 
   The keys in the maps are:
     :name      - the name of the namespace
@@ -151,12 +162,14 @@
       :mranderson/inlined - default meta for mranderson inlined"
 
   ([path] (read-namespaces path {}))
-  ([path {:keys [exception-handler exclude-with]
+  ([path {:keys [exception-handler exclude-with namespaces]
            :or {exception-handler (partial utils/default-exception-handler "Clojure")}}]
-   (let [path (utils/canonical-path path)]
+   (let [path (utils/canonical-path path)
+         ns-filters namespaces]
      (->> (io/file path)
           (find-namespaces)
-          ;; shot at excluding namespaces before analysis/load
+          ;; we exclude namespaces before analysis/load
+          (filter-namespaces ns-filters)
           (remove-with-meta exclude-with)
           (mapcat #(read-ns % path exception-handler))
           ;; final exclude of namespaces and vars after analysis
