@@ -5,11 +5,11 @@
             [clojure.walk :as walk])
   (:import [java.time Duration]))
 
-(defn- empty-seq?[x]
-  (and (seqable? x) (not (seq x))))
+(defn- empty-coll?[x]
+  (and (coll? x) (not (seq x))))
 
 (defn remove-empties[m]
-  (into {} (filter (comp not empty-seq? second) m)))
+  (into {} (filter (comp not empty-coll? second) m)))
 
 (defn assoc-some
   "Associates a key with a value in a map, if and only if the value is not nil."
