@@ -6,6 +6,7 @@
         version-clj/version-clj {:mvn/version "2.0.2"}
         cli-matic/cli-matic {:mvn/version "0.5.4"}
         babashka/fs {:mvn/version "0.4.19"}
+        org.ow2.asm/asm {:mvn/version "9.5"}
         ;; cljoc and cljdoc-analyzer should reference same version of cljdoc-shared
         cljdoc/cljdoc-shared {:git/url "https://github.com/cljdoc/cljdoc-shared.git"
                               :git/sha "53c113e375df94d50cf96c6f2c1b3842dc0e9b35"}}

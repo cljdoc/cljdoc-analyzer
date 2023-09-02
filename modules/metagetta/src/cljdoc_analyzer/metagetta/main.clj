@@ -5,14 +5,18 @@
             [clojure.java.io :as io]
             [clojure.pprint :as pprint]
             [clojure.string :as string]
-            [cljs.util :as cljs-util]
             [cljdoc-analyzer.metagetta.clojure :as clj]
-            [cljdoc-analyzer.metagetta.clojurescript :as cljs]
             [cljdoc-analyzer.metagetta.utils :as utils]))
 
-(def ^:private namespace-readers
-  {"clj"  clj/read-namespaces
-   "cljs" cljs/read-namespaces})
+(defn- namespace-readers [lang]
+  (case lang
+    "clj" clj/read-namespaces
+    ;; don't bring in clourescript support unless necessary.
+    ;; this allows us to analyze older versions of clojure which are not
+    ;; compatible with current versions of clojurescript
+    "cljs" (do
+             (require '[cljdoc-analyzer.metagetta.clojurescript :as cljs])
+             (resolve 'cljs/read-namespaces))))
 
 (defn- var-symbol [namespace var]
   (symbol (name (:name namespace)) (name (:name var))))
@@ -100,21 +104,10 @@
                             %)
                          namespaces))
 
-(defn- ns-matches? [{ns-name :name} pattern]
-  (cond
-    (string? pattern) (re-find (re-pattern pattern) (str ns-name))
-    (symbol? pattern) (= pattern (symbol ns-name))))
-
-(defn- filter-namespaces [namespaces ns-filters]
-  (if (and ns-filters (not= ns-filters :all))
-    (filter #(some (partial ns-matches? %) ns-filters) namespaces)
-    namespaces))
-
 (defn- read-namespaces
-  [{:keys [language root-path namespaces] :as opts}]
+  [{:keys [language root-path] :as opts}]
   (let [reader (namespace-readers language)]
-    (-> (reader root-path (select-keys opts [:exception-handler :exclude-with]))
-        (filter-namespaces namespaces)
+    (-> (reader root-path (select-keys opts [:exception-handler :exclude-with :namespaces]))
         exclude-unwanted-vars
         (assert-no-dupes-in-publics)
         (sort-by-name))))
@@ -173,8 +166,6 @@
                            (string/replace #"\n" "\n      ")))
 
       (println "Java version" (System/getProperty "java.version"))
-      (println "Clojure version" (clojure-version))
-      (println "ClojureScript version" (cljs-util/clojurescript-version))
       (->> (get-metadata (assoc args :namespaces (or namespaces :all)))
            (utils/serialize-cljdoc-analysis-edn)
            (spit output-filename))
