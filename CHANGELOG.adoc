@@ -10,7 +10,7 @@
 
 == Unreleased
 
-* Support analysis of clojure itself (v1.10.0+)
+* Support analysis of clojure itself (v1.9+)
 https://github.com/cljdoc/cljdoc-analyzer/issues/53[#53]
 * Internal :namespaces option now applied before analysis
 https://github.com/cljdoc/cljdoc-analyzer/issues/92[#92]

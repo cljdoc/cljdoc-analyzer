@@ -21,7 +21,8 @@
             [cljdoc-analyzer.file :as file]
             [cljdoc-shared.proj :as proj]
             [cljdoc-shared.spec.analyzer :as analyzer-spec]
-            [cljdoc-shared.analysis-edn :as analysis-edn])
+            [cljdoc-shared.analysis-edn :as analysis-edn]
+            [version-clj.core :as v])
   (:import (java.net URI)
            (org.objectweb.asm ClassReader ClassVisitor Opcodes)))
 
@@ -105,6 +106,29 @@
       (log/info "Deleting" path)
       (fs/delete file))))
 
+(defn- patch-jar-contents!
+  "Sometimes an old project version will need a tweak to analyze.
+  For now we handle these tweaks here.
+  Please use this judiciously and provide comments as to why the tweak is necessary."
+  [project version unpacked-jar-dir]
+  ;; Patch gvec.clj in clojure <= 1.9.0
+  ;;
+  ;; A signature change in JDK11 means gvec.clj needs a type hint
+  ;; See https://clojure.atlassian.net/browse/CLJ-2374
+  ;; This patch applies the necessary type hint.
+  ;; An alternative would be to run analysis under JDK8, but cljdoc does not
+  ;; currently support JDK selection at this time.
+  (let [gvec-file (fs/file unpacked-jar-dir "clojure/gvec.clj")]
+   (when (and (= 'org.clojure/clojure project)
+              (v/older-or-equal? version "1.9.0")
+              (fs/exists? gvec-file))
+      (log/infof "Patching gvec.clj signature in org.clojure/cloure version %s" version)
+      (let [in (slurp gvec-file)
+            out (string/replace in
+                                "(toArray [this arr]"
+                                "(^objects toArray [this ^objects arr]")]
+        (spit gvec-file out)))))
+
 (defn- resolve-jar!
   "Returns local path to `jar`, if download necessary, downloads to `target-dir`"
   [jar target-dir]
@@ -117,12 +141,13 @@
   "Returns dir where jar contents has been unpacked under `target-dir`.  dir
   will be relative to target-dir in a way suitable for use with a pom.xml as a
   local root."
-  [local-jar-path target-dir]
+  [project version local-jar-path target-dir]
   ;; If a pom is read from target-dir, src/main/clojure relative to that pom is
   ;; added to the classpath by tdeps.
   (let [jar-contents-dir (io/file target-dir "src/main/clojure")]
     (fs/unzip local-jar-path jar-contents-dir)
     (clean-jar-contents! jar-contents-dir)
+    (patch-jar-contents! project version jar-contents-dir)
     jar-contents-dir))
 
 (defn- log-process-result [proc]
@@ -199,7 +224,7 @@
     (try
       (let [project (symbol project)
             local-jar-path (resolve-jar! jarpath work-dir)
-            jar-contents-dir (unpack-jar! local-jar-path work-dir)
+            jar-contents-dir (unpack-jar! project version local-jar-path work-dir)
             pom-str (slurp pompath)
             ;; Utilize unpack-jar!'s deps.edn support, and create a path which
             ;; tdeps can understand.
