@@ -18,7 +18,7 @@
             :main-opts ["-m" "kaocha.runner"]}
 
            :clj-kondo
-           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2023.07.13"}}
+           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2023.09.07"}}
             :main-opts ["-m" "clj-kondo.main"]}
 
            :eastwood
@@ -29,11 +29,12 @@
 
            :outdated
            {:replace-deps {com.github.liquidz/antq {:mvn/version "2.5.1109"}
-                           org.slf4j/slf4j-simple {:mvn/version "2.0.7"} ;; to rid ourselves of logger warnings
+                           org.slf4j/slf4j-simple {:mvn/version "2.0.9"} ;; to rid ourselves of logger warnings
                            }
             :main-opts ["-m" "antq.core"
                         "--exclude=org.clojure/tools.namespace@1.4.1" ;; https://clojure.atlassian.net/browse/TNS-59
                         "--exclude=org.clojure/tools.namespace@1.4.2" ;; https://ask.clojure.org/index.php/12965/tools-namespace-longer-returns-declared-metadata-namespace
                         "--exclude=org.clojure/tools.namespace@1.4.3" ;; https://ask.clojure.org/index.php/12965/tools-namespace-longer-returns-declared-metadata-namespace
                         "--exclude=org.clojure/tools.namespace@1.4.4" ;; https://ask.clojure.org/index.php/12965/tools-namespace-longer-returns-declared-metadata-namespace
+                        "--exclude=org.clojure/clojurescript@1.11.121" ;; not an official supported release
                         ]}}}
