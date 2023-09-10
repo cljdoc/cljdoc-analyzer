@@ -10,7 +10,8 @@
 
 == Unreleased
 
-*
+* Fix regression in ClojureScript analysis of zprint (and perhaps for other libs that use sci)
+https://github.com/cljdoc/cljdoc-analyzer/issues/95[#95]
 
 == v1.0.771
 

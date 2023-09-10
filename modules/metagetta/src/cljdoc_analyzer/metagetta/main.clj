@@ -133,6 +133,9 @@
            ":languages must be either :auto-detect or a collection of one or both of: \"clj\", \"cljs\"")
    (let [root-path (utils/canonical-path root-path)
          actual-languages (determine-languages languages root-path)]
+     ;; trigger early load of needed analysis support, loading lazily later
+     ;; causes zprint (and maybe other libs that use sci) to fail cljs analysis
+     (run! namespace-readers actual-languages)
      (->> actual-languages
           (mapv (fn [lang]
                   (println "Analyzing for" lang)
