@@ -115,7 +115,8 @@
                                     acc))
                                 #{}))]
     (case file-types
-      #{} (throw (ex-info "no Clojure/Clojurescript sources found" {}))
+      #{} [] ;; no sources is acceptable, for example reitit has sources in its module artifacts,
+             ;; but so sources in its main/parent artifact
       #{"clj"}  ["clj"]
       #{"cljs"} ["cljs"]
       ["clj" "cljs"])))
