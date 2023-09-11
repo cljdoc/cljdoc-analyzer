@@ -10,7 +10,8 @@
 
 == Unreleased
 
-*
+* Fix regression: its ok for an artifact to have no Clojure sources
+https://github.com/cljdoc/cljdoc-analyzer/issues/98[#98]
 
 == v1.0.776
 
