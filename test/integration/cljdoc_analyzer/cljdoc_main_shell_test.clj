@@ -174,8 +174,16 @@
                    "1.11.1"
                    "https://repo1.maven.org/maven2/org/clojure/clojure/1.11.1/clojure-1.11.1"])))
 
-(t/deftest clojure-1-7-remotely ;; https://github.com/cljdoc/cljdoc-analyzer/issues/53
+(t/deftest clojure-1-7-remotely
+  ;; https://github.com/cljdoc/cljdoc-analyzer/issues/53
   (run-analysis (remote->args
                   ["org.clojure/clojure"
                    "1.7.0"
                    "https://repo1.maven.org/maven2/org/clojure/clojure/1.7.0/clojure-1.7.0"])))
+
+(t/deftest instparse-1-4-12-remotely
+  ;; https://github.com/cljdoc/cljdoc-analyzer/issues/101
+  (run-analysis (remote->args
+                  ["instaparse/instaparse"
+                   "1.4.12"
+                   "https://repo.clojars.org/instaparse/instaparse/1.4.12/instaparse-1.4.12"])))

@@ -1,0 +1,3013 @@
+{:group-id "instaparse",
+ :artifact-id "instaparse",
+ :version "1.4.12",
+ :analysis {"clj" ({:name instaparse.abnf,
+                    :publics ({:name *case-insensitive*,
+                               :file "instaparse/abnf.clj",
+                               :line 16,
+                               :dynamic true,
+                               :doc "This is normally set to false, in which case the non-terminals\nare treated as case-sensitive, which is NOT the norm\nfor ABNF grammars. If you really want case-insensitivity,\nbind this to true, in which case all non-terminals\nwill be converted to upper-case internally (which\nyou'll have to keep in mind when transforming).",
+                               :type :var}
+                              {:name abnf,
+                               :file "instaparse/abnf.clj",
+                               :line 240,
+                               :arglists ([spec & {:as opts}]),
+                               :doc "Takes an ABNF grammar specification string and returns the combinator version.\nIf you give it the right-hand side of a rule, it will return the combinator equivalent.\nIf you give it a series of rules, it will give you back a grammar map.\nUseful for combining with other combinators.",
+                               :type :var}
+                              {:name abnf-core,
+                               :file "instaparse/abnf.clj",
+                               :line 25,
+                               :type :var}
+                              {:name abnf-grammar-clj-only,
+                               :file "instaparse/abnf.clj",
+                               :line 88,
+                               :type :var}
+                              {:name abnf-grammar-cljs-only,
+                               :file "instaparse/abnf.clj",
+                               :line 97,
+                               :type :var}
+                              {:name abnf-grammar-common,
+                               :file "instaparse/abnf.clj",
+                               :line 47,
+                               :type :var}
+                              {:name abnf-parser,
+                               :file "instaparse/abnf.clj",
+                               :line 128,
+                               :type :var}
+                              {:name abnf-transformer,
+                               :file "instaparse/abnf.clj",
+                               :line 182,
+                               :type :var}
+                              {:name alt-preserving-hide-tag,
+                               :file "instaparse/abnf.clj",
+                               :line 162,
+                               :arglists ([p1 p2]),
+                               :type :var}
+                              {:name build-parser,
+                               :file "instaparse/abnf.clj",
+                               :line 258,
+                               :arglists ([spec output-format]),
+                               :type :var}
+                              {:name get-char-combinator,
+                               :file "instaparse/abnf.clj",
+                               :line 134,
+                               :arglists ([& nums]),
+                               :type :var}
+                              {:name hide-tag?,
+                               :file "instaparse/abnf.clj",
+                               :line 157,
+                               :arglists ([p]),
+                               :doc "Tests whether parser was constructed with hide-tag\n",
+                               :type :var}
+                              {:name merge-core,
+                               :file "instaparse/abnf.clj",
+                               :line 150,
+                               :arglists ([grammar-map]),
+                               :doc "Merges abnf-core map in with parsed grammar map\n",
+                               :type :var}
+                              {:name parse-int,
+                               :file "instaparse/abnf.clj",
+                               :line 176,
+                               :arglists ([string] [string radix]),
+                               :type :var}
+                              {:name precompile-cljs-grammar,
+                               :file "instaparse/abnf.clj",
+                               :line 107,
+                               :arglists ([]),
+                               :type :macro}
+                              {:name project,
+                               :file "instaparse/abnf.clj",
+                               :line 142,
+                               :arglists ([m ks]),
+                               :doc "Restricts map to certain keys\n",
+                               :type :var}
+                              {:name rules->grammar-map,
+                               :file "instaparse/abnf.clj",
+                               :line 236,
+                               :arglists ([rules]),
+                               :type :var}),
+                    :doc "This is the context free grammar that recognizes ABNF notation.\n"}
+                   {:name instaparse.auto-flatten-seq,
+                    :publics ({:name advance,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 64,
+                               :arglists ([v index]),
+                               :type :var}
+                              {:name afs?,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 287,
+                               :arglists ([s]),
+                               :type :var}
+                              {:name auto-flatten-seq,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 278,
+                               :arglists ([v]),
+                               :type :var}
+                              {:name compile-if,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 12,
+                               :arglists ([test then else]),
+                               :type :macro}
+                              {:name ConjFlat,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 7,
+                               :type :protocol,
+                               :members ({:name cached?,
+                                          :arglists ([self]),
+                                          :type :var}
+                                         {:name conj-flat,
+                                          :arglists ([self obj]),
+                                          :type :var})}
+                              {:name convert-afs-to-vec,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 510,
+                               :arglists ([afs]),
+                               :type :var}
+                              {:name delve,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 57,
+                               :arglists ([v index]),
+                               :type :var}
+                              {:name EMPTY,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 285,
+                               :type :var}
+                              {:name flat-seq,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 76,
+                               :arglists ([v] [v index]),
+                               :type :var}
+                              {:name flat-vec,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 305,
+                               :arglists ([v]),
+                               :doc "Turns deep vector (like the vector inside of FlattenOnDemandVector) into a flat vec\n",
+                               :type :var}
+                              {:name flat-vec-helper,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 297,
+                               :arglists ([acc v]),
+                               :type :var}
+                              {:name GetVec,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 310,
+                               :type :protocol,
+                               :members ({:name get-vec,
+                                          :arglists ([self]),
+                                          :type :var})}
+                              {:name hash-conj,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 26,
+                               :arglists ([premix-hash-v item]),
+                               :type :macro}
+                              {:name hash-ordered-coll-without-mix,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 247,
+                               :arglists ([v]),
+                               :type :var}
+                              {:name mix-collection-hash-bc,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 17,
+                               :arglists ([x y]),
+                               :type :macro}
+                              {:name threshold,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 5,
+                               :type :var}
+                              {:name true-count,
+                               :file "instaparse/auto_flatten_seq.clj",
+                               :line 290,
+                               :arglists ([v]),
+                               :type :var})}
+                   {:name instaparse.cfg,
+                    :publics ({:name *case-insensitive-literals*,
+                               :file "instaparse/cfg.clj",
+                               :line 15,
+                               :dynamic true,
+                               :doc "Sets whether all string literal terminals in a built grammar\nwill be treated as case insensitive.\n\n`true`: case-insensitive\n`false`: case-sensitive\n`:default`: case-sensitive for EBNF, case-insensitive for ABNF",
+                               :type :var}
+                              {:name build-parser,
+                               :file "instaparse/cfg.clj",
+                               :line 295,
+                               :arglists ([spec output-format]),
+                               :type :var}
+                              {:name build-parser-from-combinators,
+                               :file "instaparse/cfg.clj",
+                               :line 307,
+                               :arglists ([grammar-map
+                                           output-format
+                                           start-production]),
+                               :type :var}
+                              {:name build-rule,
+                               :file "instaparse/cfg.clj",
+                               :line 248,
+                               :arglists ([tree]),
+                               :doc "Convert one parsed rule from the grammar into combinators\n",
+                               :type :var}
+                              {:name cfg,
+                               :file "instaparse/cfg.clj",
+                               :line 53,
+                               :type :var}
+                              {:name check-grammar,
+                               :file "instaparse/cfg.clj",
+                               :line 284,
+                               :arglists ([grammar-map]),
+                               :doc "Throw error if grammar uses any invalid non-terminals in its productions\n",
+                               :type :var}
+                              {:name content,
+                               :file "instaparse/cfg.clj",
+                               :line 169,
+                               :type :var}
+                              {:name contents,
+                               :file "instaparse/cfg.clj",
+                               :line 168,
+                               :type :var}
+                              {:name double-quoted-regexp,
+                               :file "instaparse/cfg.clj",
+                               :line 46,
+                               :type :var}
+                              {:name double-quoted-string,
+                               :file "instaparse/cfg.clj",
+                               :line 45,
+                               :type :var}
+                              {:name ebnf,
+                               :file "instaparse/cfg.clj",
+                               :line 315,
+                               :arglists ([spec & {:as opts}]),
+                               :doc "Takes an EBNF grammar specification string and returns the combinator version.\nIf you give it the right-hand side of a rule, it will return the combinator equivalent.\nIf you give it a series of rules, it will give you back a grammar map.\nUseful for combining with other combinators.",
+                               :type :var}
+                              {:name escape,
+                               :file "instaparse/cfg.clj",
+                               :line 173,
+                               :arglists ([s]),
+                               :doc "Converts escaped single-quotes to unescaped, and unescaped double-quotes to escaped\n",
+                               :type :var}
+                              {:name inside-comment,
+                               :file "instaparse/cfg.clj",
+                               :line 47,
+                               :type :var}
+                              {:name opt-whitespace,
+                               :file "instaparse/cfg.clj",
+                               :line 51,
+                               :type :var}
+                              {:name process-regexp,
+                               :file "instaparse/cfg.clj",
+                               :line 232,
+                               :arglists ([s]),
+                               :doc "Converts single quoted regexp to double-quoted\n",
+                               :type :var}
+                              {:name process-string,
+                               :file "instaparse/cfg.clj",
+                               :line 220,
+                               :arglists ([s]),
+                               :doc "Converts single quoted string to double-quoted\n",
+                               :type :var}
+                              {:name regex-doc,
+                               :file "instaparse/cfg.clj",
+                               :line 37,
+                               :arglists ([pattern-str comment]),
+                               :doc "Adds a comment to a Clojure regex, or no-op in ClojureScript\n",
+                               :type :var}
+                              {:name safe-read-string,
+                               :file "instaparse/cfg.clj",
+                               :line 203,
+                               :arglists ([s]),
+                               :doc "Expects a double-quote at the end of the string\n",
+                               :type :var}
+                              {:name seq-nt,
+                               :file "instaparse/cfg.clj",
+                               :line 273,
+                               :arglists ([parser]),
+                               :doc "Returns a sequence of all non-terminals in a parser built from combinators.\n",
+                               :type :var}
+                              {:name single-quoted-regexp,
+                               :file "instaparse/cfg.clj",
+                               :line 44,
+                               :type :var}
+                              {:name single-quoted-string,
+                               :file "instaparse/cfg.clj",
+                               :line 43,
+                               :type :var}
+                              {:name string+,
+                               :file "instaparse/cfg.clj",
+                               :line 24,
+                               :arglists ([s ci-by-default?]),
+                               :doc "Returns a string combinator that may be case-insensntive, based\non (in priority order):\n\n1) the value of `*case-insensitive-literals*`, if it has been\noverridden to a boolean\n2) the supplied `ci-by-default?` parameter",
+                               :type :var}
+                              {:name tag,
+                               :file "instaparse/cfg.clj",
+                               :line 167,
+                               :type :var}
+                              {:name wrap-reader,
+                               :file "instaparse/cfg.clj",
+                               :line 194,
+                               :arglists ([reader]),
+                               :type :var}
+                              {:name ws,
+                               :file "instaparse/cfg.clj",
+                               :line 49,
+                               :type :var}),
+                    :doc "This is the context free grammar that recognizes context free grammars.\n"}
+                   {:name instaparse.combinators,
+                    :publics ({:name abnf,
+                               :file "instaparse/abnf.clj",
+                               :line 240,
+                               :arglists ([spec & {:as opts}]),
+                               :doc "Takes an ABNF grammar specification string and returns the combinator version.\nIf you give it the right-hand side of a rule, it will return the combinator equivalent.\nIf you give it a series of rules, it will give you back a grammar map.\nUseful for combining with other combinators.",
+                               :type :var}
+                              {:name alt,
+                               :file "instaparse/combinators_source.clj",
+                               :line 34,
+                               :arglists ([& parsers]),
+                               :doc "Alternation, i.e., parser1 | parser2 | parser3 | ...\n",
+                               :type :var}
+                              {:name cat,
+                               :file "instaparse/combinators_source.clj",
+                               :line 54,
+                               :arglists ([& parsers]),
+                               :doc "Concatenation, i.e., parser1 parser2 ...\n",
+                               :type :var}
+                              {:name ebnf,
+                               :file "instaparse/cfg.clj",
+                               :line 315,
+                               :arglists ([spec & {:as opts}]),
+                               :doc "Takes an EBNF grammar specification string and returns the combinator version.\nIf you give it the right-hand side of a rule, it will return the combinator equivalent.\nIf you give it a series of rules, it will give you back a grammar map.\nUseful for combining with other combinators.",
+                               :type :var}
+                              {:name Epsilon,
+                               :file "instaparse/combinators_source.clj",
+                               :line 11,
+                               :type :var}
+                              {:name hide,
+                               :file "instaparse/combinators_source.clj",
+                               :line 107,
+                               :arglists ([parser]),
+                               :doc "Hide the result of parser, i.e., <parser>\n",
+                               :type :var}
+                              {:name hide-tag,
+                               :file "instaparse/combinators_source.clj",
+                               :line 111,
+                               :arglists ([parser]),
+                               :doc "Hide the tag associated with this rule.  \nWrap this combinator around the entire right-hand side.",
+                               :type :var}
+                              {:name look,
+                               :file "instaparse/combinators_source.clj",
+                               :line 99,
+                               :arglists ([parser]),
+                               :doc "Lookahead, i.e., &parser\n",
+                               :type :var}
+                              {:name neg,
+                               :file "instaparse/combinators_source.clj",
+                               :line 103,
+                               :arglists ([parser]),
+                               :doc "Negative lookahead, i.e., !parser\n",
+                               :type :var}
+                              {:name nt,
+                               :file "instaparse/combinators_source.clj",
+                               :line 95,
+                               :arglists ([s]),
+                               :doc "Refers to a non-terminal defined by the grammar map\n",
+                               :type :var}
+                              {:name opt,
+                               :file "instaparse/combinators_source.clj",
+                               :line 13,
+                               :arglists ([parser]),
+                               :doc "Optional, i.e., parser?\n",
+                               :type :var}
+                              {:name ord,
+                               :file "instaparse/combinators_source.clj",
+                               :line 44,
+                               :arglists ([] [parser1 & parsers]),
+                               :doc "Ordered choice, i.e., parser1 / parser2\n",
+                               :type :var}
+                              {:name plus,
+                               :file "instaparse/combinators_source.clj",
+                               :line 18,
+                               :arglists ([parser]),
+                               :doc "One or more, i.e., parser+\n",
+                               :type :var}
+                              {:name regexp,
+                               :file "instaparse/combinators_source.clj",
+                               :line 88,
+                               :arglists ([r]),
+                               :doc "Create a regexp terminal out of regular expression r\n",
+                               :type :var}
+                              {:name rep,
+                               :file "instaparse/combinators_source.clj",
+                               :line 28,
+                               :arglists ([m n parser]),
+                               :doc "Between m and n repetitions\n",
+                               :type :var}
+                              {:name star,
+                               :file "instaparse/combinators_source.clj",
+                               :line 23,
+                               :arglists ([parser]),
+                               :doc "Zero or more, i.e., parser*\n",
+                               :type :var}
+                              {:name string,
+                               :file "instaparse/combinators_source.clj",
+                               :line 61,
+                               :arglists ([s]),
+                               :doc "Create a string terminal out of s\n",
+                               :type :var}
+                              {:name string-ci,
+                               :file "instaparse/combinators_source.clj",
+                               :line 66,
+                               :arglists ([s]),
+                               :doc "Create a case-insensitive string terminal out of s\n",
+                               :type :var}
+                              {:name unicode-char,
+                               :file "instaparse/combinators_source.clj",
+                               :line 71,
+                               :arglists ([code-point] [lo hi]),
+                               :doc "Matches a Unicode code point or a range of code points\n",
+                               :type :var}),
+                    :doc "The combinator public API for instaparse\n"}
+                   {:name instaparse.combinators-source,
+                    :publics ({:name alt,
+                               :file "instaparse/combinators_source.clj",
+                               :line 34,
+                               :arglists ([& parsers]),
+                               :doc "Alternation, i.e., parser1 | parser2 | parser3 | ...\n",
+                               :type :var}
+                              {:name auto-whitespace,
+                               :file "instaparse/combinators_source.clj",
+                               :line 179,
+                               :arglists ([grammar
+                                           start
+                                           grammar-ws
+                                           start-ws]),
+                               :type :var}
+                              {:name auto-whitespace-parser,
+                               :file "instaparse/combinators_source.clj",
+                               :line 162,
+                               :arglists ([parser ws-parser]),
+                               :type :var}
+                              {:name cat,
+                               :file "instaparse/combinators_source.clj",
+                               :line 54,
+                               :arglists ([& parsers]),
+                               :doc "Concatenation, i.e., parser1 parser2 ...\n",
+                               :type :var}
+                              {:name Epsilon,
+                               :file "instaparse/combinators_source.clj",
+                               :line 11,
+                               :type :var}
+                              {:name hidden-tag?,
+                               :file "instaparse/combinators_source.clj",
+                               :line 118,
+                               :arglists ([parser]),
+                               :doc "Tests whether parser was created with hide-tag combinator\n",
+                               :type :var}
+                              {:name hide,
+                               :file "instaparse/combinators_source.clj",
+                               :line 107,
+                               :arglists ([parser]),
+                               :doc "Hide the result of parser, i.e., <parser>\n",
+                               :type :var}
+                              {:name hide-tag,
+                               :file "instaparse/combinators_source.clj",
+                               :line 111,
+                               :arglists ([parser]),
+                               :doc "Hide the tag associated with this rule.  \nWrap this combinator around the entire right-hand side.",
+                               :type :var}
+                              {:name look,
+                               :file "instaparse/combinators_source.clj",
+                               :line 99,
+                               :arglists ([parser]),
+                               :doc "Lookahead, i.e., &parser\n",
+                               :type :var}
+                              {:name neg,
+                               :file "instaparse/combinators_source.clj",
+                               :line 103,
+                               :arglists ([parser]),
+                               :doc "Negative lookahead, i.e., !parser\n",
+                               :type :var}
+                              {:name nt,
+                               :file "instaparse/combinators_source.clj",
+                               :line 95,
+                               :arglists ([s]),
+                               :doc "Refers to a non-terminal defined by the grammar map\n",
+                               :type :var}
+                              {:name opt,
+                               :file "instaparse/combinators_source.clj",
+                               :line 13,
+                               :arglists ([parser]),
+                               :doc "Optional, i.e., parser?\n",
+                               :type :var}
+                              {:name ord,
+                               :file "instaparse/combinators_source.clj",
+                               :line 44,
+                               :arglists ([] [parser1 & parsers]),
+                               :doc "Ordered choice, i.e., parser1 / parser2\n",
+                               :type :var}
+                              {:name plus,
+                               :file "instaparse/combinators_source.clj",
+                               :line 18,
+                               :arglists ([parser]),
+                               :doc "One or more, i.e., parser+\n",
+                               :type :var}
+                              {:name regexp,
+                               :file "instaparse/combinators_source.clj",
+                               :line 88,
+                               :arglists ([r]),
+                               :doc "Create a regexp terminal out of regular expression r\n",
+                               :type :var}
+                              {:name rep,
+                               :file "instaparse/combinators_source.clj",
+                               :line 28,
+                               :arglists ([m n parser]),
+                               :doc "Between m and n repetitions\n",
+                               :type :var}
+                              {:name star,
+                               :file "instaparse/combinators_source.clj",
+                               :line 23,
+                               :arglists ([parser]),
+                               :doc "Zero or more, i.e., parser*\n",
+                               :type :var}
+                              {:name string,
+                               :file "instaparse/combinators_source.clj",
+                               :line 61,
+                               :arglists ([s]),
+                               :doc "Create a string terminal out of s\n",
+                               :type :var}
+                              {:name string-ci,
+                               :file "instaparse/combinators_source.clj",
+                               :line 66,
+                               :arglists ([s]),
+                               :doc "Create a case-insensitive string terminal out of s\n",
+                               :type :var}
+                              {:name unhide-all,
+                               :file "instaparse/combinators_source.clj",
+                               :line 150,
+                               :arglists ([reduction-type grammar]),
+                               :doc "Recursively undoes the effect of both hide and hide-tag\n",
+                               :type :var}
+                              {:name unhide-all-content,
+                               :file "instaparse/combinators_source.clj",
+                               :line 135,
+                               :arglists ([grammar]),
+                               :doc "Recursively undoes the effect of hide on all parsers in the grammar\n",
+                               :type :var}
+                              {:name unhide-content,
+                               :file "instaparse/combinators_source.clj",
+                               :line 123,
+                               :arglists ([parser]),
+                               :doc "Recursively undoes the effect of hide on one parser\n",
+                               :type :var}
+                              {:name unhide-tags,
+                               :file "instaparse/combinators_source.clj",
+                               :line 141,
+                               :arglists ([reduction-type grammar]),
+                               :doc "Recursively undoes the effect of hide-tag\n",
+                               :type :var}
+                              {:name unicode-char,
+                               :file "instaparse/combinators_source.clj",
+                               :line 71,
+                               :arglists ([code-point] [lo hi]),
+                               :doc "Matches a Unicode code point or a range of code points\n",
+                               :type :var}),
+                    :doc "This is the underlying implementation of the various combinators.\n"}
+                   {:name instaparse.core,
+                    :publics ({:name *default-input-format*,
+                               :file "instaparse/core.clj",
+                               :line 26,
+                               :dynamic true,
+                               :type :var}
+                              {:name *default-output-format*,
+                               :file "instaparse/core.clj",
+                               :line 19,
+                               :dynamic true,
+                               :type :var}
+                              {:name add-line-and-column-info-to-metadata,
+                               :file "instaparse/line_col.clj",
+                               :line 65,
+                               :arglists ([text parse-tree]),
+                               :doc "Given a string `text` and a `parse-tree` for text, return parse tree\nwith its metadata annotated with line and column info. The info can\nthen be found in the metadata map under the keywords:\n \n:instaparse.gll/start-line, :instaparse.gll/start-column,\n:instaparse.gll/end-line, :instaparse.gll/end-column\n\nThe start is inclusive, the end is exclusive. Lines and columns are 1-based.",
+                               :type :var}
+                              {:name defparser,
+                               :file "instaparse/core.clj",
+                               :line 275,
+                               :arglists ([name grammar & {:as opts}]),
+                               :doc "Takes a string specification of a context-free grammar,\nor a string URI for a text file containing such a specification,\nor a map/vector of parser combinators, and sets a variable to a parser for that grammar.\n\nString specifications are processed at macro-time, not runtime, so this is an\nappealing alternative to (def _ (parser \"...\")) for ClojureScript users.\n\nOptional keyword arguments unique to `defparser`:\n- :instaparse.abnf/case-insensitive true",
+                               :type :macro}
+                              {:name disable-tracing!,
+                               :file "instaparse/core.clj",
+                               :line 362,
+                               :arglists ([]),
+                               :doc "Recompiles instaparse with tracing disabled.\nCall this to restore regular performance characteristics, eliminating\nthe small performance hit imposed by tracing.",
+                               :type :var}
+                              {:name enable-tracing!,
+                               :file "instaparse/core.clj",
+                               :line 352,
+                               :arglists ([]),
+                               :doc "Recompiles instaparse with tracing enabled.\nThis is called implicitly the first time you invoke a parser with\n`:trace true` so usually you will not need to call this directly.",
+                               :type :var}
+                              {:name failure?,
+                               :file "instaparse/core.clj",
+                               :line 329,
+                               :arglists ([result]),
+                               :doc "Tests whether a parse result is a failure.\n",
+                               :type :var}
+                              {:name get-failure,
+                               :file "instaparse/core.clj",
+                               :line 336,
+                               :arglists ([result]),
+                               :doc "Extracts failure object from failed parse result.\n",
+                               :type :var}
+                              {:name parse,
+                               :file "instaparse/core.clj",
+                               :line 47,
+                               :arglists ([parser
+                                           text
+                                           &
+                                           {:as options}]),
+                               :doc "Use parser to parse the text.  Returns first parse tree found\nthat completely parses the text.  If no parse tree is possible, returns\na Failure object.\n\nOptional keyword arguments:\n:start :keyword  (where :keyword is name of starting production rule)\n:partial true    (parses that don't consume the whole string are okay)\n:total true      (if parse fails, embed failure node in tree)\n:unhide <:tags or :content or :all> (for this parse, disable hiding)\n:optimize :memory   (when possible, employ strategy to use less memory)\n\nClj only:\n:trace true      (print diagnostic trace while parsing)",
+                               :type :var}
+                              {:name parser,
+                               :file "instaparse/core.clj",
+                               :line 171,
+                               :arglists ([grammar-specification
+                                           &
+                                           {:as options}]),
+                               :doc "Takes a string specification of a context-free grammar,\nor a URI for a text file containing such a specification (Clj only),\nor a map of parser combinators and returns a parser for that grammar.\n\nOptional keyword arguments:\n:input-format :ebnf\nor\n:input-format :abnf\n\n:output-format :enlive\nor\n:output-format :hiccup\n\n:start :keyword (where :keyword is name of starting production rule)\n\n:string-ci true (treat all string literals as case insensitive)\n\n:auto-whitespace (:standard or :comma)\nor\n:auto-whitespace custom-whitespace-parser\n\nClj only:\n:no-slurp true (disables use of slurp to auto-detect whether\n                input is a URI.  When using this option, input\n                must be a grammar string or grammar map.  Useful\n                for platforms where slurp is slow or not available.)",
+                               :type :var}
+                              {:name parses,
+                               :file "instaparse/core.clj",
+                               :line 98,
+                               :arglists ([parser
+                                           text
+                                           &
+                                           {:as options}]),
+                               :doc "Use parser to parse the text.  Returns lazy seq of all parse trees\nthat completely parse the text.  If no parse tree is possible, returns\n() with a Failure object attached as metadata.\n\nOptional keyword arguments:\n:start :keyword  (where :keyword is name of starting production rule)\n:partial true    (parses that don't consume the whole string are okay)\n:total true      (if parse fails, embed failure node in tree)\n:unhide <:tags or :content or :all> (for this parse, disable hiding)\n\nClj only:\n:trace true      (print diagnostic trace while parsing)",
+                               :type :var}
+                              {:name set-default-input-format!,
+                               :file "instaparse/core.clj",
+                               :line 27,
+                               :arglists ([type]),
+                               :doc "Changes the default input format.  Input should be :abnf or :ebnf\n",
+                               :type :var}
+                              {:name set-default-output-format!,
+                               :file "instaparse/core.clj",
+                               :line 20,
+                               :arglists ([type]),
+                               :doc "Changes the default output format.  Input should be :hiccup or :enlive\n",
+                               :type :var}
+                              {:name span,
+                               :file "instaparse/viz.clj",
+                               :line 4,
+                               :arglists ([tree]),
+                               :doc "Takes a subtree of the parse tree and returns a [start-index end-index] pair\nindicating the span of text parsed by this subtree.\nstart-index is inclusive and end-index is exclusive, as is customary\nwith substrings.\nReturns nil if no span metadata is attached.",
+                               :type :var}
+                              {:name transform,
+                               :file "instaparse/transform.clj",
+                               :line 48,
+                               :arglists ([transform-map parse-tree]),
+                               :doc "Takes a transform map and a parse tree (or seq of parse-trees).\nA transform map is a mapping from tags to \nfunctions that take a node's contents and return\na replacement for the node, i.e.,\n{:node-tag (fn [child1 child2 ...] node-replacement),\n :another-node-tag (fn [child1 child2 ...] node-replacement)}",
+                               :type :var}
+                              {:name visualize,
+                               :file "instaparse/viz.clj",
+                               :line 71,
+                               :arglists ([tree
+                                           &
+                                           {output-file :output-file,
+                                            options :options}]),
+                               :doc "Creates a graphviz visualization of the parse tree.\n   Optional keyword arguments:\n   :output-file :buffered-image (return a java.awt.image.BufferedImage object)\n   or\n   :output-file output-file (will save the tree image to output-file)\n\n   :options options (options passed along to rhizome)\n\nImportant: This function will only work if you have added rhizome\nto your dependencies, and installed graphviz on your system.  \nSee https://github.com/ztellman/rhizome for more information.",
+                               :type :var})}
+                   {:name instaparse.failure,
+                    :publics ({:name augment-failure,
+                               :file "instaparse/failure.clj",
+                               :line 43,
+                               :arglists ([failure text]),
+                               :doc "Adds text, line, and column info to failure object.\n",
+                               :type :var}
+                              {:name get-line,
+                               :file "instaparse/failure.clj",
+                               :line 16,
+                               :arglists ([n text]),
+                               :doc "Returns nth line of text, 1-based\n",
+                               :type :var}
+                              {:name index->line-column,
+                               :file "instaparse/failure.clj",
+                               :line 6,
+                               :arglists ([index text]),
+                               :doc "Takes an index into text, and determines the line and column info\n",
+                               :type :var}
+                              {:name marker,
+                               :file "instaparse/failure.clj",
+                               :line 32,
+                               :arglists ([text n]),
+                               :doc "Creates string with caret at nth position, 1-based\nand accounts for horizontal tabs which might change\nthe alignment of the '^' to the error location.",
+                               :type :var}
+                              {:name pprint-failure,
+                               :file "instaparse/failure.clj",
+                               :line 67,
+                               :arglists ([{:keys [line
+                                                   column
+                                                   text
+                                                   reason]}]),
+                               :doc "Takes an augmented failure object and prints the error message\n",
+                               :type :var}
+                              {:name print-reason,
+                               :file "instaparse/failure.clj",
+                               :line 51,
+                               :arglists ([r]),
+                               :doc "Provides special case for printing negative lookahead reasons\n",
+                               :type :var}),
+                    :doc "Facilities for printing and manipulating error messages.\n"}
+                   {:name instaparse.gll,
+                    :publics ({:name *diagnostic-char-lookahead*,
+                               :file "instaparse/gll.clj",
+                               :line 109,
+                               :dynamic true,
+                               :type :var}
+                              {:name *trace*,
+                               :file "instaparse/gll.clj",
+                               :line 91,
+                               :dynamic true,
+                               :type :var}
+                              {:name -full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 159,
+                               :arglists ([parser index tramp]),
+                               :type :var}
+                              {:name -parse,
+                               :file "instaparse/gll.clj",
+                               :line 134,
+                               :arglists ([parser index tramp]),
+                               :type :var}
+                              {:name alt-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 858,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name alt-parse,
+                               :file "instaparse/gll.clj",
+                               :line 852,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name attach-diagnostic-meta,
+                               :file "instaparse/gll.clj",
+                               :line 95,
+                               :arglists ([f metadata]),
+                               :type :macro}
+                              {:name bind-trace,
+                               :file "instaparse/gll.clj",
+                               :line 99,
+                               :arglists ([trace? body]),
+                               :type :macro}
+                              {:name build-node-with-meta,
+                               :file "instaparse/gll.clj",
+                               :line 990,
+                               :arglists ([node-builder
+                                           tag
+                                           content
+                                           start
+                                           end]),
+                               :type :var}
+                              {:name build-total-failure-node,
+                               :file "instaparse/gll.clj",
+                               :line 995,
+                               :arglists ([node-builder start text]),
+                               :type :var}
+                              {:name cat-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 788,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name cat-parse,
+                               :file "instaparse/gll.clj",
+                               :line 780,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name CatFullListener,
+                               :file "instaparse/gll.clj",
+                               :line 531,
+                               :arglists ([results-so-far
+                                           parser-sequence
+                                           node-key
+                                           tramp]),
+                               :type :var}
+                              {:name CatListener,
+                               :file "instaparse/gll.clj",
+                               :line 518,
+                               :arglists ([results-so-far
+                                           parser-sequence
+                                           node-key
+                                           tramp]),
+                               :type :var}
+                              {:name char-range-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 723,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name char-range-parse,
+                               :file "instaparse/gll.clj",
+                               :line 702,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name code-point->chars,
+                               :file "instaparse/gll.clj",
+                               :line 693,
+                               :arglists ([code-point]),
+                               :doc "Takes a Unicode code point, and returns a string of one or two chars.\n",
+                               :type :var}
+                              {:name dpprint,
+                               :file "instaparse/gll.clj",
+                               :line 68,
+                               :arglists ([& body]),
+                               :type :macro}
+                              {:name dprintln,
+                               :file "instaparse/gll.clj",
+                               :line 66,
+                               :arglists ([& body]),
+                               :type :macro}
+                              {:name epsilon-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 955,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name epsilon-parse,
+                               :file "instaparse/gll.clj",
+                               :line 953,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name equals-ignore-case,
+                               :file "instaparse/gll.clj",
+                               :line 641,
+                               :arglists ([s1 s2]),
+                               :type :var}
+                              {:name fail,
+                               :file "instaparse/gll.clj",
+                               :line 421,
+                               :arglists ([tramp
+                                           node-key
+                                           index
+                                           reason]),
+                               :type :var}
+                              {:name failure-type,
+                               :file "instaparse/gll.clj",
+                               :line 197,
+                               :type :var}
+                              {:name full-listener-exists?,
+                               :file "instaparse/gll.clj",
+                               :line 293,
+                               :arglists ([tramp node-key]),
+                               :doc "Tests whether node already has a listener or full-listener\n",
+                               :type :var}
+                              {:name full-result-exists?,
+                               :file "instaparse/gll.clj",
+                               :line 309,
+                               :arglists ([tramp node-key]),
+                               :doc "Tests whether node has a full-result\n",
+                               :type :var}
+                              {:name get-parser,
+                               :file "instaparse/gll.clj",
+                               :line 127,
+                               :arglists ([grammar p]),
+                               :type :var}
+                              {:name listener-exists?,
+                               :file "instaparse/gll.clj",
+                               :line 286,
+                               :arglists ([tramp node-key]),
+                               :doc "Tests whether node already has a listener\n",
+                               :type :var}
+                              {:name log,
+                               :file "instaparse/gll.clj",
+                               :line 92,
+                               :arglists ([tramp & body]),
+                               :type :macro}
+                              {:name lookahead-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 919,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name lookahead-parse,
+                               :file "instaparse/gll.clj",
+                               :line 914,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name LookListener,
+                               :file "instaparse/gll.clj",
+                               :line 508,
+                               :arglists ([node-key tramp]),
+                               :type :var}
+                              {:name make-node,
+                               :file "instaparse/gll.clj",
+                               :line 255,
+                               :arglists ([]),
+                               :type :var}
+                              {:name make-success,
+                               :file "instaparse/gll.clj",
+                               :line 244,
+                               :arglists ([result index]),
+                               :type :var}
+                              {:name make-tramp,
+                               :file "instaparse/gll.clj",
+                               :line 233,
+                               :arglists ([grammar text]
+                                          [grammar text segment]
+                                          [grammar
+                                           text
+                                           fail-index
+                                           node-builder]
+                                          [grammar
+                                           text
+                                           segment
+                                           fail-index
+                                           node-builder]),
+                               :type :var}
+                              {:name merge-meta,
+                               :file "instaparse/gll.clj",
+                               :line 1013,
+                               :arglists ([obj metamap]),
+                               :doc "A variation on with-meta that merges the existing metamap into the new metamap,\nrather than overwriting the metamap entirely.",
+                               :type :var}
+                              {:name merge-negative-listeners,
+                               :file "instaparse/gll.clj",
+                               :line 403,
+                               :type :var}
+                              {:name negative-lookahead-parse,
+                               :file "instaparse/gll.clj",
+                               :line 934,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name node-get,
+                               :file "instaparse/gll.clj",
+                               :line 316,
+                               :arglists ([tramp node-key]),
+                               :doc "Gets node if already exists, otherwise creates one\n",
+                               :type :var}
+                              {:name NodeListener,
+                               :file "instaparse/gll.clj",
+                               :line 502,
+                               :arglists ([node-key tramp]),
+                               :type :var}
+                              {:name non-terminal-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 909,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name non-terminal-parse,
+                               :file "instaparse/gll.clj",
+                               :line 904,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name opt-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 896,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name opt-parse,
+                               :file "instaparse/gll.clj",
+                               :line 890,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name ordered-alt-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 877,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name ordered-alt-parse,
+                               :file "instaparse/gll.clj",
+                               :line 864,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name parse,
+                               :file "instaparse/gll.clj",
+                               :line 978,
+                               :arglists ([grammar
+                                           start
+                                           text
+                                           partial?]),
+                               :type :var}
+                              {:name parse-total,
+                               :file "instaparse/gll.clj",
+                               :line 1042,
+                               :arglists ([grammar
+                                           start
+                                           text
+                                           partial?
+                                           node-builder]),
+                               :type :var}
+                              {:name parse-total-after-fail,
+                               :file "instaparse/gll.clj",
+                               :line 1031,
+                               :arglists ([grammar
+                                           start
+                                           text
+                                           fail-index
+                                           partial?
+                                           node-builder]),
+                               :type :var}
+                              {:name parses,
+                               :file "instaparse/gll.clj",
+                               :line 968,
+                               :arglists ([grammar
+                                           start
+                                           text
+                                           partial?]),
+                               :type :var}
+                              {:name parses-total,
+                               :file "instaparse/gll.clj",
+                               :line 1019,
+                               :arglists ([grammar
+                                           start
+                                           text
+                                           partial?
+                                           node-builder]),
+                               :type :var}
+                              {:name parses-total-after-fail,
+                               :file "instaparse/gll.clj",
+                               :line 1002,
+                               :arglists ([grammar
+                                           start
+                                           text
+                                           fail-index
+                                           partial?
+                                           node-builder]),
+                               :type :var}
+                              {:name plus-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 802,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name plus-parse,
+                               :file "instaparse/gll.clj",
+                               :line 796,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name PlusFullListener,
+                               :file "instaparse/gll.clj",
+                               :line 566,
+                               :arglists ([results-so-far
+                                           parser
+                                           prev-index
+                                           node-key
+                                           tramp]),
+                               :type :var}
+                              {:name PlusListener,
+                               :file "instaparse/gll.clj",
+                               :line 554,
+                               :arglists ([results-so-far
+                                           parser
+                                           prev-index
+                                           node-key
+                                           tramp]),
+                               :type :var}
+                              {:name PRINT,
+                               :file "instaparse/gll.clj",
+                               :line 65,
+                               :type :var}
+                              {:name PROFILE,
+                               :file "instaparse/gll.clj",
+                               :line 71,
+                               :type :var}
+                              {:name profile,
+                               :file "instaparse/gll.clj",
+                               :line 72,
+                               :arglists ([& body]),
+                               :type :macro}
+                              {:name push-full-listener,
+                               :file "instaparse/gll.clj",
+                               :line 389,
+                               :arglists ([tramp node-key listener]),
+                               :doc "Pushes a listener into the trampoline's node.\nSchedules notification to listener of all existing full results.",
+                               :type :var}
+                              {:name push-listener,
+                               :file "instaparse/gll.clj",
+                               :line 371,
+                               :arglists ([tramp node-key listener]),
+                               :doc "Pushes a listener into the trampoline's node.\nSchedules notification to listener of all existing results.\nInitiates parse if necessary",
+                               :type :var}
+                              {:name push-message,
+                               :file "instaparse/gll.clj",
+                               :line 269,
+                               :arglists ([tramp listener result]),
+                               :doc "Pushes onto stack a message to a given listener about a result\n",
+                               :type :var}
+                              {:name push-negative-listener,
+                               :file "instaparse/gll.clj",
+                               :line 405,
+                               :arglists ([tramp
+                                           creator
+                                           negative-listener]),
+                               :doc "Pushes a thunk onto the trampoline's negative-listener stack.\n",
+                               :type :var}
+                              {:name push-result,
+                               :file "instaparse/gll.clj",
+                               :line 333,
+                               :arglists ([tramp node-key result]),
+                               :doc "Pushes a result into the trampoline's node.\nCategorizes as either result or full-result.\nSchedules notification to all existing listeners of result\n(Full listeners only get notified about full results)",
+                               :type :var}
+                              {:name push-stack,
+                               :file "instaparse/gll.clj",
+                               :line 263,
+                               :arglists ([tramp item]),
+                               :doc "Pushes an item onto the trampoline's stack\n",
+                               :type :var}
+                              {:name re-match-at-front,
+                               :file "instaparse/gll.clj",
+                               :line 745,
+                               :arglists ([regexp text]),
+                               :type :var}
+                              {:name regexp-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 768,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name regexp-parse,
+                               :file "instaparse/gll.clj",
+                               :line 757,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name rep-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 822,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name rep-parse,
+                               :file "instaparse/gll.clj",
+                               :line 808,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name RepFullListener,
+                               :file "instaparse/gll.clj",
+                               :line 595,
+                               :arglists ([results-so-far
+                                           n-results-so-far
+                                           parser
+                                           m
+                                           n
+                                           prev-index
+                                           node-key
+                                           tramp]),
+                               :type :var}
+                              {:name RepListener,
+                               :file "instaparse/gll.clj",
+                               :line 581,
+                               :arglists ([results-so-far
+                                           n-results-so-far
+                                           parser
+                                           m
+                                           n
+                                           prev-index
+                                           node-key
+                                           tramp]),
+                               :type :var}
+                              {:name result-exists?,
+                               :file "instaparse/gll.clj",
+                               :line 301,
+                               :arglists ([tramp node-key]),
+                               :doc "Tests whether node has a result or full-result\n",
+                               :type :var}
+                              {:name run,
+                               :file "instaparse/gll.clj",
+                               :line 451,
+                               :arglists ([tramp]
+                                          [tramp found-result?]),
+                               :doc "Executes the stack until exhausted\n",
+                               :type :var}
+                              {:name safe-with-meta,
+                               :file "instaparse/gll.clj",
+                               :line 327,
+                               :arglists ([obj metamap]),
+                               :type :var}
+                              {:name single-char-code-at,
+                               :file "instaparse/gll.clj",
+                               :line 670,
+                               :arglists ([text index]),
+                               :doc "Returns the int value of a single char at the given index,\nassuming we're looking for up to 0xFFFF (the maximum value for a\nUTF-16 single char).",
+                               :type :var}
+                              {:name star-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 843,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name star-parse,
+                               :file "instaparse/gll.clj",
+                               :line 836,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name start-parser,
+                               :file "instaparse/gll.clj",
+                               :line 963,
+                               :arglists ([tramp parser partial?]),
+                               :type :var}
+                              {:name step,
+                               :file "instaparse/gll.clj",
+                               :line 443,
+                               :arglists ([stack]),
+                               :doc "Executes one thing on the stack (not threadsafe)\n",
+                               :type :var}
+                              {:name string-case-insensitive-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 658,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name string-case-insensitive-parse,
+                               :file "instaparse/gll.clj",
+                               :line 647,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name string-context,
+                               :file "instaparse/gll.clj",
+                               :line 114,
+                               :arglists ([text index]),
+                               :type :var}
+                              {:name string-full-parse,
+                               :file "instaparse/gll.clj",
+                               :line 629,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name string-parse,
+                               :file "instaparse/gll.clj",
+                               :line 618,
+                               :arglists ([this index tramp]),
+                               :type :var}
+                              {:name sub-sequence,
+                               :file "instaparse/gll.clj",
+                               :line 211,
+                               :arglists ([text start]
+                                          [text start end]),
+                               :doc "Like clojure.core/subs but consumes and returns a CharSequence\n",
+                               :type :var}
+                              {:name success,
+                               :file "instaparse/gll.clj",
+                               :line 417,
+                               :arglists ([tramp node-key result end]),
+                               :type :macro}
+                              {:name text->segment,
+                               :file "instaparse/gll.clj",
+                               :line 200,
+                               :arglists ([text]),
+                               :doc "Converts text to a Segment, which has fast subsequencing\n",
+                               :type :var}
+                              {:name TopListener,
+                               :file "instaparse/gll.clj",
+                               :line 612,
+                               :arglists ([tramp]),
+                               :type :var}
+                              {:name total-success?,
+                               :file "instaparse/gll.clj",
+                               :line 245,
+                               :arglists ([tramp s]),
+                               :type :var}
+                              {:name TRACE,
+                               :file "instaparse/gll.clj",
+                               :line 90,
+                               :type :var}
+                              {:name trace-or-false,
+                               :file "instaparse/gll.clj",
+                               :line 103,
+                               :arglists ([]),
+                               :type :macro}
+                              {:name unicode-code-point-at,
+                               :file "instaparse/gll.clj",
+                               :line 682,
+                               :arglists ([text index]),
+                               :doc "Returns the unicode code point representing one or two chars at\nthe given index.",
+                               :type :var}),
+                    :doc "The heart of the parsing mechanism.  Contains the trampoline structure,\nthe parsing dispatch function, the nodes where listeners are stored,\nthe different types of listeners, and the loop for executing the various\nlisteners and parse commands that are on the stack."}
+                   {:name instaparse.line-col,
+                    :publics ({:name add-line-col-spans,
+                               :file "instaparse/line_col.clj",
+                               :line 65,
+                               :arglists ([text parse-tree]),
+                               :doc "Given a string `text` and a `parse-tree` for text, return parse tree\nwith its metadata annotated with line and column info. The info can\nthen be found in the metadata map under the keywords:\n \n:instaparse.gll/start-line, :instaparse.gll/start-column,\n:instaparse.gll/end-line, :instaparse.gll/end-column\n\nThe start is inclusive, the end is exclusive. Lines and columns are 1-based.",
+                               :type :var})}
+                   {:name instaparse.macros,
+                    :publics ({:name defclone,
+                               :file "instaparse/macros.clj",
+                               :line 3,
+                               :arglists ([here there]),
+                               :type :macro}
+                              {:name set-global-var!,
+                               :file "instaparse/macros.clj",
+                               :line 18,
+                               :arglists ([v value]),
+                               :type :macro})}
+                   {:name instaparse.print,
+                    :publics ({:name char-range->str,
+                               :file "instaparse/print.clj",
+                               :line 36,
+                               :arglists ([{:keys [lo hi]}]),
+                               :type :var}
+                              {:name combinators->str,
+                               :file "instaparse/print.clj",
+                               :line 53,
+                               :arglists ([p]
+                                          [{:keys [parser
+                                                   parser1
+                                                   parser2
+                                                   parsers
+                                                   tag],
+                                            :as p}
+                                           hidden?]),
+                               :doc "Stringifies a parser built from combinators\n",
+                               :type :var}
+                              {:name paren-for-compound,
+                               :file "instaparse/print.clj",
+                               :line 13,
+                               :type :var}
+                              {:name paren-for-tags,
+                               :file "instaparse/print.clj",
+                               :line 8,
+                               :arglists ([tag-set hidden? parser]),
+                               :type :var}
+                              {:name Parser->str,
+                               :file "instaparse/print.clj",
+                               :line 94,
+                               :arglists ([{grammar :grammar,
+                                            start :start-production}]),
+                               :doc "Takes a Parser object, i.e., something with a grammar map and a start \nproduction keyword, and stringifies it.",
+                               :type :var}
+                              {:name regexp->str,
+                               :file "instaparse/print.clj",
+                               :line 27,
+                               :arglists ([r]),
+                               :type :var}
+                              {:name regexp-replace,
+                               :file "instaparse/print.clj",
+                               :line 16,
+                               :arglists ([s]),
+                               :doc "Replaces whitespace characters with escape sequences for better printing\n",
+                               :type :var}
+                              {:name rule->str,
+                               :file "instaparse/print.clj",
+                               :line 82,
+                               :arglists ([non-terminal parser]),
+                               :doc "Takes a non-terminal symbol and a parser built from combinators,\nand returns a string for the rule.",
+                               :type :var}),
+                    :doc "Facilities for taking parsers and grammars, and converting them to strings.\nUsed for pretty-printing."}
+                   {:name instaparse.reduction,
+                    :publics ({:name apply-reduction,
+                               :file "instaparse/reduction.clj",
+                               :line 39,
+                               :arglists ([f result]),
+                               :type :var}
+                              {:name apply-standard-reductions,
+                               :file "instaparse/reduction.clj",
+                               :line 48,
+                               :arglists ([grammar]
+                                          [reduction-type grammar]),
+                               :type :var}
+                              {:name EnliveNonTerminalReduction,
+                               :file "instaparse/reduction.clj",
+                               :line 24,
+                               :arglists ([key]),
+                               :type :var}
+                              {:name HiccupNonTerminalReduction,
+                               :file "instaparse/reduction.clj",
+                               :line 21,
+                               :arglists ([key]),
+                               :type :var}
+                              {:name node-builders,
+                               :file "instaparse/reduction.clj",
+                               :line 31,
+                               :type :var}
+                              {:name raw-non-terminal-reduction,
+                               :file "instaparse/reduction.clj",
+                               :line 19,
+                               :type :var}
+                              {:name red,
+                               :file "instaparse/reduction.clj",
+                               :line 15,
+                               :arglists ([parser f]),
+                               :type :var}
+                              {:name reduction-types,
+                               :file "instaparse/reduction.clj",
+                               :line 27,
+                               :type :var}
+                              {:name singleton?,
+                               :file "instaparse/reduction.clj",
+                               :line 7,
+                               :arglists ([s]),
+                               :type :var}
+                              {:name standard-non-terminal-reduction,
+                               :file "instaparse/reduction.clj",
+                               :line 37,
+                               :type :var})}
+                   {:name instaparse.repeat,
+                    :publics ({:name empty-result?,
+                               :file "instaparse/repeat.clj",
+                               :line 12,
+                               :arglists ([result]),
+                               :type :var}
+                              {:name failure-signal,
+                               :file "instaparse/repeat.clj",
+                               :line 17,
+                               :type :var}
+                              {:name get-end,
+                               :file "instaparse/repeat.clj",
+                               :line 19,
+                               :arglists ([parse] [parse index]),
+                               :type :var}
+                              {:name parse-from-index,
+                               :file "instaparse/repeat.clj",
+                               :line 29,
+                               :arglists ([grammar
+                                           initial-parser
+                                           text
+                                           segment
+                                           index]),
+                               :type :var}
+                              {:name repeat-parse,
+                               :file "instaparse/repeat.clj",
+                               :line 125,
+                               :arglists ([grammar
+                                           initial-parser
+                                           output-format
+                                           text]
+                                          [grammar
+                                           initial-parser
+                                           output-format
+                                           root-tag
+                                           text]),
+                               :type :var}
+                              {:name repeat-parse-enlive,
+                               :file "instaparse/repeat.clj",
+                               :line 78,
+                               :arglists ([grammar
+                                           initial-parser
+                                           root-tag
+                                           text
+                                           segment]
+                                          [grammar
+                                           initial-parser
+                                           root-tag
+                                           text
+                                           segment
+                                           index]),
+                               :type :var}
+                              {:name repeat-parse-hiccup,
+                               :file "instaparse/repeat.clj",
+                               :line 54,
+                               :arglists ([grammar
+                                           initial-parser
+                                           root-tag
+                                           text
+                                           segment]
+                                          [grammar
+                                           initial-parser
+                                           root-tag
+                                           text
+                                           segment
+                                           index]),
+                               :type :var}
+                              {:name repeat-parse-no-tag,
+                               :file "instaparse/repeat.clj",
+                               :line 102,
+                               :arglists ([grammar
+                                           initial-parser
+                                           text
+                                           segment]
+                                          [grammar
+                                           initial-parser
+                                           text
+                                           segment
+                                           index]),
+                               :type :var}
+                              {:name repeat-parse-with-header,
+                               :file "instaparse/repeat.clj",
+                               :line 135,
+                               :arglists ([grammar
+                                           header-parser
+                                           repeating-parser
+                                           output-format
+                                           root-tag
+                                           text]),
+                               :type :var}
+                              {:name select-parse,
+                               :file "instaparse/repeat.clj",
+                               :line 34,
+                               :arglists ([grammar
+                                           initial-parser
+                                           text
+                                           segment
+                                           index
+                                           parses]),
+                               :doc "Returns either:\n[a-parse end-index a-list-of-valid-follow-up-parses]\n[a-parse end-index nil] (successfully reached end of text)\nnil (hit a dead-end with this strategy)",
+                               :type :var}
+                              {:name try-repeating-parse-strategy,
+                               :file "instaparse/repeat.clj",
+                               :line 187,
+                               :arglists ([parser
+                                           text
+                                           start-production]),
+                               :type :var}
+                              {:name try-repeating-parse-strategy-with-header,
+                               :file "instaparse/repeat.clj",
+                               :line 171,
+                               :arglists ([grammar
+                                           text
+                                           start-production
+                                           start-rule
+                                           output-format]),
+                               :type :var}
+                              {:name used-memory-optimization?,
+                               :file "instaparse/repeat.clj",
+                               :line 218,
+                               :arglists ([tree]),
+                               :type :var})}
+                   {:name instaparse.transform,
+                    :publics ({:name map-preserving-meta,
+                               :file "instaparse/transform.clj",
+                               :line 6,
+                               :arglists ([f l]),
+                               :type :var}
+                              {:name merge-meta,
+                               :file "instaparse/transform.clj",
+                               :line 9,
+                               :arglists ([obj metamap]),
+                               :doc "This variation of the merge-meta in gll does nothing if obj is not\nsomething that can have a metamap attached.",
+                               :type :var}
+                              {:name transform,
+                               :file "instaparse/transform.clj",
+                               :line 48,
+                               :arglists ([transform-map parse-tree]),
+                               :doc "Takes a transform map and a parse tree (or seq of parse-trees).\nA transform map is a mapping from tags to \nfunctions that take a node's contents and return\na replacement for the node, i.e.,\n{:node-tag (fn [child1 child2 ...] node-replacement),\n :another-node-tag (fn [child1 child2 ...] node-replacement)}",
+                               :type :var}),
+                    :doc "Functions to transform parse trees\n"}
+                   {:name instaparse.util,
+                    :publics ({:name throw-illegal-argument-exception,
+                               :file "instaparse/util.clj",
+                               :line 12,
+                               :arglists ([& message]),
+                               :type :var}
+                              {:name throw-runtime-exception,
+                               :file "instaparse/util.clj",
+                               :line 5,
+                               :arglists ([& message]),
+                               :type :var})}
+                   {:name instaparse.viz,
+                    :publics ({:name fake-root,
+                               :file "instaparse/viz.clj",
+                               :line 60,
+                               :arglists ([children]),
+                               :doc "Create a root for a rootless tree\n",
+                               :type :var}
+                              {:name rhizome-newline,
+                               :file "instaparse/viz.clj",
+                               :line 17,
+                               :type :var}
+                              {:name span,
+                               :file "instaparse/viz.clj",
+                               :line 4,
+                               :arglists ([tree]),
+                               :doc "Takes a subtree of the parse tree and returns a [start-index end-index] pair\nindicating the span of text parsed by this subtree.\nstart-index is inclusive and end-index is exclusive, as is customary\nwith substrings.\nReturns nil if no span metadata is attached.",
+                               :type :var}
+                              {:name tree-type,
+                               :file "instaparse/viz.clj",
+                               :line 51,
+                               :arglists ([tree]),
+                               :type :var}
+                              {:name tree-viz,
+                               :file "instaparse/viz.clj",
+                               :line 71,
+                               :arglists ([tree
+                                           &
+                                           {output-file :output-file,
+                                            options :options}]),
+                               :doc "Creates a graphviz visualization of the parse tree.\n   Optional keyword arguments:\n   :output-file :buffered-image (return a java.awt.image.BufferedImage object)\n   or\n   :output-file output-file (will save the tree image to output-file)\n\n   :options options (options passed along to rhizome)\n\nImportant: This function will only work if you have added rhizome\nto your dependencies, and installed graphviz on your system.  \nSee https://github.com/ztellman/rhizome for more information.",
+                               :type :var})}),
+            "cljs" ({:name instaparse.abnf,
+                     :doc "This is the context free grammar that recognizes ABNF notation.\n",
+                     :publics ({:name *case-insensitive*,
+                                :file "instaparse/abnf.cljc",
+                                :line 16,
+                                :dynamic true,
+                                :doc "This is normally set to false, in which case the non-terminals\nare treated as case-sensitive, which is NOT the norm\nfor ABNF grammars. If you really want case-insensitivity,\nbind this to true, in which case all non-terminals\nwill be converted to upper-case internally (which\nyou'll have to keep in mind when transforming).",
+                                :type :var}
+                               {:name abnf,
+                                :file "instaparse/abnf.cljc",
+                                :line 240,
+                                :arglists ([spec & {:as opts}]),
+                                :doc "Takes an ABNF grammar specification string and returns the combinator version.\nIf you give it the right-hand side of a rule, it will return the combinator equivalent.\nIf you give it a series of rules, it will give you back a grammar map.\nUseful for combining with other combinators.",
+                                :type :var}
+                               {:name abnf-core,
+                                :file "instaparse/abnf.cljc",
+                                :line 25,
+                                :type :var}
+                               {:name abnf-grammar-clj-only,
+                                :file "instaparse/abnf.cljc",
+                                :line 88,
+                                :type :var}
+                               {:name abnf-grammar-cljs-only,
+                                :file "instaparse/abnf.cljc",
+                                :line 97,
+                                :type :var}
+                               {:name abnf-grammar-common,
+                                :file "instaparse/abnf.cljc",
+                                :line 47,
+                                :type :var}
+                               {:name abnf-parser,
+                                :file "instaparse/abnf.cljc",
+                                :line 132,
+                                :type :var}
+                               {:name abnf-transformer,
+                                :file "instaparse/abnf.cljc",
+                                :line 182,
+                                :type :var}
+                               {:name alt-preserving-hide-tag,
+                                :file "instaparse/abnf.cljc",
+                                :line 162,
+                                :arglists ([p1 p2]),
+                                :type :var}
+                               {:name build-parser,
+                                :file "instaparse/abnf.cljc",
+                                :line 258,
+                                :arglists ([spec output-format]),
+                                :type :var}
+                               {:name get-char-combinator,
+                                :file "instaparse/abnf.cljc",
+                                :line 134,
+                                :arglists ([& nums]),
+                                :type :var}
+                               {:name hide-tag?,
+                                :file "instaparse/abnf.cljc",
+                                :line 157,
+                                :arglists ([p]),
+                                :doc "Tests whether parser was constructed with hide-tag\n",
+                                :type :var}
+                               {:name merge-core,
+                                :file "instaparse/abnf.cljc",
+                                :line 150,
+                                :arglists ([grammar-map]),
+                                :doc "Merges abnf-core map in with parsed grammar map\n",
+                                :type :var}
+                               {:name parse-int,
+                                :file "instaparse/abnf.cljc",
+                                :line 180,
+                                :type :var}
+                               {:name precompile-cljs-grammar,
+                                :file "instaparse/abnf.clj",
+                                :line 107,
+                                :arglists ([]),
+                                :type :macro}
+                               {:name project,
+                                :file "instaparse/abnf.cljc",
+                                :line 142,
+                                :arglists ([m ks]),
+                                :doc "Restricts map to certain keys\n",
+                                :type :var}
+                               {:name rules->grammar-map,
+                                :file "instaparse/abnf.cljc",
+                                :line 236,
+                                :arglists ([rules]),
+                                :type :var})}
+                    {:name instaparse.auto-flatten-seq,
+                     :publics ({:name advance,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 64,
+                                :arglists ([v index]),
+                                :type :var}
+                               {:name afs?,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 287,
+                                :arglists ([s]),
+                                :type :var}
+                               {:name auto-flatten-seq,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 278,
+                                :arglists ([v]),
+                                :type :var}
+                               {:name ConjFlat,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 7,
+                                :type :protocol,
+                                :members ({:name cached?,
+                                           :arglists ([self]),
+                                           :type :var}
+                                          {:name conj-flat,
+                                           :arglists ([self obj]),
+                                           :type :var})}
+                               {:name convert-afs-to-vec,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 510,
+                                :arglists ([afs]),
+                                :type :var}
+                               {:name delve,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 57,
+                                :arglists ([v index]),
+                                :type :var}
+                               {:name EMPTY,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 285,
+                                :type :var}
+                               {:name flat-seq,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 76,
+                                :arglists ([v] [v index]),
+                                :type :var}
+                               {:name flat-vec,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 305,
+                                :arglists ([v]),
+                                :doc "Turns deep vector (like the vector inside of FlattenOnDemandVector) into a flat vec\n",
+                                :type :var}
+                               {:name flat-vec-helper,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 297,
+                                :arglists ([acc v]),
+                                :type :var}
+                               {:name GetVec,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 310,
+                                :type :protocol,
+                                :members ({:name get-vec,
+                                           :arglists ([self]),
+                                           :type :var})}
+                               {:name hash-conj,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 29,
+                                :arglists ([unmixed-hash item]),
+                                :doc "Returns the hash code, consistent with =, for an external ordered\ncollection implementing Iterable.\nSee http://clojure.org/data_structures#hash for full algorithms.",
+                                :type :var}
+                               {:name hash-ordered-coll-without-mix,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 260,
+                                :arglists ([coll]
+                                           [existing-unmixed-hash
+                                            coll]),
+                                :doc "Returns the partially calculated hash code, still requires a call to mix-collection-hash\n",
+                                :type :var}
+                               {:name threshold,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 5,
+                                :type :var}
+                               {:name true-count,
+                                :file "instaparse/auto_flatten_seq.cljc",
+                                :line 290,
+                                :arglists ([v]),
+                                :type :var})}
+                    {:name instaparse.cfg,
+                     :doc "This is the context free grammar that recognizes context free grammars.\n",
+                     :publics ({:name *case-insensitive-literals*,
+                                :file "instaparse/cfg.cljc",
+                                :line 15,
+                                :dynamic true,
+                                :doc "Sets whether all string literal terminals in a built grammar\nwill be treated as case insensitive.\n\n`true`: case-insensitive\n`false`: case-sensitive\n`:default`: case-sensitive for EBNF, case-insensitive for ABNF",
+                                :type :var}
+                               {:name build-parser,
+                                :file "instaparse/cfg.cljc",
+                                :line 295,
+                                :arglists ([spec output-format]),
+                                :type :var}
+                               {:name build-parser-from-combinators,
+                                :file "instaparse/cfg.cljc",
+                                :line 307,
+                                :arglists ([grammar-map
+                                            output-format
+                                            start-production]),
+                                :type :var}
+                               {:name build-rule,
+                                :file "instaparse/cfg.cljc",
+                                :line 248,
+                                :arglists ([tree]),
+                                :doc "Convert one parsed rule from the grammar into combinators\n",
+                                :type :var}
+                               {:name cfg,
+                                :file "instaparse/cfg.cljc",
+                                :line 53,
+                                :type :var}
+                               {:name check-grammar,
+                                :file "instaparse/cfg.cljc",
+                                :line 284,
+                                :arglists ([grammar-map]),
+                                :doc "Throw error if grammar uses any invalid non-terminals in its productions\n",
+                                :type :var}
+                               {:name content,
+                                :file "instaparse/cfg.cljc",
+                                :line 169,
+                                :type :var}
+                               {:name contents,
+                                :file "instaparse/cfg.cljc",
+                                :line 168,
+                                :type :var}
+                               {:name double-quoted-regexp,
+                                :file "instaparse/cfg.cljc",
+                                :line 46,
+                                :type :var}
+                               {:name double-quoted-string,
+                                :file "instaparse/cfg.cljc",
+                                :line 45,
+                                :type :var}
+                               {:name ebnf,
+                                :file "instaparse/cfg.cljc",
+                                :line 315,
+                                :arglists ([spec & {:as opts}]),
+                                :doc "Takes an EBNF grammar specification string and returns the combinator version.\nIf you give it the right-hand side of a rule, it will return the combinator equivalent.\nIf you give it a series of rules, it will give you back a grammar map.\nUseful for combining with other combinators.",
+                                :type :var}
+                               {:name escape,
+                                :file "instaparse/cfg.cljc",
+                                :line 173,
+                                :arglists ([s]),
+                                :doc "Converts escaped single-quotes to unescaped, and unescaped double-quotes to escaped\n",
+                                :type :var}
+                               {:name inside-comment,
+                                :file "instaparse/cfg.cljc",
+                                :line 47,
+                                :type :var}
+                               {:name opt-whitespace,
+                                :file "instaparse/cfg.cljc",
+                                :line 51,
+                                :type :var}
+                               {:name process-regexp,
+                                :file "instaparse/cfg.cljc",
+                                :line 232,
+                                :arglists ([s]),
+                                :doc "Converts single quoted regexp to double-quoted\n",
+                                :type :var}
+                               {:name process-string,
+                                :file "instaparse/cfg.cljc",
+                                :line 220,
+                                :arglists ([s]),
+                                :doc "Converts single quoted string to double-quoted\n",
+                                :type :var}
+                               {:name regex-doc,
+                                :file "instaparse/cfg.cljc",
+                                :line 37,
+                                :arglists ([pattern-str comment]),
+                                :doc "Adds a comment to a Clojure regex, or no-op in ClojureScript\n",
+                                :type :var}
+                               {:name safe-read-string,
+                                :file "instaparse/cfg.cljc",
+                                :line 210,
+                                :arglists ([s]),
+                                :type :var}
+                               {:name seq-nt,
+                                :file "instaparse/cfg.cljc",
+                                :line 273,
+                                :arglists ([parser]),
+                                :doc "Returns a sequence of all non-terminals in a parser built from combinators.\n",
+                                :type :var}
+                               {:name single-quoted-regexp,
+                                :file "instaparse/cfg.cljc",
+                                :line 44,
+                                :type :var}
+                               {:name single-quoted-string,
+                                :file "instaparse/cfg.cljc",
+                                :line 43,
+                                :type :var}
+                               {:name string+,
+                                :file "instaparse/cfg.cljc",
+                                :line 24,
+                                :arglists ([s ci-by-default?]),
+                                :doc "Returns a string combinator that may be case-insensntive, based\non (in priority order):\n\n1) the value of `*case-insensitive-literals*`, if it has been\noverridden to a boolean\n2) the supplied `ci-by-default?` parameter",
+                                :type :var}
+                               {:name tag,
+                                :file "instaparse/cfg.cljc",
+                                :line 167,
+                                :type :var}
+                               {:name ws,
+                                :file "instaparse/cfg.cljc",
+                                :line 49,
+                                :type :var})}
+                    {:name instaparse.combinators,
+                     :doc "The combinator public API for instaparse\n",
+                     :publics ({:name abnf,
+                                :file "instaparse/combinators.cljc",
+                                :line 33,
+                                :type :var}
+                               {:name alt,
+                                :file "instaparse/combinators.cljc",
+                                :line 19,
+                                :type :var}
+                               {:name cat,
+                                :file "instaparse/combinators.cljc",
+                                :line 21,
+                                :type :var}
+                               {:name ebnf,
+                                :file "instaparse/combinators.cljc",
+                                :line 32,
+                                :type :var}
+                               {:name Epsilon,
+                                :file "instaparse/combinators.cljc",
+                                :line 14,
+                                :type :var}
+                               {:name hide,
+                                :file "instaparse/combinators.cljc",
+                                :line 29,
+                                :type :var}
+                               {:name hide-tag,
+                                :file "instaparse/combinators.cljc",
+                                :line 30,
+                                :type :var}
+                               {:name look,
+                                :file "instaparse/combinators.cljc",
+                                :line 27,
+                                :type :var}
+                               {:name neg,
+                                :file "instaparse/combinators.cljc",
+                                :line 28,
+                                :type :var}
+                               {:name nt,
+                                :file "instaparse/combinators.cljc",
+                                :line 26,
+                                :type :var}
+                               {:name opt,
+                                :file "instaparse/combinators.cljc",
+                                :line 15,
+                                :type :var}
+                               {:name ord,
+                                :file "instaparse/combinators.cljc",
+                                :line 20,
+                                :type :var}
+                               {:name plus,
+                                :file "instaparse/combinators.cljc",
+                                :line 16,
+                                :type :var}
+                               {:name regexp,
+                                :file "instaparse/combinators.cljc",
+                                :line 25,
+                                :type :var}
+                               {:name rep,
+                                :file "instaparse/combinators.cljc",
+                                :line 18,
+                                :type :var}
+                               {:name star,
+                                :file "instaparse/combinators.cljc",
+                                :line 17,
+                                :type :var}
+                               {:name string,
+                                :file "instaparse/combinators.cljc",
+                                :line 22,
+                                :type :var}
+                               {:name string-ci,
+                                :file "instaparse/combinators.cljc",
+                                :line 23,
+                                :type :var}
+                               {:name unicode-char,
+                                :file "instaparse/combinators.cljc",
+                                :line 24,
+                                :type :var})}
+                    {:name instaparse.combinators-source,
+                     :doc "This is the underlying implementation of the various combinators.\n",
+                     :publics ({:name alt,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 34,
+                                :arglists ([& parsers]),
+                                :doc "Alternation, i.e., parser1 | parser2 | parser3 | ...\n",
+                                :type :var}
+                               {:name auto-whitespace,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 179,
+                                :arglists ([grammar
+                                            start
+                                            grammar-ws
+                                            start-ws]),
+                                :type :var}
+                               {:name auto-whitespace-parser,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 162,
+                                :arglists ([parser ws-parser]),
+                                :type :var}
+                               {:name cat,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 54,
+                                :arglists ([& parsers]),
+                                :doc "Concatenation, i.e., parser1 parser2 ...\n",
+                                :type :var}
+                               {:name Epsilon,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 11,
+                                :type :var}
+                               {:name hidden-tag?,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 118,
+                                :arglists ([parser]),
+                                :doc "Tests whether parser was created with hide-tag combinator\n",
+                                :type :var}
+                               {:name hide,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 107,
+                                :arglists ([parser]),
+                                :doc "Hide the result of parser, i.e., <parser>\n",
+                                :type :var}
+                               {:name hide-tag,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 111,
+                                :arglists ([parser]),
+                                :doc "Hide the tag associated with this rule.  \nWrap this combinator around the entire right-hand side.",
+                                :type :var}
+                               {:name look,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 99,
+                                :arglists ([parser]),
+                                :doc "Lookahead, i.e., &parser\n",
+                                :type :var}
+                               {:name neg,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 103,
+                                :arglists ([parser]),
+                                :doc "Negative lookahead, i.e., !parser\n",
+                                :type :var}
+                               {:name nt,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 95,
+                                :arglists ([s]),
+                                :doc "Refers to a non-terminal defined by the grammar map\n",
+                                :type :var}
+                               {:name opt,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 13,
+                                :arglists ([parser]),
+                                :doc "Optional, i.e., parser?\n",
+                                :type :var}
+                               {:name ord,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 44,
+                                :arglists ([] [parser1 & parsers]),
+                                :doc "Ordered choice, i.e., parser1 / parser2\n",
+                                :type :var}
+                               {:name plus,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 18,
+                                :arglists ([parser]),
+                                :doc "One or more, i.e., parser+\n",
+                                :type :var}
+                               {:name regexp,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 88,
+                                :arglists ([r]),
+                                :doc "Create a regexp terminal out of regular expression r\n",
+                                :type :var}
+                               {:name rep,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 28,
+                                :arglists ([m n parser]),
+                                :doc "Between m and n repetitions\n",
+                                :type :var}
+                               {:name star,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 23,
+                                :arglists ([parser]),
+                                :doc "Zero or more, i.e., parser*\n",
+                                :type :var}
+                               {:name string,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 61,
+                                :arglists ([s]),
+                                :doc "Create a string terminal out of s\n",
+                                :type :var}
+                               {:name string-ci,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 66,
+                                :arglists ([s]),
+                                :doc "Create a case-insensitive string terminal out of s\n",
+                                :type :var}
+                               {:name unhide-all,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 150,
+                                :arglists ([reduction-type grammar]),
+                                :doc "Recursively undoes the effect of both hide and hide-tag\n",
+                                :type :var}
+                               {:name unhide-all-content,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 135,
+                                :arglists ([grammar]),
+                                :doc "Recursively undoes the effect of hide on all parsers in the grammar\n",
+                                :type :var}
+                               {:name unhide-content,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 123,
+                                :arglists ([parser]),
+                                :doc "Recursively undoes the effect of hide on one parser\n",
+                                :type :var}
+                               {:name unhide-tags,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 141,
+                                :arglists ([reduction-type grammar]),
+                                :doc "Recursively undoes the effect of hide-tag\n",
+                                :type :var}
+                               {:name unicode-char,
+                                :file "instaparse/combinators_source.cljc",
+                                :line 71,
+                                :arglists ([code-point] [lo hi]),
+                                :doc "Matches a Unicode code point or a range of code points\n",
+                                :type :var})}
+                    {:name instaparse.core,
+                     :publics ({:name *default-input-format*,
+                                :file "instaparse/core.cljc",
+                                :line 26,
+                                :dynamic true,
+                                :type :var}
+                               {:name *default-output-format*,
+                                :file "instaparse/core.cljc",
+                                :line 19,
+                                :dynamic true,
+                                :type :var}
+                               {:name add-line-and-column-info-to-metadata,
+                                :file "instaparse/core.cljc",
+                                :line 373,
+                                :type :var}
+                               {:name enable-tracing!,
+                                :file "instaparse/core.cljc",
+                                :line 33,
+                                :type :var}
+                               {:name failure?,
+                                :file "instaparse/core.cljc",
+                                :line 329,
+                                :arglists ([result]),
+                                :doc "Tests whether a parse result is a failure.\n",
+                                :type :var}
+                               {:name get-failure,
+                                :file "instaparse/core.cljc",
+                                :line 336,
+                                :arglists ([result]),
+                                :doc "Extracts failure object from failed parse result.\n",
+                                :type :var}
+                               {:name parse,
+                                :file "instaparse/core.cljc",
+                                :line 47,
+                                :arglists ([parser
+                                            text
+                                            &
+                                            {:as options}]),
+                                :doc "Use parser to parse the text.  Returns first parse tree found\nthat completely parses the text.  If no parse tree is possible, returns\na Failure object.\n\nOptional keyword arguments:\n:start :keyword  (where :keyword is name of starting production rule)\n:partial true    (parses that don't consume the whole string are okay)\n:total true      (if parse fails, embed failure node in tree)\n:unhide <:tags or :content or :all> (for this parse, disable hiding)\n:optimize :memory   (when possible, employ strategy to use less memory)\n\nClj only:\n:trace true      (print diagnostic trace while parsing)",
+                                :type :var}
+                               {:name parser,
+                                :file "instaparse/core.cljc",
+                                :line 171,
+                                :arglists ([grammar-specification
+                                            &
+                                            {:as options}]),
+                                :doc "Takes a string specification of a context-free grammar,\nor a URI for a text file containing such a specification (Clj only),\nor a map of parser combinators and returns a parser for that grammar.\n\nOptional keyword arguments:\n:input-format :ebnf\nor\n:input-format :abnf\n\n:output-format :enlive\nor\n:output-format :hiccup\n\n:start :keyword (where :keyword is name of starting production rule)\n\n:string-ci true (treat all string literals as case insensitive)\n\n:auto-whitespace (:standard or :comma)\nor\n:auto-whitespace custom-whitespace-parser\n\nClj only:\n:no-slurp true (disables use of slurp to auto-detect whether\n                input is a URI.  When using this option, input\n                must be a grammar string or grammar map.  Useful\n                for platforms where slurp is slow or not available.)",
+                                :type :var}
+                               {:name parses,
+                                :file "instaparse/core.cljc",
+                                :line 98,
+                                :arglists ([parser
+                                            text
+                                            &
+                                            {:as options}]),
+                                :doc "Use parser to parse the text.  Returns lazy seq of all parse trees\nthat completely parse the text.  If no parse tree is possible, returns\n() with a Failure object attached as metadata.\n\nOptional keyword arguments:\n:start :keyword  (where :keyword is name of starting production rule)\n:partial true    (parses that don't consume the whole string are okay)\n:total true      (if parse fails, embed failure node in tree)\n:unhide <:tags or :content or :all> (for this parse, disable hiding)\n\nClj only:\n:trace true      (print diagnostic trace while parsing)",
+                                :type :var}
+                               {:name set-default-input-format!,
+                                :file "instaparse/core.cljc",
+                                :line 27,
+                                :arglists ([type]),
+                                :doc "Changes the default input format.  Input should be :abnf or :ebnf\n",
+                                :type :var}
+                               {:name set-default-output-format!,
+                                :file "instaparse/core.cljc",
+                                :line 20,
+                                :arglists ([type]),
+                                :doc "Changes the default output format.  Input should be :hiccup or :enlive\n",
+                                :type :var}
+                               {:name span,
+                                :file "instaparse/core.cljc",
+                                :line 375,
+                                :type :var}
+                               {:name transform,
+                                :file "instaparse/core.cljc",
+                                :line 371,
+                                :type :var})}
+                    {:name instaparse.failure,
+                     :doc "Facilities for printing and manipulating error messages.\n",
+                     :publics ({:name augment-failure,
+                                :file "instaparse/failure.cljc",
+                                :line 43,
+                                :arglists ([failure text]),
+                                :doc "Adds text, line, and column info to failure object.\n",
+                                :type :var}
+                               {:name get-line,
+                                :file "instaparse/failure.cljc",
+                                :line 22,
+                                :arglists ([n text]),
+                                :type :var}
+                               {:name index->line-column,
+                                :file "instaparse/failure.cljc",
+                                :line 6,
+                                :arglists ([index text]),
+                                :doc "Takes an index into text, and determines the line and column info\n",
+                                :type :var}
+                               {:name marker,
+                                :file "instaparse/failure.cljc",
+                                :line 32,
+                                :arglists ([text n]),
+                                :doc "Creates string with caret at nth position, 1-based\nand accounts for horizontal tabs which might change\nthe alignment of the '^' to the error location.",
+                                :type :var}
+                               {:name pprint-failure,
+                                :file "instaparse/failure.cljc",
+                                :line 67,
+                                :arglists ([{:keys [line
+                                                    column
+                                                    text
+                                                    reason]}]),
+                                :doc "Takes an augmented failure object and prints the error message\n",
+                                :type :var}
+                               {:name print-reason,
+                                :file "instaparse/failure.cljc",
+                                :line 51,
+                                :arglists ([r]),
+                                :doc "Provides special case for printing negative lookahead reasons\n",
+                                :type :var})}
+                    {:name instaparse.gll,
+                     :doc "The heart of the parsing mechanism.  Contains the trampoline structure,\nthe parsing dispatch function, the nodes where listeners are stored,\nthe different types of listeners, and the loop for executing the various\nlisteners and parse commands that are on the stack.",
+                     :publics ({:name *diagnostic-char-lookahead*,
+                                :file "instaparse/gll.cljc",
+                                :line 109,
+                                :dynamic true,
+                                :type :var}
+                               {:name -full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 159,
+                                :arglists ([parser index tramp]),
+                                :type :var}
+                               {:name -parse,
+                                :file "instaparse/gll.cljc",
+                                :line 134,
+                                :arglists ([parser index tramp]),
+                                :type :var}
+                               {:name alt-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 858,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name alt-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 852,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name attach-diagnostic-meta,
+                                :file "instaparse/gll.clj",
+                                :line 95,
+                                :arglists ([f metadata]),
+                                :type :macro}
+                               {:name bind-trace,
+                                :file "instaparse/gll.clj",
+                                :line 99,
+                                :arglists ([trace? body]),
+                                :type :macro}
+                               {:name build-node-with-meta,
+                                :file "instaparse/gll.cljc",
+                                :line 990,
+                                :arglists ([node-builder
+                                            tag
+                                            content
+                                            start
+                                            end]),
+                                :type :var}
+                               {:name build-total-failure-node,
+                                :file "instaparse/gll.cljc",
+                                :line 995,
+                                :arglists ([node-builder start text]),
+                                :type :var}
+                               {:name cat-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 788,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name cat-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 780,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name CatFullListener,
+                                :file "instaparse/gll.cljc",
+                                :line 531,
+                                :arglists ([results-so-far
+                                            parser-sequence
+                                            node-key
+                                            tramp]),
+                                :type :var}
+                               {:name CatListener,
+                                :file "instaparse/gll.cljc",
+                                :line 518,
+                                :arglists ([results-so-far
+                                            parser-sequence
+                                            node-key
+                                            tramp]),
+                                :type :var}
+                               {:name char-range-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 723,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name char-range-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 702,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name code-point->chars,
+                                :file "instaparse/gll.cljc",
+                                :line 698,
+                                :arglists ([code-point]),
+                                :type :var}
+                               {:name dpprint,
+                                :file "instaparse/gll.clj",
+                                :line 68,
+                                :arglists ([& body]),
+                                :type :macro}
+                               {:name dprintln,
+                                :file "instaparse/gll.clj",
+                                :line 66,
+                                :arglists ([& body]),
+                                :type :macro}
+                               {:name epsilon-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 955,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name epsilon-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 953,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name equals-ignore-case,
+                                :file "instaparse/gll.cljc",
+                                :line 644,
+                                :arglists ([s1 s2]),
+                                :type :var}
+                               {:name fail,
+                                :file "instaparse/gll.cljc",
+                                :line 421,
+                                :arglists ([tramp
+                                            node-key
+                                            index
+                                            reason]),
+                                :type :var}
+                               {:name failure-type,
+                                :file "instaparse/gll.cljc",
+                                :line 197,
+                                :type :var}
+                               {:name full-listener-exists?,
+                                :file "instaparse/gll.cljc",
+                                :line 293,
+                                :arglists ([tramp node-key]),
+                                :doc "Tests whether node already has a listener or full-listener\n",
+                                :type :var}
+                               {:name full-result-exists?,
+                                :file "instaparse/gll.cljc",
+                                :line 309,
+                                :arglists ([tramp node-key]),
+                                :doc "Tests whether node has a full-result\n",
+                                :type :var}
+                               {:name get-parser,
+                                :file "instaparse/gll.cljc",
+                                :line 127,
+                                :arglists ([grammar p]),
+                                :type :var}
+                               {:name listener-exists?,
+                                :file "instaparse/gll.cljc",
+                                :line 286,
+                                :arglists ([tramp node-key]),
+                                :doc "Tests whether node already has a listener\n",
+                                :type :var}
+                               {:name log,
+                                :file "instaparse/gll.clj",
+                                :line 92,
+                                :arglists ([tramp & body]),
+                                :type :macro}
+                               {:name lookahead-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 919,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name lookahead-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 914,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name LookListener,
+                                :file "instaparse/gll.cljc",
+                                :line 508,
+                                :arglists ([node-key tramp]),
+                                :type :var}
+                               {:name make-node,
+                                :file "instaparse/gll.cljc",
+                                :line 255,
+                                :arglists ([]),
+                                :type :var}
+                               {:name make-success,
+                                :file "instaparse/gll.cljc",
+                                :line 244,
+                                :arglists ([result index]),
+                                :type :var}
+                               {:name make-tramp,
+                                :file "instaparse/gll.cljc",
+                                :line 233,
+                                :arglists ([grammar text]
+                                           [grammar text segment]
+                                           [grammar
+                                            text
+                                            fail-index
+                                            node-builder]
+                                           [grammar
+                                            text
+                                            segment
+                                            fail-index
+                                            node-builder]),
+                                :type :var}
+                               {:name merge-meta,
+                                :file "instaparse/gll.cljc",
+                                :line 1013,
+                                :arglists ([obj metamap]),
+                                :doc "A variation on with-meta that merges the existing metamap into the new metamap,\nrather than overwriting the metamap entirely.",
+                                :type :var}
+                               {:name merge-negative-listeners,
+                                :file "instaparse/gll.cljc",
+                                :line 403,
+                                :type :var}
+                               {:name negative-lookahead-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 934,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name node-get,
+                                :file "instaparse/gll.cljc",
+                                :line 316,
+                                :arglists ([tramp node-key]),
+                                :doc "Gets node if already exists, otherwise creates one\n",
+                                :type :var}
+                               {:name NodeListener,
+                                :file "instaparse/gll.cljc",
+                                :line 502,
+                                :arglists ([node-key tramp]),
+                                :type :var}
+                               {:name non-terminal-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 909,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name non-terminal-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 904,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name opt-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 896,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name opt-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 890,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name ordered-alt-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 877,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name ordered-alt-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 864,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name parse,
+                                :file "instaparse/gll.cljc",
+                                :line 978,
+                                :arglists ([grammar
+                                            start
+                                            text
+                                            partial?]),
+                                :type :var}
+                               {:name parse-total,
+                                :file "instaparse/gll.cljc",
+                                :line 1042,
+                                :arglists ([grammar
+                                            start
+                                            text
+                                            partial?
+                                            node-builder]),
+                                :type :var}
+                               {:name parse-total-after-fail,
+                                :file "instaparse/gll.cljc",
+                                :line 1031,
+                                :arglists ([grammar
+                                            start
+                                            text
+                                            fail-index
+                                            partial?
+                                            node-builder]),
+                                :type :var}
+                               {:name parses,
+                                :file "instaparse/gll.cljc",
+                                :line 968,
+                                :arglists ([grammar
+                                            start
+                                            text
+                                            partial?]),
+                                :type :var}
+                               {:name parses-total,
+                                :file "instaparse/gll.cljc",
+                                :line 1019,
+                                :arglists ([grammar
+                                            start
+                                            text
+                                            partial?
+                                            node-builder]),
+                                :type :var}
+                               {:name parses-total-after-fail,
+                                :file "instaparse/gll.cljc",
+                                :line 1002,
+                                :arglists ([grammar
+                                            start
+                                            text
+                                            fail-index
+                                            partial?
+                                            node-builder]),
+                                :type :var}
+                               {:name plus-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 802,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name plus-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 796,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name PlusFullListener,
+                                :file "instaparse/gll.cljc",
+                                :line 566,
+                                :arglists ([results-so-far
+                                            parser
+                                            prev-index
+                                            node-key
+                                            tramp]),
+                                :type :var}
+                               {:name PlusListener,
+                                :file "instaparse/gll.cljc",
+                                :line 554,
+                                :arglists ([results-so-far
+                                            parser
+                                            prev-index
+                                            node-key
+                                            tramp]),
+                                :type :var}
+                               {:name profile,
+                                :file "instaparse/gll.clj",
+                                :line 72,
+                                :arglists ([& body]),
+                                :type :macro}
+                               {:name push-full-listener,
+                                :file "instaparse/gll.cljc",
+                                :line 389,
+                                :arglists ([tramp node-key listener]),
+                                :doc "Pushes a listener into the trampoline's node.\nSchedules notification to listener of all existing full results.",
+                                :type :var}
+                               {:name push-listener,
+                                :file "instaparse/gll.cljc",
+                                :line 371,
+                                :arglists ([tramp node-key listener]),
+                                :doc "Pushes a listener into the trampoline's node.\nSchedules notification to listener of all existing results.\nInitiates parse if necessary",
+                                :type :var}
+                               {:name push-message,
+                                :file "instaparse/gll.cljc",
+                                :line 269,
+                                :arglists ([tramp listener result]),
+                                :doc "Pushes onto stack a message to a given listener about a result\n",
+                                :type :var}
+                               {:name push-negative-listener,
+                                :file "instaparse/gll.cljc",
+                                :line 405,
+                                :arglists ([tramp
+                                            creator
+                                            negative-listener]),
+                                :doc "Pushes a thunk onto the trampoline's negative-listener stack.\n",
+                                :type :var}
+                               {:name push-result,
+                                :file "instaparse/gll.cljc",
+                                :line 333,
+                                :arglists ([tramp node-key result]),
+                                :doc "Pushes a result into the trampoline's node.\nCategorizes as either result or full-result.\nSchedules notification to all existing listeners of result\n(Full listeners only get notified about full results)",
+                                :type :var}
+                               {:name push-stack,
+                                :file "instaparse/gll.cljc",
+                                :line 263,
+                                :arglists ([tramp item]),
+                                :doc "Pushes an item onto the trampoline's stack\n",
+                                :type :var}
+                               {:name re-match-at-front,
+                                :file "instaparse/gll.cljc",
+                                :line 751,
+                                :arglists ([regexp text]),
+                                :type :var}
+                               {:name regexp-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 768,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name regexp-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 757,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name rep-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 822,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name rep-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 808,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name RepFullListener,
+                                :file "instaparse/gll.cljc",
+                                :line 595,
+                                :arglists ([results-so-far
+                                            n-results-so-far
+                                            parser
+                                            m
+                                            n
+                                            prev-index
+                                            node-key
+                                            tramp]),
+                                :type :var}
+                               {:name RepListener,
+                                :file "instaparse/gll.cljc",
+                                :line 581,
+                                :arglists ([results-so-far
+                                            n-results-so-far
+                                            parser
+                                            m
+                                            n
+                                            prev-index
+                                            node-key
+                                            tramp]),
+                                :type :var}
+                               {:name result-exists?,
+                                :file "instaparse/gll.cljc",
+                                :line 301,
+                                :arglists ([tramp node-key]),
+                                :doc "Tests whether node has a result or full-result\n",
+                                :type :var}
+                               {:name run,
+                                :file "instaparse/gll.cljc",
+                                :line 451,
+                                :arglists ([tramp]
+                                           [tramp found-result?]),
+                                :doc "Executes the stack until exhausted\n",
+                                :type :var}
+                               {:name safe-with-meta,
+                                :file "instaparse/gll.cljc",
+                                :line 327,
+                                :arglists ([obj metamap]),
+                                :type :var}
+                               {:name single-char-code-at,
+                                :file "instaparse/gll.cljc",
+                                :line 677,
+                                :arglists ([text index]),
+                                :type :var}
+                               {:name star-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 843,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name star-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 836,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name start-parser,
+                                :file "instaparse/gll.cljc",
+                                :line 963,
+                                :arglists ([tramp parser partial?]),
+                                :type :var}
+                               {:name step,
+                                :file "instaparse/gll.cljc",
+                                :line 443,
+                                :arglists ([stack]),
+                                :doc "Executes one thing on the stack (not threadsafe)\n",
+                                :type :var}
+                               {:name string-case-insensitive-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 658,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name string-case-insensitive-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 647,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name string-context,
+                                :file "instaparse/gll.cljc",
+                                :line 111,
+                                :type :var}
+                               {:name string-full-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 629,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name string-parse,
+                                :file "instaparse/gll.cljc",
+                                :line 618,
+                                :arglists ([this index tramp]),
+                                :type :var}
+                               {:name sub-sequence,
+                                :file "instaparse/gll.cljc",
+                                :line 219,
+                                :type :var}
+                               {:name success,
+                                :file "instaparse/gll.clj",
+                                :line 417,
+                                :arglists ([tramp node-key result end]),
+                                :type :macro}
+                               {:name text->segment,
+                                :file "instaparse/gll.cljc",
+                                :line 206,
+                                :arglists ([text]),
+                                :type :var}
+                               {:name TopListener,
+                                :file "instaparse/gll.cljc",
+                                :line 612,
+                                :arglists ([tramp]),
+                                :type :var}
+                               {:name total-success?,
+                                :file "instaparse/gll.cljc",
+                                :line 245,
+                                :arglists ([tramp s]),
+                                :type :var}
+                               {:name trace-or-false,
+                                :file "instaparse/gll.clj",
+                                :line 103,
+                                :arglists ([]),
+                                :type :macro}
+                               {:name unicode-code-point-at,
+                                :file "instaparse/gll.cljc",
+                                :line 688,
+                                :arglists ([text index]),
+                                :type :var})}
+                    {:name instaparse.line-col,
+                     :publics ({:name add-line-col-spans,
+                                :file "instaparse/line_col.cljc",
+                                :line 65,
+                                :arglists ([text parse-tree]),
+                                :doc "Given a string `text` and a `parse-tree` for text, return parse tree\nwith its metadata annotated with line and column info. The info can\nthen be found in the metadata map under the keywords:\n \n:instaparse.gll/start-line, :instaparse.gll/start-column,\n:instaparse.gll/end-line, :instaparse.gll/end-column\n\nThe start is inclusive, the end is exclusive. Lines and columns are 1-based.",
+                                :type :var})}
+                    {:name instaparse.print,
+                     :doc "Facilities for taking parsers and grammars, and converting them to strings.\nUsed for pretty-printing.",
+                     :publics ({:name char-range->str,
+                                :file "instaparse/print.cljc",
+                                :line 48,
+                                :arglists ([{:keys [lo hi]}]),
+                                :type :var}
+                               {:name combinators->str,
+                                :file "instaparse/print.cljc",
+                                :line 53,
+                                :arglists ([p]
+                                           [{:keys [parser
+                                                    parser1
+                                                    parser2
+                                                    parsers
+                                                    tag],
+                                             :as p}
+                                            hidden?]),
+                                :doc "Stringifies a parser built from combinators\n",
+                                :type :var}
+                               {:name number->hex-padded,
+                                :file "instaparse/print.cljc",
+                                :line 43,
+                                :arglists ([n]),
+                                :type :var}
+                               {:name paren-for-compound,
+                                :file "instaparse/print.cljc",
+                                :line 13,
+                                :type :var}
+                               {:name paren-for-tags,
+                                :file "instaparse/print.cljc",
+                                :line 8,
+                                :arglists ([tag-set hidden? parser]),
+                                :type :var}
+                               {:name Parser->str,
+                                :file "instaparse/print.cljc",
+                                :line 94,
+                                :arglists ([{grammar :grammar,
+                                             start :start-production}]),
+                                :doc "Takes a Parser object, i.e., something with a grammar map and a start \nproduction keyword, and stringifies it.",
+                                :type :var}
+                               {:name regexp->str,
+                                :file "instaparse/print.cljc",
+                                :line 27,
+                                :arglists ([r]),
+                                :type :var}
+                               {:name regexp-replace,
+                                :file "instaparse/print.cljc",
+                                :line 16,
+                                :arglists ([s]),
+                                :doc "Replaces whitespace characters with escape sequences for better printing\n",
+                                :type :var}
+                               {:name rule->str,
+                                :file "instaparse/print.cljc",
+                                :line 82,
+                                :arglists ([non-terminal parser]),
+                                :doc "Takes a non-terminal symbol and a parser built from combinators,\nand returns a string for the rule.",
+                                :type :var})}
+                    {:name instaparse.reduction,
+                     :publics ({:name apply-reduction,
+                                :file "instaparse/reduction.cljc",
+                                :line 39,
+                                :arglists ([f result]),
+                                :type :var}
+                               {:name apply-standard-reductions,
+                                :file "instaparse/reduction.cljc",
+                                :line 48,
+                                :arglists ([grammar]
+                                           [reduction-type grammar]),
+                                :type :var}
+                               {:name EnliveNonTerminalReduction,
+                                :file "instaparse/reduction.cljc",
+                                :line 24,
+                                :arglists ([key]),
+                                :type :var}
+                               {:name HiccupNonTerminalReduction,
+                                :file "instaparse/reduction.cljc",
+                                :line 21,
+                                :arglists ([key]),
+                                :type :var}
+                               {:name node-builders,
+                                :file "instaparse/reduction.cljc",
+                                :line 31,
+                                :type :var}
+                               {:name raw-non-terminal-reduction,
+                                :file "instaparse/reduction.cljc",
+                                :line 19,
+                                :type :var}
+                               {:name red,
+                                :file "instaparse/reduction.cljc",
+                                :line 15,
+                                :arglists ([parser f]),
+                                :type :var}
+                               {:name reduction-types,
+                                :file "instaparse/reduction.cljc",
+                                :line 27,
+                                :type :var}
+                               {:name singleton?,
+                                :file "instaparse/reduction.cljc",
+                                :line 7,
+                                :arglists ([s]),
+                                :type :var}
+                               {:name standard-non-terminal-reduction,
+                                :file "instaparse/reduction.cljc",
+                                :line 37,
+                                :type :var})}
+                    {:name instaparse.repeat,
+                     :publics ({:name empty-result?,
+                                :file "instaparse/repeat.cljc",
+                                :line 12,
+                                :arglists ([result]),
+                                :type :var}
+                               {:name failure-signal,
+                                :file "instaparse/repeat.cljc",
+                                :line 17,
+                                :type :var}
+                               {:name get-end,
+                                :file "instaparse/repeat.cljc",
+                                :line 19,
+                                :arglists ([parse] [parse index]),
+                                :type :var}
+                               {:name parse-from-index,
+                                :file "instaparse/repeat.cljc",
+                                :line 29,
+                                :arglists ([grammar
+                                            initial-parser
+                                            text
+                                            segment
+                                            index]),
+                                :type :var}
+                               {:name repeat-parse,
+                                :file "instaparse/repeat.cljc",
+                                :line 125,
+                                :arglists ([grammar
+                                            initial-parser
+                                            output-format
+                                            text]
+                                           [grammar
+                                            initial-parser
+                                            output-format
+                                            root-tag
+                                            text]),
+                                :type :var}
+                               {:name repeat-parse-enlive,
+                                :file "instaparse/repeat.cljc",
+                                :line 78,
+                                :arglists ([grammar
+                                            initial-parser
+                                            root-tag
+                                            text
+                                            segment]
+                                           [grammar
+                                            initial-parser
+                                            root-tag
+                                            text
+                                            segment
+                                            index]),
+                                :type :var}
+                               {:name repeat-parse-hiccup,
+                                :file "instaparse/repeat.cljc",
+                                :line 54,
+                                :arglists ([grammar
+                                            initial-parser
+                                            root-tag
+                                            text
+                                            segment]
+                                           [grammar
+                                            initial-parser
+                                            root-tag
+                                            text
+                                            segment
+                                            index]),
+                                :type :var}
+                               {:name repeat-parse-no-tag,
+                                :file "instaparse/repeat.cljc",
+                                :line 102,
+                                :arglists ([grammar
+                                            initial-parser
+                                            text
+                                            segment]
+                                           [grammar
+                                            initial-parser
+                                            text
+                                            segment
+                                            index]),
+                                :type :var}
+                               {:name repeat-parse-with-header,
+                                :file "instaparse/repeat.cljc",
+                                :line 135,
+                                :arglists ([grammar
+                                            header-parser
+                                            repeating-parser
+                                            output-format
+                                            root-tag
+                                            text]),
+                                :type :var}
+                               {:name select-parse,
+                                :file "instaparse/repeat.cljc",
+                                :line 34,
+                                :arglists ([grammar
+                                            initial-parser
+                                            text
+                                            segment
+                                            index
+                                            parses]),
+                                :doc "Returns either:\n[a-parse end-index a-list-of-valid-follow-up-parses]\n[a-parse end-index nil] (successfully reached end of text)\nnil (hit a dead-end with this strategy)",
+                                :type :var}
+                               {:name try-repeating-parse-strategy,
+                                :file "instaparse/repeat.cljc",
+                                :line 187,
+                                :arglists ([parser
+                                            text
+                                            start-production]),
+                                :type :var}
+                               {:name try-repeating-parse-strategy-with-header,
+                                :file "instaparse/repeat.cljc",
+                                :line 171,
+                                :arglists ([grammar
+                                            text
+                                            start-production
+                                            start-rule
+                                            output-format]),
+                                :type :var}
+                               {:name used-memory-optimization?,
+                                :file "instaparse/repeat.cljc",
+                                :line 218,
+                                :arglists ([tree]),
+                                :type :var})}
+                    {:name instaparse.transform,
+                     :doc "Functions to transform parse trees\n",
+                     :publics ({:name map-preserving-meta,
+                                :file "instaparse/transform.cljc",
+                                :line 6,
+                                :arglists ([f l]),
+                                :type :var}
+                               {:name merge-meta,
+                                :file "instaparse/transform.cljc",
+                                :line 9,
+                                :arglists ([obj metamap]),
+                                :doc "This variation of the merge-meta in gll does nothing if obj is not\nsomething that can have a metamap attached.",
+                                :type :var}
+                               {:name transform,
+                                :file "instaparse/transform.cljc",
+                                :line 48,
+                                :arglists ([transform-map parse-tree]),
+                                :doc "Takes a transform map and a parse tree (or seq of parse-trees).\nA transform map is a mapping from tags to \nfunctions that take a node's contents and return\na replacement for the node, i.e.,\n{:node-tag (fn [child1 child2 ...] node-replacement),\n :another-node-tag (fn [child1 child2 ...] node-replacement)}",
+                                :type :var})}
+                    {:name instaparse.util,
+                     :publics ({:name regexp-flags,
+                                :file "instaparse/util.cljc",
+                                :line 20,
+                                :arglists ([re]),
+                                :type :var}
+                               {:name throw-illegal-argument-exception,
+                                :file "instaparse/util.cljc",
+                                :line 12,
+                                :arglists ([& message]),
+                                :type :var}
+                               {:name throw-runtime-exception,
+                                :file "instaparse/util.cljc",
+                                :line 5,
+                                :arglists ([& message]),
+                                :type :var})}
+                    {:name instaparse.viz,
+                     :publics ({:name span,
+                                :file "instaparse/viz.cljs",
+                                :line 3,
+                                :arglists ([tree]),
+                                :doc "Takes a subtree of the parse tree and returns a [start-index end-index] pair\nindicating the span of text parsed by this subtree.\nstart-index is inclusive and end-index is exclusive, as is customary\nwith substrings.\nReturns nil if no span metadata is attached.",
+                                :type :var})})},
+ :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?><project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n  <modelVersion>4.0.0</modelVersion>\r\n  <groupId>instaparse</groupId>\r\n  <artifactId>instaparse</artifactId>\r\n  <packaging>jar</packaging>\r\n  <version>1.4.12</version>\r\n  <name>instaparse</name>\r\n  <description>Instaparse: No grammar left behind</description>\r\n  <url>https://github.com/Engelberg/instaparse</url>\r\n  <licenses>\r\n    <license>\r\n      <name>Eclipse Public License</name>\r\n      <url>http://www.eclipse.org/legal/epl-v10.html</url>\r\n    </license>\r\n  </licenses>\r\n  <scm>\r\n    <url>https://github.com/Engelberg/instaparse</url>\r\n    <connection>scm:git:git://github.com/Engelberg/instaparse.git</connection>\r\n    <developerConnection>scm:git:ssh://git@github.com/Engelberg/instaparse.git</developerConnection>\r\n    <tag>906adf2286d64a187c8b31712d21f344fd233b82</tag>\r\n  </scm>\r\n  <build>\r\n    <sourceDirectory>src</sourceDirectory>\r\n    <testSourceDirectory>test</testSourceDirectory>\r\n    <resources>\r\n      <resource>\r\n        <directory>resources</directory>\r\n      </resource>\r\n    </resources>\r\n    <testResources>\r\n      <testResource>\r\n        <directory>resources</directory>\r\n      </testResource>\r\n    </testResources>\r\n    <directory>target</directory>\r\n    <outputDirectory>target\\classes</outputDirectory>\r\n    <plugins>\r\n      <plugin>\r\n        <groupId>org.codehaus.mojo</groupId>\r\n        <artifactId>build-helper-maven-plugin</artifactId>\r\n        <version>1.7</version>\r\n        <executions>\r\n          <execution>\r\n            <id>add-source</id>\r\n            <phase>generate-sources</phase>\r\n            <goals>\r\n              <goal>add-source</goal>\r\n            </goals>\r\n            <configuration>\r\n              <sources>\r\n                <source>target\\generated\\src\\clj</source>\r\n              </sources>\r\n            </configuration>\r\n          </execution>\r\n          <execution>\r\n            <id>add-test-source</id>\r\n            <phase>generate-test-sources</phase>\r\n            <goals>\r\n              <goal>add-test-source</goal>\r\n            </goals>\r\n            <configuration>\r\n              <sources>\r\n                <source>target\\generated\\test\\clj</source>\r\n              </sources>\r\n            </configuration>\r\n          </execution>\r\n        </executions>\r\n      </plugin>\r\n    </plugins>\r\n  </build>\r\n  <repositories>\r\n    <repository>\r\n      <id>central</id>\r\n      <url>https://repo1.maven.org/maven2/</url>\r\n      <snapshots>\r\n        <enabled>false</enabled>\r\n      </snapshots>\r\n      <releases>\r\n        <enabled>true</enabled>\r\n      </releases>\r\n    </repository>\r\n    <repository>\r\n      <id>clojars</id>\r\n      <url>https://repo.clojars.org/</url>\r\n      <snapshots>\r\n        <enabled>true</enabled>\r\n      </snapshots>\r\n      <releases>\r\n        <enabled>true</enabled>\r\n      </releases>\r\n    </repository>\r\n  </repositories>\r\n  <dependencyManagement>\r\n    <dependencies/>\r\n  </dependencyManagement>\r\n  <dependencies>\r\n    <dependency>\r\n      <groupId>org.clojure</groupId>\r\n      <artifactId>clojure</artifactId>\r\n      <version>1.11.1</version>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>org.clojure</groupId>\r\n      <artifactId>clojurescript</artifactId>\r\n      <version>1.11.4</version>\r\n      <scope>test</scope>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>org.clojure</groupId>\r\n      <artifactId>tools.trace</artifactId>\r\n      <version>0.7.11</version>\r\n      <scope>test</scope>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>criterium</groupId>\r\n      <artifactId>criterium</artifactId>\r\n      <version>0.4.6</version>\r\n      <scope>test</scope>\r\n    </dependency>\r\n    <dependency>\r\n      <groupId>rhizome</groupId>\r\n      <artifactId>rhizome</artifactId>\r\n      <version>0.2.9</version>\r\n      <scope>test</scope>\r\n    </dependency>\r\n  </dependencies>\r\n</project>\r\n\n<!-- This file was autogenerated by Leiningen.\n  Please do not edit it directly; instead edit project.clj and regenerate it.\n  It should not be considered canonical data. For more information see\n  https://github.com/technomancy/leiningen -->\n"}

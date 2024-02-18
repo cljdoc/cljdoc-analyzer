@@ -75,14 +75,21 @@
 (defn find-ns-decls-in-dir
   "Searches dir recursively for (ns ...) declarations in Clojure
   source files; returns the unevaluated ns declarations.
+  The symbol name in the returned ns declaration will contain metadata
+  for the corresponding directory and located file within at keys
+  :dir and :file.
 
   Optional second argument platform is either clj (default) or cljs,
-  both defined in cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.find."
+  both defined in clojure.tools.namespace.find."
   {:added "0.2.0"}
   ([dir] (find-ns-decls-in-dir dir nil))
   ([dir platform]
    (keep #(ignore-reader-exception
-           (file/read-file-ns-decl % (:read-opts platform)))
+           (let [[_ nom & more :as decl] (file/read-file-ns-decl % (:read-opts platform))]
+             (when (and decl nom (symbol? nom))
+               (list* 'ns (vary-meta nom merge
+                            {:dir (.getName ^File dir) :file (.getName ^File %)})
+                      more))))
          (find-sources-in-dir dir platform))))
 
 (defn find-namespaces-in-dir
@@ -129,9 +136,12 @@
   "Attempts to read a (ns ...) declaration from the named entry in the
   JAR file, and returns the unevaluated form. Returns nil if read
   fails due to invalid syntax or if a ns declaration cannot be found.
+  The symbol name in the returned ns declaration will contain metadata
+  for the corresponding jar filename and located file within at keys
+  :jar and :file.
 
   Optional third argument platform is either clj (default) or cljs,
-  both defined in cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.find."
+  both defined in clojure.tools.namespace.find."
   ([jarfile entry-name]
    (read-ns-decl-from-jarfile-entry jarfile entry-name nil))
   ([^JarFile jarfile ^String entry-name platform]
@@ -140,7 +150,11 @@
                       (io/reader
                        (.getInputStream jarfile (.getEntry jarfile entry-name))))]
        (ignore-reader-exception
-        (parse/read-ns-decl rdr read-opts))))))
+        (let [[_ nom & more :as decl] (parse/read-ns-decl rdr read-opts)]
+          (when (and decl nom (symbol? nom))
+              (list* 'ns (vary-meta nom merge
+                           {:jar (.getName ^JarFile jarfile) :file entry-name})
+                     more))))))))
 
 (defn find-ns-decls-in-jarfile
   "Searches the JAR file for source files containing (ns ...)
