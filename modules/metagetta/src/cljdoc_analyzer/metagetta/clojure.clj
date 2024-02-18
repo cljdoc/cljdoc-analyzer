@@ -107,12 +107,26 @@
 
 (defn- find-namespaces
   "Return found namespaces in dir or jar `file`.
-   Each namespace will be adorned with any static metadata specified on ns name or via attr-map. "
+   Each namespace will be adorned with any static metadata specified on ns name or via attr-map."
   [file]
   (let [ns-decls (cond
                    (.isDirectory file) (ns-find/find-ns-decls-in-dir file)
                    (jar-file? file)    (ns-find/find-ns-decls-in-jarfile (JarFile. file)))]
-    (map utils/parse-ns-name-with-meta ns-decls)))
+    (mapv utils/parse-ns-name-with-meta ns-decls)))
+
+(defn- exclude-cljc-ns-when-clj-exists
+  "Simulate Clojure 1.6+ loading by excluding .cljc source when .clj exists for same ns"
+  [nses]
+  (let [clj-nses (into #{} (filter #(-> % meta :file (.endsWith ".clj")) nses))]
+    (into []
+          (remove (fn [n]
+                    (let [f (-> n meta :file)]
+                      (when (and (clj-nses n)
+                                 (-> n meta :file (.endsWith ".cljc")))
+                        (println (format "Skipping ns %s for cljc source %s - a clj source also exists for this ns."
+                                         n f))
+                        true)))
+                  nses))))
 
 (defn remove-with-meta [exclude-with coll]
   (if exclude-with
@@ -168,7 +182,8 @@
    (let [path (utils/canonical-path path)
          ns-filters namespaces]
      (->> (io/file path)
-          (find-namespaces)
+          find-namespaces
+          exclude-cljc-ns-when-clj-exists
           ;; we exclude namespaces before analysis/load
           (filter-namespaces ns-filters)
           (remove-with-meta exclude-with)
