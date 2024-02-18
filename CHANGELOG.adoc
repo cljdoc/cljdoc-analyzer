@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.784
+
 * For Clojure analysis, exclude ns `x` defined in `.cljc` source if it is already defined in `.clj` source.
 https://github.com/cljdoc/cljdoc-analyzer/issues/101[#101]
 * Bump deps
