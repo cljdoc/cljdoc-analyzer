@@ -10,7 +10,7 @@
 
 == Unreleased
 
-*
+* Bump cljdoc-shared
 
 == v1.0.789
 
