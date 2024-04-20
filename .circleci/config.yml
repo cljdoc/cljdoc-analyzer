@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: clojure:temurin-21-tools-deps
+      - image: clojure:temurin-21-tools-deps-jammy
 
     working_directory: ~/repo
 
