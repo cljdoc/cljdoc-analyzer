@@ -1,11 +1,12 @@
 (ns ^:no-doc cljdoc-analyzer.main
-  (:require [cli-matic.core :as cli]
-            [expound.alpha :as expound]
-            [clojure.spec.alpha :as spec]
-            [clojure.string :as string]
-            [cljdoc-analyzer.config :as config]
-            [cljdoc-analyzer.deps :as deps]
-            [cljdoc-analyzer.runner :as runner]))
+  (:require
+   [cli-matic.core :as cli]
+   [cljdoc-analyzer.config :as config]
+   [cljdoc-analyzer.deps :as deps]
+   [cljdoc-analyzer.runner :as runner]
+   [clojure.spec.alpha :as spec]
+   [clojure.string :as string]
+   [expound.alpha :as expound]))
 
 (defn- extra-repo-arg-to-option [extra-repo]
   (reduce (fn [acc n]

@@ -1,11 +1,12 @@
 (ns ^:integration cljdoc-analyzer.cljdoc-main-shell-test
   "These tests mimic the way cljdoc calls cljdoc-analyzer."
-  (:require [clojure.test :as t]
-            [clojure.java.shell :as shell]
-            [clojure.string :as string]
-            [clojure.java.io :as io]
-            [cljdoc-analyzer.test-helper :as test-helper]
-            [babashka.fs :as fs]))
+  (:require
+   [babashka.fs :as fs]
+   [cljdoc-analyzer.test-helper :as test-helper]
+   [clojure.java.io :as io]
+   [clojure.java.shell :as shell]
+   [clojure.string :as string]
+   [clojure.test :as t]))
 
 (def clean-temp
   "Disable for debugging"

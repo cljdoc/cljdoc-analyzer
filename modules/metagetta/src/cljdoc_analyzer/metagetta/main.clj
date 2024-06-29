@@ -1,12 +1,13 @@
 (ns ^:no-doc cljdoc-analyzer.metagetta.main
   "Main namespace for generating documentation"
-  (:require [clojure.walk :as walk]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.pprint :as pprint]
-            [clojure.string :as string]
-            [cljdoc-analyzer.metagetta.clojure :as clj]
-            [cljdoc-analyzer.metagetta.utils :as utils]))
+  (:require
+   [cljdoc-analyzer.metagetta.clojure :as clj]
+   [cljdoc-analyzer.metagetta.utils :as utils]
+   [clojure.edn :as edn]
+   [clojure.java.io :as io]
+   [clojure.pprint :as pprint]
+   [clojure.string :as string]
+   [clojure.walk :as walk]))
 
 (defn- namespace-readers [lang]
   (case lang

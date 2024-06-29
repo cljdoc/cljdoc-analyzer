@@ -1,17 +1,18 @@
 (ns ^:no-doc cljdoc-analyzer.metagetta.clojurescript
   "Read raw documentation information from ClojureScript source directory."
-  (:require [clojure.java.io :as io]
-            [clojure.string :as str]
-            [cljs.analyzer.api :as ana]
-            [cljs.closure]
-            [cljs.compiler.api :as comp]
-            [cljs.env]
-            [cljs.util :as cljs-util]
-            [clojure.set]
-            [cljdoc-analyzer.metagetta.utils :as utils]
-            [cljdoc-analyzer.metagetta.inlined.javaclasspath.v1v0v0.clojure.java.classpath :as cp]
-            [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.find :as ns-find]
-            [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.parse :as ns-parse]))
+  (:require
+   [cljdoc-analyzer.metagetta.inlined.javaclasspath.v1v0v0.clojure.java.classpath :as cp]
+   [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.find :as ns-find]
+   [cljdoc-analyzer.metagetta.inlined.toolsnamespace.v1v4v0.clojure.tools.namespace.parse :as ns-parse]
+   [cljdoc-analyzer.metagetta.utils :as utils]
+   [cljs.analyzer.api :as ana]
+   [cljs.closure]
+   [cljs.compiler.api :as comp]
+   [cljs.env]
+   [cljs.util :as cljs-util]
+   [clojure.java.io :as io]
+   [clojure.set]
+   [clojure.string :as str]))
 
 (defn- default-data-reader-fn-var
   "Starting with ClojureScript 1.11.51 tools reader is vendorized to cljs.vendor.clojure.tools.reader"

@@ -1,7 +1,9 @@
 (ns cljdoc-analyzer.metagetta.utils-test
-  (:require [clojure.test :as t]
-            [cljdoc-analyzer.metagetta.utils :as utils])
-  (:import [java.time Duration]) )
+  (:require
+   [cljdoc-analyzer.metagetta.utils :as utils]
+   [clojure.test :as t])
+  (:import
+   [java.time Duration]) )
 
 (t/deftest humanize-duration-test
   (t/is (= "1s" (utils/humanize-duration (Duration/ofMillis 1000))))

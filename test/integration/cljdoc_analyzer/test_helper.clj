@@ -1,9 +1,10 @@
 (ns cljdoc-analyzer.test-helper
-  (:require [babashka.fs]
-            [clojure.test :as t]
-            [clojure.java.io :as io]
-            [clojure.string :as string]
-            [cljdoc-shared.analysis-edn :as analysis-edn]))
+  (:require
+   [babashka.fs]
+   [cljdoc-shared.analysis-edn :as analysis-edn]
+   [clojure.java.io :as io]
+   [clojure.string :as string]
+   [clojure.test :as t]))
 
 (defn edn-filename [prefix project version]
   (let [project (if (string/index-of project "/")

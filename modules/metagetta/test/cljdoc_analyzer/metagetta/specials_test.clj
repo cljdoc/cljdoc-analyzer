@@ -1,7 +1,8 @@
 (ns cljdoc-analyzer.metagetta.specials-test
   "Test various special cases, one at a time"
-  (:require [clojure.test :as t]
-            [cljdoc-analyzer.metagetta.main :as main]))
+  (:require
+   [cljdoc-analyzer.metagetta.main :as main]
+   [clojure.test :as t]))
 
 (defn- analyze-special-source
   "Analyze the given namespace from `test-sources-special`.
