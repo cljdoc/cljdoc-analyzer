@@ -1,12 +1,13 @@
 (ns ^:no-doc cljdoc-analyzer.deps-tool
   "Entry point for running as a Clojure CLI tool"
-  (:require [babashka.fs :as fs]
-            [clojure.string :as string]
-            [clojure.pprint :as pp]
-            [clojure.tools.logging :as log]
-            [cljdoc-analyzer.deps :as deps]
-            [cljdoc-analyzer.runner :as runner]
-            [cljdoc-analyzer.config :as config]))
+  (:require
+   [babashka.fs :as fs]
+   [cljdoc-analyzer.config :as config]
+   [cljdoc-analyzer.deps :as deps]
+   [cljdoc-analyzer.runner :as runner]
+   [clojure.pprint :as pp]
+   [clojure.string :as string]
+   [clojure.tools.logging :as log]))
 
 (defn- extra-repo-arg-to-option [extra-repos]
   (reduce (fn [acc n]

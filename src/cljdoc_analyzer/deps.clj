@@ -5,12 +5,12 @@
    [clojure.java.io :as io]
    [clojure.string :as string]
    [clojure.tools.deps :as tdeps]
-   [version-clj.core :as v]
    ;; the following not part of the tools deps public API, will reconsider if this causes us any grief
    [clojure.tools.deps.extensions :as tdeps-ext]
    [clojure.tools.deps.extensions.pom :as tdeps-pom]
    [clojure.tools.deps.util.maven :as tdeps-maven]
-   [clojure.tools.deps.util.session :as tdeps-session])
+   [clojure.tools.deps.util.session :as tdeps-session]
+   [version-clj.core :as v])
   (:import
    [org.apache.maven.model Dependency Model Repository]
    [org.apache.maven.model.building StringModelSource]))
@@ -116,7 +116,7 @@
   "Taken from clojure/tools.deps `clojure.tools.deps.extensions.pom` and modified to support reading from a slurpable-pom."
   ^Model [slurpable-pom config]
   (let [pom-str (slurp slurpable-pom)
-        settings (tdeps-session/retrieve :mvn/settings #(tdeps-maven/get-settings))]
+        settings (tdeps-session/retrieve :mvn/settings tdeps-maven/get-settings)]
     (tdeps-session/retrieve
       {:pom :model :source slurpable-pom}
       #(tdeps-pom/read-model (StringModelSource. pom-str) config settings))))

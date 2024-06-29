@@ -1,10 +1,11 @@
 (ns ^:no-doc cljdoc-analyzer.cljdoc-main
   "Launch cljdoc-analyzer with arguments from edn string"
-  (:require [clojure.pprint :as pp]
-            [clojure.edn :as edn]
-            [clojure.tools.logging :as log]
-            [cljdoc-shared.analysis :as analysis]
-            [cljdoc-analyzer.runner :as runner]))
+  (:require
+   [cljdoc-analyzer.runner :as runner]
+   [cljdoc-shared.analysis :as analysis]
+   [clojure.edn :as edn]
+   [clojure.pprint :as pp]
+   [clojure.tools.logging :as log]))
 
 (defn -main
   [edn-arg]

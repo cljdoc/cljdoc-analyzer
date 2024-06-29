@@ -8,23 +8,25 @@
 
   By shelling out a separate process we create an isolated environment which
   does not have the dependencies of cljdoc-analyzer."
-  (:require [babashka.fs :as fs]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.java.shell :as sh]
-            [clojure.string :as string]
-            [clojure.tools.logging :as log]
-            [clojure.pprint :as pprint]
-            [clojure.spec.alpha :as s]
-            [cljdoc-analyzer.config :as config]
-            [cljdoc-analyzer.deps :as deps]
-            [cljdoc-analyzer.file :as file]
-            [cljdoc-shared.proj :as proj]
-            [cljdoc-shared.spec.analyzer :as analyzer-spec]
-            [cljdoc-shared.analysis-edn :as analysis-edn]
-            [version-clj.core :as v])
-  (:import (java.net URI)
-           (org.objectweb.asm ClassReader ClassVisitor Opcodes)))
+  (:require
+   [babashka.fs :as fs]
+   [cljdoc-analyzer.config :as config]
+   [cljdoc-analyzer.deps :as deps]
+   [cljdoc-analyzer.file :as file]
+   [cljdoc-shared.analysis-edn :as analysis-edn]
+   [cljdoc-shared.proj :as proj]
+   [cljdoc-shared.spec.analyzer :as analyzer-spec]
+   [clojure.edn :as edn]
+   [clojure.java.io :as io]
+   [clojure.java.shell :as sh]
+   [clojure.pprint :as pprint]
+   [clojure.spec.alpha :as s]
+   [clojure.string :as string]
+   [clojure.tools.logging :as log]
+   [version-clj.core :as v])
+  (:import
+   (java.net URI)
+   (org.objectweb.asm ClassReader ClassVisitor Opcodes)))
 
 ;; enable spec asserts for cljdoc-analyzer
 (s/check-asserts true)

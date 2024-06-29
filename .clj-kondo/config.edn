@@ -1,1 +1,6 @@
-{:config-paths ^:replace []}
+{:config-paths ^:replace []
+ :linters
+ {:redundant-str-cal {:level :warning}
+  :redundant-fn-wrapper {:level :warning}
+  :aliased-namespace-symbol {:level :warning}
+  :unsorted-required-namespaces {:level :warning}}}

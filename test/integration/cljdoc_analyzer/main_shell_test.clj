@@ -1,11 +1,12 @@
 (ns ^:integration cljdoc-analyzer.main-shell-test
   "These tests do not represent the way cljdoc calls cljdoc-analyzer.
    They are here to ensure our command-line friendly adhoc interface works."
-  (:require [babashka.fs :as fs]
-            [clojure.test :as t]
-            [clojure.tools.deps :as tdeps]
-            [clojure.java.shell :as shell]
-            [cljdoc-analyzer.test-helper :as test-helper]))
+  (:require
+   [babashka.fs :as fs]
+   [cljdoc-analyzer.test-helper :as test-helper]
+   [clojure.java.shell :as shell]
+   [clojure.test :as t]
+   [clojure.tools.deps :as tdeps]))
 
 (defn- run-analysis [project version]
   (println "Analyzing" project version)
