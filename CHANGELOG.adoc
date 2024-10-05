@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.802
+
 * ci: bump from JDK 21 to JDK 23 (to verify all is good on JDK 23)
 * Bump deps
 
