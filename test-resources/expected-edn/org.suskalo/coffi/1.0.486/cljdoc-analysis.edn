@@ -1,0 +1,612 @@
+{:group-id "org.suskalo",
+ :artifact-id "coffi",
+ :version "1.0.486",
+ :analysis {"clj" ({:name coffi.ffi,
+                    :publics ({:name cfn,
+                               :file "coffi/ffi.clj",
+                               :line 438,
+                               :arglists ([symbol args ret]),
+                               :doc "Constructs a Clojure function to call the native function referenced by `symbol`.\n\nThe function returned will serialize any passed arguments into the `args`\ntypes, and deserialize the return to the `ret` type.\n\nIf your `args` and `ret` are constants, then it is more efficient to\ncall [[make-downcall]] followed by [[make-serde-wrapper]] because the latter\nhas an inline definition which will result in less overhead from serdes.",
+                               :type :var}
+                              {:name const,
+                               :file "coffi/ffi.clj",
+                               :line 606,
+                               :arglists ([symbol-or-addr type]),
+                               :doc "Gets the value of a constant stored in `symbol-or-addr`.\n",
+                               :type :var}
+                              {:name defcfn,
+                               :file "coffi/ffi.clj",
+                               :line 780,
+                               :arglists ([name
+                                           docstring?
+                                           attr-map?
+                                           symbol
+                                           arg-types
+                                           ret-type]
+                                          [name
+                                           docstring?
+                                           attr-map?
+                                           symbol
+                                           arg-types
+                                           ret-type
+                                           native-fn
+                                           &
+                                           fn-tail]),
+                               :doc "Defines a Clojure function which maps to a native function.\n\n`name` is the symbol naming the resulting var.\n`symbol` is a symbol or string naming the library symbol to link against.\n`arg-types` is a vector of qualified keywords representing the argument types.\n`ret-type` is a single qualified keyword representing the return type.\n`fn-tail` is the body of the function (potentially with multiple arities)\nwhich wraps the native one. Inside the function, `native-fn` is bound to a\nfunction that will serialize its arguments, call the native function, and\ndeserialize its return type. If any body is present, you must call this\nfunction in order to call the native code.\n\nIf no `fn-tail` is provided, then the resulting function will simply serialize\nthe arguments according to `arg-types`, call the native function, and\ndeserialize the return value.\n\nThe number of args in the `fn-tail` need not match the number of `arg-types`\nfor the native function. It need only call the native wrapper function with\nthe correct arguments.\n\nSee [[serialize]], [[deserialize]], [[make-downcall]].",
+                               :type :macro}
+                              {:name defconst,
+                               :file "coffi/ffi.clj",
+                               :line 617,
+                               :arglists ([symbol
+                                           docstring?
+                                           symbol-or-addr
+                                           type]),
+                               :doc "Defines a var named by `symbol` to be the value of the given `type` from `symbol-or-addr`.\n",
+                               :type :macro}
+                              {:name defvar,
+                               :file "coffi/ffi.clj",
+                               :line 683,
+                               :arglists ([symbol
+                                           docstring?
+                                           symbol-or-addr
+                                           type]),
+                               :doc "Defines a var named by `symbol` to be a reference to the native memory from `symbol-or-addr`.\n",
+                               :type :macro}
+                              {:name ensure-symbol,
+                               :file "coffi/ffi.clj",
+                               :line 198,
+                               :arglists ([symbol-or-addr]),
+                               :doc "Returns the argument if it is a [[MemorySegment]], otherwise\ncalls [[find-symbol]] on it.",
+                               :type :var}
+                              {:name find-symbol,
+                               :file "coffi/ffi.clj",
+                               :line 38,
+                               :arglists ([sym]),
+                               :doc "Gets the [[MemorySegment]] of a symbol from the loaded libraries.\n",
+                               :type :var}
+                              {:name freset!,
+                               :file "coffi/ffi.clj",
+                               :line 647,
+                               :arglists ([static-var newval]),
+                               :doc "Sets the value of `static-var` to `newval`, running it through [[serialize]].\n",
+                               :type :var}
+                              {:name fswap!,
+                               :file "coffi/ffi.clj",
+                               :line 656,
+                               :arglists ([static-var f & args]),
+                               :doc "Non-atomically runs the function `f` over the value stored in `static-var`.\n\nThe value is deserialized before passing it to `f`, and serialized before\nputting the value into `static-var`.",
+                               :type :var}
+                              {:name load-library,
+                               :file "coffi/ffi.clj",
+                               :line 33,
+                               :arglists ([path]),
+                               :doc "Loads the library at `path`.\n",
+                               :type :var}
+                              {:name load-system-library,
+                               :file "coffi/ffi.clj",
+                               :line 28,
+                               :arglists ([libname]),
+                               :doc "Loads the library named `libname` from the system's load path.\n",
+                               :type :var}
+                              {:name make-downcall,
+                               :file "coffi/ffi.clj",
+                               :line 206,
+                               :arglists ([symbol-or-addr args ret]),
+                               :doc "Constructs a downcall function reference to `symbol-or-addr` with the given `args` and `ret` types.\n\nThe function returned takes only arguments whose types match exactly\nthe [[java-layout]] for that type, and returns an argument with exactly\nthe [[java-layout]] of the `ret` type. This function will perform no\nserialization or deserialization of arguments or the return type.\n\nIf the `ret` type is non-primitive, then the returned function will take a\nfirst argument of a [[SegmentAllocator]].",
+                               :type :var}
+                              {:name make-serde-varargs-wrapper,
+                               :file "coffi/ffi.clj",
+                               :line 426,
+                               :arglists ([varargs-factory
+                                           required-args
+                                           ret-type]),
+                               :doc "Constructs a wrapper function for the `varargs-factory` which produces\nfunctions that serialize the arguments and deserialize the return value.",
+                               :type :var}
+                              {:name make-serde-wrapper,
+                               :file "coffi/ffi.clj",
+                               :line 407,
+                               :arglists ([downcall
+                                           arg-types
+                                           ret-type]),
+                               :doc "Constructs a wrapper function for the `downcall` which serializes the arguments\nand deserializes the return value.",
+                               :type :var}
+                              {:name make-varargs-factory,
+                               :file "coffi/ffi.clj",
+                               :line 222,
+                               :arglists ([symbol required-args ret]),
+                               :doc "Returns a function for constructing downcalls with additional types for arguments.\n\nThe `required-args` are the types of the first arguments passed to the\ndowncall handle, and the values passed to the returned function are only the\nvarargs types.\n\nThe returned function is memoized, so that only one downcall function will be\ngenerated per combination of argument types.\n\nSee [[make-downcall]].",
+                               :type :var}
+                              {:name reify-libspec,
+                               :file "coffi/ffi.clj",
+                               :line 742,
+                               :arglists ([libspec]),
+                               :doc "Loads all the symbols specified in the `libspec`.\n\nThe value of each key of the passed map is transformed as\nby [[reify-symbolspec]].",
+                               :type :var}
+                              {:name reify-symbolspec,
+                               :file "coffi/ffi.clj",
+                               :line 701,
+                               :doc "Takes a spec for a symbol reference and returns a live value for that type.\n",
+                               :type :multimethod}
+                              {:name static-variable,
+                               :file "coffi/ffi.clj",
+                               :line 672,
+                               :arglists ([symbol-or-addr type]),
+                               :doc "Constructs a reference to a mutable value stored in `symbol-or-addr`.\n\nThe returned value can be dereferenced, and has metadata.\n\nSee [[freset!]], [[fswap!]].",
+                               :type :var}
+                              {:name static-variable-segment,
+                               :file "coffi/ffi.clj",
+                               :line 664,
+                               :arglists ([static-var]),
+                               :doc "Gets the backing [[MemorySegment]] from `static-var`.\n\nThis is primarily useful when you need to pass the static variable's address\nto a native function which takes an [[Addressable]].",
+                               :type :var}
+                              {:name vacfn-factory,
+                               :file "coffi/ffi.clj",
+                               :line 453,
+                               :arglists ([symbol required-args ret]),
+                               :doc "Constructs a varargs factory to call the native function referenced by `symbol`.\n\nThe function returned takes any number of type arguments and returns a\nspecialized Clojure function for calling the native function with those\narguments.",
+                               :type :var}),
+                    :doc "Functions for creating handles to native functions and loading native libraries.\n"}
+                   {:name coffi.layout,
+                    :publics ({:name with-c-layout,
+                               :file "coffi/layout.clj",
+                               :line 6,
+                               :arglists ([struct-spec]),
+                               :doc "Forces a struct specification to C layout rules.\n\nThis will add padding fields between fields to match C alignment\nrequirements.",
+                               :type :var}),
+                    :doc "Functions for adjusting the layout of structs.\n"}
+                   {:name coffi.mem,
+                    :publics ({:name address-of,
+                               :file "coffi/mem.clj",
+                               :line 108,
+                               :arglists ([addressable]),
+                               :doc "Gets the address of a given segment as a number.\n",
+                               :type :var}
+                              {:name address?,
+                               :file "coffi/mem.clj",
+                               :line 126,
+                               :arglists ([addr]),
+                               :doc "Checks if an object is a memory address.\n\n`nil` is considered an address.",
+                               :type :var}
+                              {:name align-of,
+                               :file "coffi/mem.clj",
+                               :line 813,
+                               :arglists ([type]),
+                               :doc "The alignment in bytes of the given `type`.\n",
+                               :type :var}
+                              {:name alloc,
+                               :file "coffi/mem.clj",
+                               :line 93,
+                               :arglists ([size]
+                                          [size arena]
+                                          [size alignment arena]),
+                               :doc "Allocates `size` bytes.\n\nIf an `arena` is provided, the allocation will be reclaimed when it is closed.",
+                               :type :var}
+                              {:name alloc-instance,
+                               :file "coffi/mem.clj",
+                               :line 820,
+                               :arglists ([type] [type arena]),
+                               :doc "Allocates a memory segment for the given `type`.\n",
+                               :type :var}
+                              {:name alloc-with,
+                               :file "coffi/mem.clj",
+                               :line 101,
+                               :arglists ([allocator size]
+                                          [allocator size alignment]),
+                               :doc "Allocates `size` bytes using the `allocator`.\n",
+                               :type :var}
+                              {:name arena-allocator,
+                               :file "coffi/mem.clj",
+                               :line 82,
+                               :arglists ([arena]),
+                               :doc "Constructs a [[SegmentAllocator]] from the given [[Arena]].\n\nThis is primarily used when working with unwrapped downcall functions. When a\ndowncall function returns a non-primitive type, it must be provided with an\nallocator.",
+                               :type :var}
+                              {:name as-segment,
+                               :file "coffi/mem.clj",
+                               :line 158,
+                               :arglists ([address]
+                                          [address size]
+                                          [address size arena]
+                                          [address size arena cleanup]),
+                               :doc "Dereferences an `address` into a memory segment associated with the `arena` (default global).\n",
+                               :type :var}
+                              {:name auto-arena,
+                               :file "coffi/mem.clj",
+                               :line 61,
+                               :arglists ([]),
+                               :doc "Constructs a new memory arena that is managed by the garbage collector.\n\nThe arena may be shared across threads, and all resources created with it will\nbe cleaned up at the same time, when all references have been collected.\n\nThis type of arena cannot be closed, and therefore should not be created in\na [[with-open]] clause.",
+                               :type :var}
+                              {:name big-endian,
+                               :file "coffi/mem.clj",
+                               :line 189,
+                               :doc "The big-endian [[ByteOrder]].\n\nSee [[little-endian]], [[native-endian]].",
+                               :type :var}
+                              {:name byte-layout,
+                               :file "coffi/mem.clj",
+                               :line 207,
+                               :doc "The [[MemoryLayout]] for a byte in [[native-endian]] [[ByteOrder]].\n",
+                               :type :var}
+                              {:name c-layout,
+                               :file "coffi/mem.clj",
+                               :line 731,
+                               :doc "Gets the layout object for a given `type`.\n\nIf a type is primitive it will return the appropriate primitive\nlayout (see [[c-prim-layout]]).\n\nOtherwise, it should return a [[GroupLayout]] for the given type.",
+                               :type :multimethod}
+                              {:name char-layout,
+                               :file "coffi/mem.clj",
+                               :line 223,
+                               :doc "The [[MemoryLayout]] for a c-sized char in [[native-endian]] [[ByteOrder]].\n",
+                               :type :var}
+                              {:name clone-segment,
+                               :file "coffi/mem.clj",
+                               :line 176,
+                               :arglists ([segment] [segment arena]),
+                               :doc "Clones the content of `segment` into a new segment of the same size.\n",
+                               :type :var}
+                              {:name confined-arena,
+                               :file "coffi/mem.clj",
+                               :line 42,
+                               :arglists ([]),
+                               :doc "Constructs a new arena for use only in this thread.\n\nThe memory allocated within this arena is cheap to allocate, like a native\nstack.\n\nThe memory allocated within this arena will be cleared once it is closed, so\nit is usually a good idea to create it in a [[with-open]] clause.",
+                               :type :var}
+                              {:name copy-segment,
+                               :file "coffi/mem.clj",
+                               :line 169,
+                               :arglists ([dest src]),
+                               :doc "Copies the content to `dest` from `src`.\n\nReturns `dest`.",
+                               :type :var}
+                              {:name defalias,
+                               :file "coffi/mem.clj",
+                               :line 1321,
+                               :arglists ([new-type aliased-type]),
+                               :doc "Defines a type alias from `new-type` to `aliased-type`.\n\nThis creates needed serialization and deserialization implementations for the\naliased type.",
+                               :type :macro}
+                              {:name deserialize,
+                               :file "coffi/mem.clj",
+                               :line 1094,
+                               :arglists ([obj type]),
+                               :doc "Deserializes an arbitrary type.\n\nFor types which have a primitive representation, this deserializes the\nprimitive representation. For types which do not, this deserializes out of\na segment.",
+                               :type :var}
+                              {:name deserialize*,
+                               :file "coffi/mem.clj",
+                               :line 1035,
+                               :doc "Deserializes a primitive object into a Clojure data structure.\n\nThis is intended for use with types that are returned as a primitive but which\nneed additional processing before they can be returned.",
+                               :type :multimethod}
+                              {:name deserialize-from,
+                               :file "coffi/mem.clj",
+                               :line 972,
+                               :doc "Deserializes the given segment into a Clojure data structure.\n\nFor types that serialize to primitives, a default implementation will\ndeserialize the primitive before calling [[deserialize*]].",
+                               :type :multimethod}
+                              {:name double-alignment,
+                               :file "coffi/mem.clj",
+                               :line 279,
+                               :doc "The alignment in bytes of a c-sized double.\n",
+                               :type :var}
+                              {:name double-layout,
+                               :file "coffi/mem.clj",
+                               :line 231,
+                               :doc "The [[MemoryLayout]] for a c-sized double in [[native-endian]] [[ByteOrder]].\n",
+                               :type :var}
+                              {:name double-size,
+                               :file "coffi/mem.clj",
+                               :line 255,
+                               :doc "The size in bytes of a c-sized double.\n",
+                               :type :var}
+                              {:name float-alignment,
+                               :file "coffi/mem.clj",
+                               :line 275,
+                               :doc "The alignment in bytes of a c-sized float.\n",
+                               :type :var}
+                              {:name float-layout,
+                               :file "coffi/mem.clj",
+                               :line 227,
+                               :doc "The [[MemoryLayout]] for a c-sized float in [[native-endian]] [[ByteOrder]].\n",
+                               :type :var}
+                              {:name float-size,
+                               :file "coffi/mem.clj",
+                               :line 251,
+                               :doc "The size in bytes of a c-sized float.\n",
+                               :type :var}
+                              {:name global-arena,
+                               :file "coffi/mem.clj",
+                               :line 72,
+                               :arglists ([]),
+                               :doc "Constructs the global arena, which will never reclaim its resources.\n\nThis arena may be shared across threads, but is intended mainly in cases where\nmemory is allocated with [[alloc]] but is either never freed or whose\nmanagement is relinquished to a native library, such as when returned from a\ncallback.",
+                               :type :var}
+                              {:name int-alignment,
+                               :file "coffi/mem.clj",
+                               :line 267,
+                               :doc "The alignment in bytes of a c-sized int.\n",
+                               :type :var}
+                              {:name int-layout,
+                               :file "coffi/mem.clj",
+                               :line 215,
+                               :doc "The [[MemoryLayout]] for a c-sized int in [[native-endian]] [[ByteOrder]].\n",
+                               :type :var}
+                              {:name int-size,
+                               :file "coffi/mem.clj",
+                               :line 243,
+                               :doc "The size in bytes of a c-sized int.\n",
+                               :type :var}
+                              {:name java-layout,
+                               :file "coffi/mem.clj",
+                               :line 798,
+                               :arglists ([type]),
+                               :doc "Gets the Java class to an argument of this type for a method handle.\n\nIf a type serializes to a primitive it returns return a Java primitive type.\nOtherwise, it returns [[MemorySegment]].",
+                               :type :var}
+                              {:name java-prim-layout,
+                               :file "coffi/mem.clj",
+                               :line 786,
+                               :doc "Map of primitive type names to the Java types for a method handle.\n",
+                               :type :var}
+                              {:name little-endian,
+                               :file "coffi/mem.clj",
+                               :line 195,
+                               :doc "The little-endian [[ByteOrder]].\n\nSee [[big-endian]], [[native-endian]]",
+                               :type :var}
+                              {:name long-alignment,
+                               :file "coffi/mem.clj",
+                               :line 271,
+                               :doc "The alignment in bytes of a c-sized long.\n",
+                               :type :var}
+                              {:name long-layout,
+                               :file "coffi/mem.clj",
+                               :line 219,
+                               :doc "The [[MemoryLayout]] for a c-sized long in [[native-endian]] [[ByteOrder]].\n",
+                               :type :var}
+                              {:name long-size,
+                               :file "coffi/mem.clj",
+                               :line 247,
+                               :doc "The size in bytes of a c-sized long.\n",
+                               :type :var}
+                              {:name native-endian,
+                               :file "coffi/mem.clj",
+                               :line 201,
+                               :doc "The [[ByteOrder]] for the native endianness of the current hardware.\n\nSee [[big-endian]], [[little-endian]].",
+                               :type :var}
+                              {:name null,
+                               :file "coffi/mem.clj",
+                               :line 113,
+                               :doc "The NULL pointer object.\n\nWhile this object is safe to pass to functions which serialize to a pointer,\nit's generally encouraged to simply pass `nil`. This value primarily exists to\nmake it easier to write custom types with a primitive pointer representation.",
+                               :type :var}
+                              {:name null?,
+                               :file "coffi/mem.clj",
+                               :line 121,
+                               :arglists ([addr]),
+                               :doc "Checks if a memory address is null.\n",
+                               :type :var}
+                              {:name pointer-alignment,
+                               :file "coffi/mem.clj",
+                               :line 283,
+                               :doc "The alignment in bytes of a c-sized pointer.\n",
+                               :type :var}
+                              {:name pointer-layout,
+                               :file "coffi/mem.clj",
+                               :line 235,
+                               :doc "The [[MemoryLayout]] for a native pointer in [[native-endian]] [[ByteOrder]].\n",
+                               :type :var}
+                              {:name pointer-size,
+                               :file "coffi/mem.clj",
+                               :line 259,
+                               :doc "The size in bytes of a c-sized pointer.\n",
+                               :type :var}
+                              {:name primitive-type,
+                               :file "coffi/mem.clj",
+                               :line 678,
+                               :doc "Gets the primitive type that is used to pass as an argument for the `type`.\n\nThis is for objects which are passed to native functions as primitive types,\nbut which need additional logic to be performed during serialization and\ndeserialization.\n\nImplementations of this method should take into account that type arguments\nmay not always be evaluated before passing to this function.\n\nReturns nil for any type which does not have a primitive representation.",
+                               :type :multimethod}
+                              {:name primitive-types,
+                               :file "coffi/mem.clj",
+                               :line 668,
+                               :doc "A set of all primitive types.\n",
+                               :type :var}
+                              {:name primitive?,
+                               :file "coffi/mem.clj",
+                               :line 673,
+                               :arglists ([type]),
+                               :doc "A predicate to determine if a given type is primitive.\n",
+                               :type :var}
+                              {:name read-address,
+                               :file "coffi/mem.clj",
+                               :line 444,
+                               :arglists ([segment] [segment offset]),
+                               :doc "Reads an address from the `segment`, at an optional `offset`, wrapped in a [[MemorySegment]].\n",
+                               :type :var}
+                              {:name read-byte,
+                               :file "coffi/mem.clj",
+                               :line 287,
+                               :arglists ([segment] [segment offset]),
+                               :doc "Reads a [[byte]] from the `segment`, at an optional `offset`.\n",
+                               :type :var}
+                              {:name read-char,
+                               :file "coffi/mem.clj",
+                               :line 378,
+                               :arglists ([segment] [segment offset]),
+                               :doc "Reads a [[char]] from the `segment`, at an optional `offset`.\n",
+                               :type :var}
+                              {:name read-double,
+                               :file "coffi/mem.clj",
+                               :line 419,
+                               :arglists ([segment]
+                                          [segment offset]
+                                          [segment offset byte-order]),
+                               :doc "Reads a [[double]] from the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}
+                              {:name read-float,
+                               :file "coffi/mem.clj",
+                               :line 394,
+                               :arglists ([segment]
+                                          [segment offset]
+                                          [segment offset byte-order]),
+                               :doc "Reads a [[float]] from the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}
+                              {:name read-int,
+                               :file "coffi/mem.clj",
+                               :line 328,
+                               :arglists ([segment]
+                                          [segment offset]
+                                          [segment offset byte-order]),
+                               :doc "Reads a [[int]] from the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}
+                              {:name read-long,
+                               :file "coffi/mem.clj",
+                               :line 353,
+                               :arglists ([segment]
+                                          [segment offset]
+                                          [segment offset byte-order]),
+                               :doc "Reads a [[long]] from the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}
+                              {:name read-short,
+                               :file "coffi/mem.clj",
+                               :line 303,
+                               :arglists ([segment]
+                                          [segment offset]
+                                          [segment offset byte-order]),
+                               :doc "Reads a [[short]] from the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}
+                              {:name reinterpret,
+                               :file "coffi/mem.clj",
+                               :line 140,
+                               :arglists ([segment size]
+                                          [segment size arena]
+                                          [segment size arena cleanup]),
+                               :doc "Reinterprets the `segment` as having the passed `size`.\n\nIf `arena` is passed, the scope of the `segment` is associated with the arena,\nas well as its access constraints. If `cleanup` is passed, it will be a\n1-argument function of a fresh memory segment backed by the same memory as the\nreturned segment which should perform any required cleanup operations. It will\nbe called when the `arena` is closed.",
+                               :type :var}
+                              {:name seq-of,
+                               :file "coffi/mem.clj",
+                               :line 1106,
+                               :arglists ([type segment]),
+                               :doc "Constructs a lazy sequence of `type` elements deserialized from `segment`.\n",
+                               :type :var}
+                              {:name serialize,
+                               :file "coffi/mem.clj",
+                               :line 956,
+                               :arglists ([obj type] [obj type arena]),
+                               :doc "Serializes an arbitrary type.\n\nFor types which have a primitive representation, this serializes into that\nrepresentation. For types which do not, it allocates a new segment and\nserializes into that.",
+                               :type :var}
+                              {:name serialize*,
+                               :file "coffi/mem.clj",
+                               :line 827,
+                               :doc "Constructs a serialized version of the `obj` and returns it.\n\nAny new allocations made during the serialization should be tied to the given\n`arena`, except in extenuating circumstances.\n\nThis method should only be implemented for types that serialize to primitives.",
+                               :type :multimethod}
+                              {:name serialize-into,
+                               :file "coffi/mem.clj",
+                               :line 887,
+                               :doc "Writes a serialized version of the `obj` to the given `segment`.\n\nAny new allocations made during the serialization should be tied to the given\n`arena`, except in extenuating circumstances.\n\nThis method should be implemented for any type which does not\noverride [[c-layout]].\n\nFor any other type, this will serialize it as [[serialize*]] before writing\nthe result value into the `segment`.",
+                               :type :multimethod}
+                              {:name shared-arena,
+                               :file "coffi/mem.clj",
+                               :line 53,
+                               :arglists ([]),
+                               :doc "Constructs a new shared memory arena.\n\nThis arena can be shared across threads and memory allocated in it will only\nbe cleaned up once any thread accessing the arena closes it.",
+                               :type :var}
+                              {:name short-alignment,
+                               :file "coffi/mem.clj",
+                               :line 263,
+                               :doc "The alignment in bytes of a c-sized short.\n",
+                               :type :var}
+                              {:name short-layout,
+                               :file "coffi/mem.clj",
+                               :line 211,
+                               :doc "The [[MemoryLayout]] for a c-sized short in [[native-endian]] [[ByteOrder]].\n",
+                               :type :var}
+                              {:name short-size,
+                               :file "coffi/mem.clj",
+                               :line 239,
+                               :doc "The size in bytes of a c-sized short.\n",
+                               :type :var}
+                              {:name size-of,
+                               :file "coffi/mem.clj",
+                               :line 806,
+                               :arglists ([type]),
+                               :doc "The size in bytes of the given `type`.\n",
+                               :type :var}
+                              {:name slice,
+                               :file "coffi/mem.clj",
+                               :line 133,
+                               :arglists ([segment offset]
+                                          [segment offset size]),
+                               :doc "Get a slice over the `segment` with the given `offset`.\n",
+                               :type :var}
+                              {:name slice-segments,
+                               :file "coffi/mem.clj",
+                               :line 182,
+                               :arglists ([segment size]),
+                               :doc "Constructs a lazy seq of `size`-length memory segments, sliced from `segment`.\n",
+                               :type :var}
+                              {:name write-address,
+                               :file "coffi/mem.clj",
+                               :line 642,
+                               :arglists ([segment value]
+                                          [segment offset value]),
+                               :doc "Writes the address of the [[MemorySegment]] `value` to the `segment`, at an optional `offset`.\n",
+                               :type :var}
+                              {:name write-byte,
+                               :file "coffi/mem.clj",
+                               :line 460,
+                               :arglists ([segment value]
+                                          [segment offset value]),
+                               :doc "Writes a [[byte]] to the `segment`, at an optional `offset`.\n",
+                               :type :var}
+                              {:name write-char,
+                               :file "coffi/mem.clj",
+                               :line 562,
+                               :arglists ([segment value]
+                                          [segment offset value]),
+                               :doc "Writes a [[char]] to the `segment`, at an optional `offset`.\n",
+                               :type :var}
+                              {:name write-double,
+                               :file "coffi/mem.clj",
+                               :line 614,
+                               :arglists ([segment value]
+                                          [segment offset value]
+                                          [segment
+                                           offset
+                                           byte-order
+                                           value]),
+                               :doc "Writes a [[double]] to the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}
+                              {:name write-float,
+                               :file "coffi/mem.clj",
+                               :line 586,
+                               :arglists ([segment value]
+                                          [segment offset value]
+                                          [segment
+                                           offset
+                                           byte-order
+                                           value]),
+                               :doc "Writes a [[float]] to the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}
+                              {:name write-int,
+                               :file "coffi/mem.clj",
+                               :line 506,
+                               :arglists ([segment value]
+                                          [segment offset value]
+                                          [segment
+                                           offset
+                                           byte-order
+                                           value]),
+                               :doc "Writes a [[int]] to the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}
+                              {:name write-long,
+                               :file "coffi/mem.clj",
+                               :line 534,
+                               :arglists ([segment value]
+                                          [segment offset value]
+                                          [segment
+                                           offset
+                                           byte-order
+                                           value]),
+                               :doc "Writes a [[long]] to the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}
+                              {:name write-short,
+                               :file "coffi/mem.clj",
+                               :line 478,
+                               :arglists ([segment value]
+                                          [segment offset value]
+                                          [segment
+                                           offset
+                                           byte-order
+                                           value]),
+                               :doc "Writes a [[short]] to the `segment`, at an optional `offset`.\n\nIf `byte-order` is not provided, it defaults to [[native-endian]].",
+                               :type :var}),
+                    :doc "Functions for managing native allocations, memory arenas, and (de)serialization.\n\nFor any new type to be implemented, three multimethods must be overriden, but\nwhich three depends on the native representation of the type.\n\nIf the native representation of the type is a primitive (whether or not other\ndata beyond the primitive is associated with it, as e.g. a pointer),\nthen [[primitive-type]] must be overriden to return which primitive type it is\nserialized as, then [[serialize*]] and [[deserialize*]] should be overriden.\n\nIf the native representation of the type is a composite type, like a union,\nstruct, or array, then [[c-layout]] must be overriden to return the native\nlayout of the type, and [[serialize-into]] and [[deserialize-from]] should be\noverriden to allow marshaling values of the type into and out of memory\nsegments."})},
+ :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <name>coffi</name>\n  <description>A Foreign Function Interface in Clojure for JDK 22+.</description>\n  <url>https://github.com/IGJoshua/coffi</url>\n  <licenses>\n    <license>\n      <name>Eclipse Public License</name>\n      <url>http://www.eclipse.org/legal/epl-v10.html</url>\n    </license>\n  </licenses>\n  <developers>\n    <developer>\n      <name>Joshua Suskalo</name>\n    </developer>\n  </developers>\n  <repositories>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n    </repository>\n  </repositories>\n  <distributionManagement>\n    <repository>\n      <id>clojars</id>\n      <name>Clojars repository</name>\n      <url>https://clojars.org/repo</url>\n    </repository>\n  </distributionManagement>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.11.1</version>\n    </dependency>\n    <dependency>\n      <groupId>insn</groupId>\n      <artifactId>insn</artifactId>\n      <version>0.5.4</version>\n    </dependency>\n  </dependencies>\n  <build>\n    <sourceDirectory>src/clj/</sourceDirectory>\n  </build>\n  <groupId>org.suskalo</groupId>\n  <artifactId>coffi</artifactId>\n  <version>1.0.486</version>\n  <scm>\n    <connection>scm:git:git://github.com/IGJoshua/coffi.git</connection>\n    <developerConnection>scm:git:ssh://git@github.com/IGJoshua/coffi.git</developerConnection>\n    <tag>v1.0.486</tag>\n    <url>https://github.com/IGJoshua/coffi</url>\n  </scm>\n</project>\n"}
