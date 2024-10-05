@@ -188,3 +188,10 @@
                   ["instaparse/instaparse"
                    "1.4.12"
                    "https://repo.clojars.org/instaparse/instaparse/1.4.12/instaparse-1.4.12"])))
+
+(t/deftest coffi-1-0-486-remotely
+  ;; coffi require a min of jdk22
+  (run-analysis (remote->args
+                  ["org.suskalo/coffi"
+                   "1.0.486"
+                   "https://repo.clojars.org/org/suskalo/coffi/1.0.486/coffi-1.0.486"])))
