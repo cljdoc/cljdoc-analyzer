@@ -24,10 +24,10 @@
                                                   "--output-filename" edn-out-filename))))
 
 ;; main testing is done in cljdoc-main-test, this is a sanity run that this main path works as well.
-(t/deftest clj-branca
+(t/deftest clj-base62
   ;; force re-download of artifact to local maven repo by deleting it first
-  (let [project 'miikka/clj-branca
-        version "0.1.0"
+  (let [project 'miikka/clj-base62
+        version "0.1.1"
         {:keys [base path]} (tdeps/lib-location project {:mvn/version version} {})
         m2-repo-dir (fs/file base path)]
     (when (fs/exists? m2-repo-dir)

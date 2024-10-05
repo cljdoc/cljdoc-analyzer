@@ -151,14 +151,14 @@
                    "5.9.0"
                    "https://repo.clojars.org/cheshire/cheshire/5.9.0/cheshire-5.9.0"])))
 
-(t/deftest clj-branca-remotely
+(t/deftest clj-base62-remotely
+  ;; jar without a pom
   ;; https://github.com/cljdoc/cljdoc-analyzer/issues/29
-  ;; https://github.com/cljdoc/cljdoc/issues/404 - but oz still has some
-  ;; unrelated issues, clj-branca works today.
+  ;; https://github.com/cljdoc/cljdoc/issues/404
   (run-analysis (remote->args
-                 ["miikka/clj-branca"
-                  "0.1.0"
-                  "https://repo.clojars.org/miikka/clj-branca/0.1.0/clj-branca-0.1.0"])))
+                 ["miikka/clj-base62"
+                  "0.1.1"
+                  "https://repo.clojars.org/miikka/clj-base62/0.1.1/clj-base62-0.1.1"])))
 
 (t/deftest clojure-tools-deps-remotely
   ;; https://github.com/cljdoc/cljdoc/issues/742
