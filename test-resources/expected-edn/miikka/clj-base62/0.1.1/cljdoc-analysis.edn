@@ -1,0 +1,22 @@
+{:group-id "miikka",
+ :artifact-id "clj-base62",
+ :version "0.1.1",
+ :analysis {"clj" ({:name clj-base62.core,
+                    :publics ({:name +charset+,
+                               :file "clj_base62/core.clj",
+                               :line 5,
+                               :doc "The character set used by Base62 encoding.\n",
+                               :type :var}
+                              {:name decode,
+                               :file "clj_base62/core.clj",
+                               :line 34,
+                               :arglists ([s]),
+                               :doc "Decode base62 string `s` into a byte array.\n",
+                               :type :var}
+                              {:name encode,
+                               :file "clj_base62/core.clj",
+                               :line 13,
+                               :arglists ([b]),
+                               :doc "Encode byte array `b` into a base62 string.\n",
+                               :type :var})})},
+ :pom-str "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n  <modelVersion>4.0.0</modelVersion>\n  <groupId>miikka</groupId>\n  <artifactId>clj-base62</artifactId>\n  <version>0.1.1</version>\n  <name>clj-base62</name>\n  <description>Base62 encoding and decoding for Clojure</description>\n  <url>https://sr.ht/~miikka/clj-base62</url>\n  <scm>\n    <connection>scm:git:https://git.sr.ht/~miikka/clj-base62</connection>\n    <developerConnection>scm:git:ssh://git@git.sr.ht/~miikka/clj-base62</developerConnection>\n    <tag>51baed6e7d3030b16a9525faca67c368b2f9254a</tag>\n    <url>https://git.sr.ht/~miikka/clj-base62</url>\n  </scm>\n  <dependencies>\n    <dependency>\n      <groupId>org.clojure</groupId>\n      <artifactId>clojure</artifactId>\n      <version>1.11.1</version>\n    </dependency>\n  </dependencies>\n  <build>\n    <sourceDirectory>src</sourceDirectory>\n  </build>\n  <repositories>\n    <repository>\n      <id>clojars</id>\n      <url>https://repo.clojars.org/</url>\n    </repository>\n  </repositories>\n</project>\n"}
