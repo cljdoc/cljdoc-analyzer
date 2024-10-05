@@ -10,7 +10,7 @@
 
 == Unreleased
 
-* Bump CI JDK to temurin 23
+* ci: bump from JDK 21 to JDK 23 (to verify all is good on JDK 23)
 * Bump deps
 
 == v1.0.792
