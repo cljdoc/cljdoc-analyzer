@@ -18,7 +18,7 @@
                     (status/line :head "Building clj-kondo cache")
                     (let [cp (-> (shell {:out :string} "clojure -Spath -M:test")
                                  :out)]
-                      (shell "clojure -M:clj-kondo --dependencies --copy-configs --lint" cp)))
+                      (shell "clojure -M:clj-kondo --skip-lint --dependencies --copy-configs --lint" cp)))
                   (status/line :head "Linting")
                   (let [config {:output {:exclude-files ["/inlined/"]}}
                         {:keys [exit]}
