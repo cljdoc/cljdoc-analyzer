@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: clojure:temurin-23-tools-deps-noble
+      - image: clojure:temurin-24-tools-deps-noble
 
     working_directory: ~/repo
 
