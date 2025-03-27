@@ -14,6 +14,7 @@
 
 == v1.0.808
 
+* ci: bump from JDK 23 to JDK 24 (to verify all is good on JDK 24)
 * Bump deps
 
 == v1.0.802
