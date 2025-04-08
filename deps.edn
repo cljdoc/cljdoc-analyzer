@@ -6,7 +6,7 @@
         version-clj/version-clj {:mvn/version "2.0.3"}
         cli-matic/cli-matic {:mvn/version "0.5.4"}
         babashka/fs {:mvn/version "0.5.24"}
-        org.ow2.asm/asm {:mvn/version "9.7.1"}
+        org.ow2.asm/asm {:mvn/version "9.8"}
         ;; cljoc and cljdoc-analyzer should reference same version of cljdoc-shared
         cljdoc/cljdoc-shared {:git/url "https://github.com/cljdoc/cljdoc-shared.git"
                               :git/sha "b000151410f11151999aeb0f78229db3c70ae5c9"}}
@@ -18,7 +18,7 @@
             :main-opts ["-m" "kaocha.runner"]}
 
            :clj-kondo
-           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2025.02.20"}}
+           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2025.04.07"}}
             :main-opts ["-m" "clj-kondo.main"]}
 
            :eastwood
