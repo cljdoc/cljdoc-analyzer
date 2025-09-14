@@ -173,8 +173,13 @@
       (->> (get-metadata (assoc args :namespaces (or namespaces :all)))
            (utils/serialize-cljdoc-analysis-edn)
            (spit output-filename))
-      (println "Done"))
-
-    (finally
+      (println "Done")
       (flush)
-      (shutdown-agents))))
+      ;; Exit explicitly on success, just in case some lib has launched some threads on ns load
+      (System/exit 0))
+    (catch Throwable ex
+      (println "\n* ERROR: Exception:")
+      (pprint/pprint (Throwable->map ex))
+      (flush)
+      ;; Exit explicitly on failure, just in case some lib has launched some threads on ns load
+      (System/exit 1))))
