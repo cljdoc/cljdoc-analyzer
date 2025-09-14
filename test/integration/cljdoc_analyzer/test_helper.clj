@@ -21,12 +21,8 @@
              ;; % is the list of namespaces
              #(remove (fn [ns] (remove-ns? (str (:name ns)))) %)))
 
-(defn verify-analysis-result [ project version edn-out-filename {:keys [exit out err]} ]
+(defn verify-analysis-result [ project version edn-out-filename {:keys [exit]} ]
   (println "analysis exit code:" exit)
-  (println "analysis stdout:")
-  (println out)
-  (println "analysis stderr:")
-  (println err)
   (t/is (zero? exit))
   (let [expected-f (io/resource (edn-filename "expected-edn" project version))]
     (when-not expected-f
