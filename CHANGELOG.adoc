@@ -13,6 +13,8 @@
 * Bump deps
 * Explicitly exit to compensate for libs that start threads on ns load
 https://github.com/cljdoc/cljdoc-analyzer/issues/118[#118]
+* Stream metagetta stdout/stderr
+https://github.com/cljdoc/cljdoc-analyzer/issues/117[#117]
 
 == v1.0.827
 
