@@ -2,9 +2,9 @@
   "These tests mimic the way cljdoc calls cljdoc-analyzer."
   (:require
    [babashka.fs :as fs]
+   [babashka.process :as process]
    [cljdoc-analyzer.test-helper :as test-helper]
    [clojure.java.io :as io]
-   [clojure.java.shell :as shell]
    [clojure.string :as string]
    [clojure.test :as t]))
 
@@ -54,7 +54,8 @@
         args ["clojure" "-M" "--report" "stderr" "-m" "cljdoc-analyzer.cljdoc-main" (pr-str args)]]
     (println (string/join " " args))
     (println "Analyzing" project version)
-    (test-helper/verify-analysis-result project version edn-out-filename (apply shell/sh args))))
+    (test-helper/verify-analysis-result project version edn-out-filename
+                                        (apply process/shell {:continue true} args))))
 
 (t/deftest re-frame-remotely
   ;; https://github.com/cljdoc/cljdoc-analyzer/issues/18

@@ -10,6 +10,7 @@
   does not have the dependencies of cljdoc-analyzer."
   (:require
    [babashka.fs :as fs]
+   [babashka.process :as process]
    [cljdoc-analyzer.config :as config]
    [cljdoc-analyzer.deps :as deps]
    [cljdoc-analyzer.file :as file]
@@ -18,7 +19,6 @@
    [cljdoc-shared.spec.analyzer :as analyzer-spec]
    [clojure.edn :as edn]
    [clojure.java.io :as io]
-   [clojure.java.shell :as sh]
    [clojure.pprint :as pprint]
    [clojure.spec.alpha :as s]
    [clojure.string :as string]
@@ -152,18 +152,6 @@
     (patch-jar-contents! project version jar-contents-dir)
     jar-contents-dir))
 
-(defn- log-process-result [proc]
-  (log/info (str "metagetta results:\nexit-code " (:exit proc)
-                 "\nstdout:\n " (-> proc
-                                    :out
-                                    (string/trim)
-                                    (string/replace #"\n" "\n "))
-                 (when (seq (:err proc))
-                   (str "\nstderr:\n " (-> proc
-                                           :err
-                                           (string/trim)
-                                           (string/replace #"\n" "\n ")))))))
-
 (defn- log-dependencies [resolved-deps]
   (log/info (str "dependencies for analysis:\n"
                  (with-out-str (deps/print-tree resolved-deps)))))
@@ -177,33 +165,32 @@
   "Analysis to get metadata is launched in a separate process to minimize dependencies to those of project being analyzed."
   [{:keys [project namespaces src-dir languages exclude-with classpath]}]
   (let [metadata-output-file (str (fs/create-temp-file
-                                    {:prefix (string/replace project #"/" "-")
-                                     :suffix ".edn"}))]
+                                   {:prefix (string/replace project #"/" "-")
+                                    :suffix ".edn"}))]
     (log/info "launching metagetta for:" project "languages:" languages)
     (let [analysis-args {:namespaces namespaces
                          :root-path (str src-dir)
                          :languages languages
                          :output-filename  (-> metadata-output-file fs/absolutize str)
                          :exclude-with exclude-with}
-          process (sh/sh "java"
-                         "-cp" classpath
-                         "-Dclojure.spec.skip-macros=true"
-                         "-Dclojure.main.report=stderr"
-                         "clojure.main"
-                         "-m" "cljdoc-analyzer.metagetta.main"
-                         (pr-str analysis-args)
-                         ;; supplying :dir is necessary to avoid local deps.edn being included
-                         ;; once -Srepro is finalized it might be useful for this purpose
-                         :dir (-> metadata-output-file fs/parent fs/file))
-          _ (log-process-result process)]
+          process (process/shell
+                    ;; supplying :dir is necessary to avoid local deps.edn being included
+                    ;; once -Srepro is finalized it might be useful for this purpose
+                   {:dir (-> metadata-output-file fs/parent)
+                    :continue true}
+                   "java"
+                   "-cp" classpath
+                   "-Dclojure.spec.skip-macros=true"
+                   "-Dclojure.main.report=stderr"
+                   "clojure.main"
+                   "-m" "cljdoc-analyzer.metagetta.main"
+                   (pr-str analysis-args))]
       (if (zero? (:exit process))
         (let [result (analysis-edn/read metadata-output-file)]
-          (assert result "No data was saved in output file")
+          (assert result "Data was saved in output file")
           result)
         (throw (ex-info (str "Analysis failed with code " (:exit process))
-                        {:code (:exit process)
-                         :stdout (:out process)
-                         :stderr (:err process)}))))))
+                        {:code (:exit process)}))))))
 
 (defn- validate-result [ana-result]
   (analyzer-spec/assert-result-full ana-result)
@@ -303,8 +290,6 @@
     (catch Throwable t
       (let [msg (.getMessage t)]
         (log/error msg)
-        (log/error "STDOUT\n" (-> t ex-data :stdout))
-        (log/error "STDERR\n" (-> t ex-data :stderr))
         ;; TODO: hmmm caller is not using this info... except for analysis-status
         {:analysis-status :fail
          :fail-reason msg
