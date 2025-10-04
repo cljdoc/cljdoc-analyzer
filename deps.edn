@@ -1,8 +1,8 @@
 {:paths ["src" "resources" "modules"]
- :deps {org.clojure/clojure {:mvn/version "1.12.2"}
-        org.clojure/tools.deps {:mvn/version "0.25.1539"}
+ :deps {org.clojure/clojure {:mvn/version "1.12.3"}
+        org.clojure/tools.deps {:mvn/version "0.26.1553"}
         org.clojure/tools.logging {:mvn/version "1.3.0"}
-        ch.qos.logback/logback-classic {:mvn/version "1.5.18"}
+        ch.qos.logback/logback-classic {:mvn/version "1.5.19"}
         version-clj/version-clj {:mvn/version "2.0.3"}
         cli-matic/cli-matic {:mvn/version "0.5.4"}
         babashka/fs {:mvn/version "0.5.27"}
@@ -19,7 +19,7 @@
             :main-opts ["-m" "kaocha.runner"]}
 
            :clj-kondo
-           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2025.07.28"}}
+           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2025.09.22"}}
             :main-opts ["-m" "clj-kondo.main"]}
 
            :eastwood
