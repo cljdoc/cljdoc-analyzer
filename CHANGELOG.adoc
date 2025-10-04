@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.848
+
 * ci: bump from JDK 24 to JDK 25 on CI (to verify all is good on JDK 25)
 * Bump deps
 
