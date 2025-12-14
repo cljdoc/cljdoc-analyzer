@@ -1,6 +1,6 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.12.4"}
-        org.clojure/clojurescript {:mvn/version "1.12.42"}}
+        org.clojure/clojurescript {:mvn/version "1.12.134"}}
  :aliases {:test-base
            {:extra-paths ["test"]
             :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
