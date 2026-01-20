@@ -2,7 +2,7 @@
  :deps {org.clojure/clojure {:mvn/version "1.12.4"}
         org.clojure/tools.deps {:mvn/version "0.27.1564"}
         org.clojure/tools.logging {:mvn/version "1.3.0"}
-        ch.qos.logback/logback-classic {:mvn/version "1.5.22"}
+        ch.qos.logback/logback-classic {:mvn/version "1.5.25"}
         version-clj/version-clj {:mvn/version "2.0.3"}
         cli-matic/cli-matic {:mvn/version "0.5.4"}
         babashka/fs {:mvn/version "0.5.30"}
