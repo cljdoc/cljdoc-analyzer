@@ -19,7 +19,7 @@
             :main-opts ["-m" "kaocha.runner"]}
 
            :clj-kondo
-           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2025.10.23"}}
+           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2026.01.19"}}
             :main-opts ["-m" "clj-kondo.main"]}
 
            :eastwood
