@@ -4,7 +4,7 @@
         org.clojure/tools.logging {:mvn/version "1.3.1"}
         ch.qos.logback/logback-classic {:mvn/version "1.5.32"}
         version-clj/version-clj {:mvn/version "2.0.3"}
-        cli-matic/cli-matic {:mvn/version "0.5.4"}
+        org.babashka/cli {:mvn/version "0.8.67"}
         babashka/fs {:mvn/version "0.5.31"}
         babashka/process {:mvn/version "0.6.25"}
         org.ow2.asm/asm {:mvn/version "9.9.1"}
@@ -15,7 +15,8 @@
  :aliases {:test
            {:extra-paths ["test/integration" "test-resources"]
             :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
-                         lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}}
+                         lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}
+                         nubank/matcher-combinators {:mvn/version "3.10.0"}}
             :main-opts ["-m" "kaocha.runner"]}
 
            :clj-kondo
