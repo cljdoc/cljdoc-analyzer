@@ -10,7 +10,8 @@
 
 == Unreleased
 
-*
+* Internal: switched from cli-matic to babashka cli
+https://github.com/cljdoc/cljdoc-analyzer/pull/126[#126]
 
 == v1.0.880
 
