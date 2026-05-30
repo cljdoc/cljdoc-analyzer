@@ -143,7 +143,7 @@
   (let [lib project
         repos (merge default-repos extra-repos)
         coord {:mvn/version version}
-        ;; this seems to resolve and downlaod the the jar
+        ;; this seems to resolve and download the the jar
         jar (first (tdeps-ext/coord-paths lib
                      coord
                      :mvn {:mvn/repos repos}))]
