@@ -120,9 +120,8 @@
   (mapcat (fn [m]
             (let [s (str m)
                   i (.indexOf s "$")]
-              (if (pos? i)
-                [s (subs s 0 i)]
-                [s])))
+              (cond-> [s]
+                (pos? i) (conj (subs s 0 i)))))
           modules))
 
 (defn- fake-js-deps
