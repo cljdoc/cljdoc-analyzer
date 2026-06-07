@@ -106,6 +106,25 @@
          (remove unreferenced-protocol?)
          (map (partial read-var source-path file vars)))))
 
+(defn- base-modules
+  "Expand JS module identifiers to also include their base module.
+
+  A string require can target a member of a JS module with the `$` separator,
+  e.g. `\"@mui/material/Button$default\"` (the form shadow-cljs and
+  ClojureScript both use to reach a default/named export). ClojureScript
+  resolves such a require against the base module before the `$`
+  (`\"@mui/material/Button\"`), so we must stub that base name too, otherwise
+  analysis fails with \"No such namespace\".
+  https://github.com/cljdoc/cljdoc-analyzer/issues/18"
+  [modules]
+  (mapcat (fn [m]
+            (let [s (str m)
+                  i (.indexOf s "$")]
+              (if (pos? i)
+                [s (subs s 0 i)]
+                [s])))
+          modules))
+
 (defn- fake-js-deps
   "Generate a value for the analyzers :js-dependency-index that 'stubs out' all JS modules
   listed in `js-dependencies`.
@@ -127,9 +146,9 @@
         npm-deps (when (map? (:npm-deps deps))
                    (keys (:npm-deps deps)))
         foreign-libs (mapcat :provides (:foreign-libs deps))]
-    (zipmap (concat js-dependencies
-                    npm-deps foreign-libs
-                    ["react" "react-dom" "cljsjs.react"])
+    (zipmap (base-modules (concat js-dependencies
+                                  npm-deps foreign-libs
+                                  ["react" "react-dom" "cljsjs.react"]))
             (repeatedly #(gensym "fake$module")))))
 
 (defn- create-compiler-state [js-dependencies]
