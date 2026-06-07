@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.914
+
 * ClojureScript analysis fix: Stub the base module for $-member JS string requires
 https://github.com/cljdoc/cljdoc-analyzer/issues/134[#134]
 (thanks https://github.com/jramosg[@jramosg]!)
