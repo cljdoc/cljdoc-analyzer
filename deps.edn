@@ -1,26 +1,26 @@
 {:paths ["src" "resources" "modules"]
  :deps {org.clojure/clojure {:mvn/version "1.12.5"}
-        org.clojure/tools.deps {:mvn/version "0.31.1629"}
+        org.clojure/tools.deps {:mvn/version "0.31.1642"}
         org.clojure/tools.logging {:mvn/version "1.3.1"}
-        ch.qos.logback/logback-classic {:mvn/version "1.5.33"}
+        ch.qos.logback/logback-classic {:mvn/version "1.6.3"}
         version-clj/version-clj {:mvn/version "2.0.3"}
-        org.babashka/cli {:mvn/version "0.9.68"}
-        babashka/fs {:mvn/version "0.5.33"}
+        org.babashka/cli {:mvn/version "0.12.86"}
+        babashka/fs {:mvn/version "0.5.34"}
         babashka/process {:mvn/version "0.6.25"}
         org.ow2.asm/asm {:mvn/version "9.10.1"}
         ;; cljoc and cljdoc-analyzer should reference same version of cljdoc-shared
         cljdoc/cljdoc-shared {:git/url "https://github.com/cljdoc/cljdoc-shared.git"
-                              :git/sha "adbab7d7471509bb49c0c24cf33ffa161f7fa1e0"}}
+                              :git/sha "3290310afd9aa1cf25d2c747b9482517ca6c8f2c"}}
  :tools/usage {:ns-default cljdoc-analyzer.deps-tool}
  :aliases {:test
            {:extra-paths ["test/integration" "test-resources"]
             :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
                          lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}
-                         nubank/matcher-combinators {:mvn/version "3.10.0"}}
+                         nubank/matcher-combinators {:mvn/version "3.11.0"}}
             :main-opts ["-m" "kaocha.runner"]}
 
            :clj-kondo
-           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2026.05.25"}}
+           {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2026.08.04"}}
             :main-opts ["-m" "clj-kondo.main"]}
 
            :eastwood
