@@ -10,6 +10,10 @@
 
 == Unreleased
 
+*
+
+== v1.0.925
+
 * Bump deps
 
 == v1.0.914
