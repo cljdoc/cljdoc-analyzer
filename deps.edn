@@ -16,7 +16,7 @@
            {:extra-paths ["test/integration" "test-resources"]
             :extra-deps {lambdaisland/kaocha {:mvn/version "1.91.1392"}
                          lambdaisland/kaocha-junit-xml {:mvn/version "1.17.101"}
-                         nubank/matcher-combinators {:mvn/version "3.10.0"}}
+                         nubank/matcher-combinators {:mvn/version "3.11.0"}}
             :main-opts ["-m" "kaocha.runner"]}
 
            :clj-kondo
