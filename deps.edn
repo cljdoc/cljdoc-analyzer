@@ -27,16 +27,4 @@
            {:extra-paths ["test/integration"]
             :extra-deps {jonase/eastwood {:mvn/version "1.4.3"}}
             :main-opts ["-m" "eastwood.lint" {:source-paths ["src"]
-                                              :test-paths ["test/integration"]}]}
-
-           :outdated
-           {:replace-deps {com.github.liquidz/antq {:mvn/version "2.11.1276"}
-                           org.slf4j/slf4j-simple {:mvn/version "2.0.20"} ;; to rid ourselves of logger warnings
-                           }
-            :main-opts ["-m" "antq.core"
-                        "--exclude=org.clojure/tools.namespace@1.4.1" ;; https://clojure.atlassian.net/browse/TNS-59
-                        "--exclude=org.clojure/tools.namespace@1.4.2" ;; https://ask.clojure.org/index.php/12965/tools-namespace-longer-returns-declared-metadata-namespace
-                        "--exclude=org.clojure/tools.namespace@1.4.3" ;; https://ask.clojure.org/index.php/12965/tools-namespace-longer-returns-declared-metadata-namespace
-                        "--exclude=org.clojure/tools.namespace@1.4.4" ;; https://ask.clojure.org/index.php/12965/tools-namespace-longer-returns-declared-metadata-namespace
-                        "--exclude=org.clojure/clojurescript@1.11.121" ;; not an official supported release
-                        ]}}}
+                                              :test-paths ["test/integration"]}]}}}
