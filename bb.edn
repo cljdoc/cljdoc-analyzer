@@ -1,6 +1,7 @@
 {:paths ["script"]
  :deps {lread/status-line {:git/url "https://github.com/lread/status-line.git"
-                           :sha "eace48e2e0fcc65a3986d696fb0b910fa5790a1c"}}
+                           :sha "eace48e2e0fcc65a3986d696fb0b910fa5790a1c"}
+        com.github.liquidz/antq {:git/sha "312620bbd642b34cb6e7402b3bab5490e8fbd7a2"}}
  :tasks {;; setup
          :requires ([babashka.fs :as fs]
                     [clojure.java.io :as io]
@@ -81,6 +82,7 @@
 
          outdated
          {:doc "report on outdated dependencies"
+          :requires ([antq.core :as antq])
           :task (do
-                  (status/line :head "Checking Clojure deps")
-                  (shell {:continue true} "clojure -M:outdated" "--directory=.:modules/metagetta"))}}}
+                 (status/line :head "Checking Clojure & CircleCI deps")
+                 (antq/-main "--directory=.:modules/metagetta"))}}}

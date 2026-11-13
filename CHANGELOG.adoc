@@ -10,11 +10,12 @@
 
 == Unreleased
 
-*
+* Bump deps
 
 == v1.0.925
 
 * Bump deps
+* Bump ci to JDK 27
 
 == v1.0.914
 
