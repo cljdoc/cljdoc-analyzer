@@ -7,7 +7,7 @@
         org.babashka/cli {:mvn/version "0.12.92"}
         babashka/fs {:mvn/version "0.5.34"}
         babashka/process {:mvn/version "0.6.25"}
-        org.ow2.asm/asm {:mvn/version "9.10.1"}
+        org.ow2.asm/asm {:mvn/version "9.11.1"}
         ;; cljoc and cljdoc-analyzer should reference same version of cljdoc-shared
         cljdoc/cljdoc-shared {:git/url "https://github.com/cljdoc/cljdoc-shared.git"
                               :git/sha "3290310afd9aa1cf25d2c747b9482517ca6c8f2c"}}
