@@ -10,7 +10,7 @@
         org.ow2.asm/asm {:mvn/version "9.11.1"}
         ;; cljoc and cljdoc-analyzer should reference same version of cljdoc-shared
         cljdoc/cljdoc-shared {:git/url "https://github.com/cljdoc/cljdoc-shared.git"
-                              :git/sha "3290310afd9aa1cf25d2c747b9482517ca6c8f2c"}}
+                              :git/sha "3d3ed7b596703bbb937dbefdc96e14756606877e"}}
  :tools/usage {:ns-default cljdoc-analyzer.deps-tool}
  :aliases {:test
            {:extra-paths ["test/integration" "test-resources"]
